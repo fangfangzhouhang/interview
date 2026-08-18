@@ -1,0 +1,50 @@
+<!-- templates/overview/overview.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}面试排队总览 - 面试系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/overview.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="overview-container">
+    <!-- 页面头部 -->
+    <header class="overview-header">
+        <div class="header-left">
+            <h1>面试排队总览</h1>
+        </div>
+        <div class="header-right">
+            <div class="polling-status">
+                <span class="status-dot active"></span>
+                <span class="status-text">自动刷新</span>
+                <span class="status-countdown" id="countdownTimer">60s</span>
+            </div>
+            <span class="last-updated" id="lastUpdated">--</span>
+            <button class="btn btn-success" id="autoGroupBtn">自动分组</button>
+            <button class="btn btn-primary" id="refreshBtn">刷新</button>
+        </div>
+    </header>
+
+    <!-- 卡片网格 2行3列 -->
+    <div class="cards-grid" id="cardsContainer">
+        <!-- 由 JavaScript 动态渲染 -->
+        <div class="loading-placeholder">
+            <div class="loading-shimmer"></div>
+            <div class="loading-shimmer"></div>
+            <div class="loading-shimmer"></div>
+            <div class="loading-shimmer"></div>
+            <div class="loading-shimmer"></div>
+            <div class="loading-shimmer"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast 通知 -->
+<div class="toast" id="toast"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/overview.js' %}"></script>
+{% endblock %}

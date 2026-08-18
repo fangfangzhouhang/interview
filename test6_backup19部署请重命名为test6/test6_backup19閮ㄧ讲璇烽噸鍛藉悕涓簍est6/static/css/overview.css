@@ -1,0 +1,476 @@
+/* static/css/overview.css */
+
+/* ==================== 全局重置 ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.overview-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 16px 24px 24px 24px;
+    background: #F0F7FF;  /* 主背景：极浅天蓝 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ==================== 页面头部 ==================== */
+.overview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: #FFFFFF;  /* 卡片 / 模块：纯白 */
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08);  /* 主强调色半透明 */
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+.header-left h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;  /* 主文字：近黑 */
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ==================== 轮询状态 ==================== */
+.polling-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #2563EB;  /* 主强调色 */
+    background: #EFF6FF;  /* 极浅蓝底 */
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #BFDBFE;  /* 边框 / 分割线：浅蓝边框 */
+}
+
+.status-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2563EB;  /* 主强调色 */
+    flex-shrink: 0;
+}
+
+.status-dot.active {
+    animation: dotPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.7); }
+}
+
+.status-countdown {
+    font-weight: 600;
+    color: #2563EB;  /* 主强调色 */
+    min-width: 32px;
+    text-align: center;
+}
+
+.last-updated {
+    font-size: 12px;
+    color: #475569;  /* 次要文字：柔和深灰 */
+}
+
+/* ==================== 按钮 ==================== */
+.btn {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: #2563EB;  /* 主强调色 */
+    color: #fff;
+}
+.btn-primary:hover {
+    background: #1D4ED8;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+.btn-primary:disabled {
+    background: #93B5F8;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-success {
+    background: #3B82F6;  /* 次要强调 */
+    color: #fff;
+}
+.btn-success:hover {
+    background: #2563EB;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+.btn-success:disabled {
+    background: #93B5F8;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ==================== 卡片网格 ==================== */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 16px;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ==================== 卡片 ==================== */
+.card {
+    background: #FFFFFF;  /* 卡片 / 模块：纯白 */
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.3s ease;
+    min-height: 0;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.12);
+}
+
+/* 有排队中的场次时强调显示 */
+.card.has-pending {
+    border: 2.5px solid #F59E0B;  /* 保持原警示色，与主题蓝协调 */
+    box-shadow: 0 0 0 1px #F59E0B, 0 4px 16px rgba(245, 158, 11, 0.15);
+}
+.card.has-pending:hover {
+    box-shadow: 0 0 0 1px #F59E0B, 0 4px 24px rgba(245, 158, 11, 0.25);
+}
+
+/* 正在面试中的场次绿色边框（保持原语义） */
+.card.has-ongoing {
+    border: 2px solid #22C55E;
+}
+.card.has-pending.has-ongoing {
+    border: 2.5px solid #F59E0B;
+    box-shadow: 0 0 0 1px #F59E0B, 0 4px 16px rgba(245, 158, 11, 0.15);
+}
+
+.card-header {
+    padding: 10px 18px;
+    border-bottom: 1px solid #BFDBFE;  /* 边框 / 分割线：浅蓝边框 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    background: #F8FAFF;  /* 极浅蓝，比主背景稍深一点 */
+}
+
+.card-header .dept-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;  /* 主文字：近黑 */
+}
+
+.card-header .dept-badge {
+    font-size: 12px;
+    padding: 1px 10px;
+    border-radius: 10px;
+    background: #EFF6FF;
+    color: #475569;  /* 次要文字 */
+    font-weight: 500;
+}
+
+.card-body {
+    padding: 10px 16px 14px;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.card-body::-webkit-scrollbar {
+    width: 3px;
+}
+.card-body::-webkit-scrollbar-track {
+    background: #F0F7FF;
+    border-radius: 3px;
+}
+.card-body::-webkit-scrollbar-thumb {
+    background: #BFDBFE;
+    border-radius: 3px;
+}
+.card-body::-webkit-scrollbar-thumb:hover {
+    background: #93B5F8;
+}
+
+/* ==================== 场次项 ==================== */
+.group-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #BFDBFE;  /* 边框 / 分割线 */
+}
+.group-item:last-child {
+    border-bottom: none;
+}
+
+/* 待开始的场次 - 强调显示 */
+.group-item.pending-group {
+    background: #FFFBEB;  /* 保持原暖色警示 */
+    margin: 0 -12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border-left: 3px solid #F59E0B;
+    border-bottom: none;
+}
+.group-item.pending-group:last-child {
+    border-bottom: none;
+}
+
+.group-item .group-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 组名 - 小字 */
+.group-item .group-name {
+    font-size: 12px;
+    font-weight: 400;
+    color: #475569;  /* 次要文字 */
+}
+
+.group-item.pending-group .group-name {
+    color: #92400E;
+    font-weight: 500;
+}
+
+/* 状态标签 - 小字 */
+.group-item .group-status {
+    font-size: 11px;
+    padding: 1px 8px;
+    border-radius: 3px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.group-status.pending {
+    background: #FEF3C7;
+    color: #D97706;
+}
+.group-status.ongoing {
+    background: #D1FAE5;
+    color: #059669;
+}
+.group-status.pause {
+    background: #E5E7EB;
+    color: #6B7280;
+}
+
+/* 面试者姓名 - 大字 */
+.group-item .group-candidates {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;  /* 主文字 */
+    padding-left: 2px;
+    margin-top: 2px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    line-height: 1.5;
+}
+
+.group-item.pending-group .group-candidates {
+    color: #78350F;
+}
+
+.group-item .group-candidates .candidate-name {
+    display: inline-block;
+    background: #EFF6FF;  /* 极浅蓝底 */
+    padding: 0 12px;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;  /* 主文字 */
+}
+
+.group-item.pending-group .group-candidates .candidate-name {
+    background: #FEF3C7;
+    color: #78350F;
+}
+
+.group-item .group-candidates .empty-candidates {
+    font-size: 14px;
+    font-weight: 400;
+    color: #94A3B8;
+}
+
+/* 场次数量小标签 */
+.group-item .group-meta {
+    font-size: 11px;
+    color: #94A3B8;
+    margin-top: 2px;
+}
+
+/* ==================== 空状态 ==================== */
+.empty-text {
+    color: #94A3B8;
+    font-size: 14px;
+    text-align: center;
+    padding: 30px 0;
+}
+
+.loading-placeholder {
+    display: contents;
+}
+
+.loading-shimmer {
+    animation: shimmer 1.5s ease-in-out infinite;
+    background: linear-gradient(90deg, #F0F7FF 25%, #E0EDFF 50%, #F0F7FF 75%);
+    background-size: 200% 100%;
+    border-radius: 12px;
+    min-height: 180px;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ==================== Toast ==================== */
+.toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    padding: 12px 22px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.18);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.toast.success {
+    background: #3B82F6;  /* 次要强调 */
+}
+.toast.error {
+    background: #EF4444;
+}
+.toast.info {
+    background: #2563EB;  /* 主强调色 */
+}
+.toast.warning {
+    background: #F59E0B;
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 1200px) {
+    .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .overview-container {
+        padding: 10px 12px 12px 12px;
+    }
+    .overview-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 10px 14px;
+    }
+    .header-left h1 {
+        font-size: 17px;
+    }
+    .header-right {
+        justify-content: flex-start;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .header-right .btn {
+        font-size: 12px;
+        padding: 4px 12px;
+    }
+    .polling-status {
+        font-size: 12px;
+        padding: 3px 10px;
+    }
+    .cards-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(3, 1fr);
+        gap: 10px;
+    }
+    .card-header {
+        padding: 8px 12px;
+    }
+    .card-header .dept-name {
+        font-size: 14px;
+    }
+    .card-body {
+        padding: 6px 12px 10px;
+    }
+    .group-item {
+        padding: 8px 0;
+    }
+    .group-item .group-name {
+        font-size: 11px;
+    }
+    .group-item .group-candidates {
+        font-size: 15px;
+    }
+    .group-item .group-candidates .candidate-name {
+        font-size: 15px;
+        padding: 0 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cards-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(6, 1fr);
+        gap: 8px;
+    }
+    .overview-container {
+        padding: 6px 8px 8px 8px;
+    }
+    .header-right .btn {
+        font-size: 11px;
+        padding: 3px 10px;
+    }
+}

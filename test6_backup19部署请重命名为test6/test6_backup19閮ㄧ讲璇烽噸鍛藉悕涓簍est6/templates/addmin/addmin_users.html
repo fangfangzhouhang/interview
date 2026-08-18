@@ -1,0 +1,237 @@
+<!-- admin_users.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}用户管理 - 面试系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">面试系统</span>
+            </div>
+            <button class="toggle-btn" id="toggleSidebar">◀</button>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{% url 'admin_users' %}" class="menu-item active">
+                <span class="menu-icon">👥</span>
+                <span class="menu-text">用户管理</span>
+            </a>
+            <a href="{% url 'admin_interviewers' %}" class="menu-item">
+                <span class="menu-icon">🧑‍💼</span>
+                <span class="menu-text">面试官管理</span>
+            </a>
+            <a href="{% url 'admin_groups' %}" class="menu-item">
+                <span class="menu-icon">📅</span>
+                <span class="menu-text">面试场次</span>
+            </a>
+            <a href="{% url 'admin_scores' %}" class="menu-item">
+                <span class="menu-icon">⭐</span>
+                <span class="menu-text">评价信息</span>
+            </a>
+            <a href="{% url 'admin_console' %}" class="menu-item">
+                <span class="menu-icon">📥</span>
+                <span class="menu-text">信息导出</span>
+            </a>
+            <a href="{% url 'logout' %}" class="menu-item logout-item">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">退出登录</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1>用户管理</h1>
+            <div class="user-info">
+                <span class="username">{{ request.user.username }}</span>
+                <span class="role-badge admin">管理员</span>
+            </div>
+        </div>
+        <div class="content-body">
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="搜索姓名、用户名..." />
+                            <span class="search-icon">🔍</span>
+                        </div>
+                        <div class="filter-box">
+                            <select id="roleFilter">
+                                <option value="">全部权限</option>
+                            </select>
+                        </div>
+                        <div class="filter-box">
+                            <select id="departmentFilter">
+                                <option value="">全部部门</option>
+                            </select>
+                        </div>
+                        <div class="batch-actions">
+                            <button class="btn btn-primary btn-sm" id="selectAllBtn">全选</button>
+                            <button class="btn btn-secondary btn-sm" id="deselectAllBtn">取消全选</button>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <span class="record-count">共 <span id="totalCount">0</span> 位用户</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="data-table" id="userTable">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="checkAll"></th>
+                                <th data-sort="id">序号</th>
+                                <th data-sort="display_name">姓名</th>
+                                <th data-sort="username">用户名</th>
+                                <th data-sort="department">部门</th>
+                                <th data-sort="role">权限等级</th>
+                                <th data-sort="status">面试状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr><td colspan="8" class="loading-text">加载中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-pagination">
+                    <div class="pagination-info">
+                        显示第 <span id="pageStart">1</span>-<span id="pageEnd">10</span> 条，共 <span id="pageTotal">0</span> 条
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="page-btn" id="prevPage" disabled>上一页</button>
+                        <span class="page-current" id="currentPage">1</span>
+                        <span class="page-total">/ <span id="totalPages">1</span></span>
+                        <button class="page-btn" id="nextPage">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="modal" id="editModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h3 id="modalTitle">编辑用户</h3>
+            <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="editForm">
+                <input type="hidden" id="editId" name="id">
+
+                <div style="background: var(--color-surface); padding: 16px; border-radius: var(--radius-sm); margin-bottom: 16px; border: 1px solid var(--color-border);">
+                    <h4 style="margin-bottom: 12px; color: var(--color-text); font-size: 14px; font-weight: 600;">用户信息</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>姓名</label>
+                            <input type="text" id="editDisplayName" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>性别</label>
+                            <input type="text" id="editGender" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>学号</label>
+                            <input type="text" id="editStudentNumber" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>学院</label>
+                            <input type="text" id="editSchool" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>班级</label>
+                            <input type="text" id="editHomeroom" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>政治面貌</label>
+                            <input type="text" id="editPoliticalStatus" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>手机号</label>
+                        <input type="text" id="editTelephone" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" id="editUsername" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>面试状态</label>
+                    <input type="text" id="editStatusDisplay" readonly>
+                    <span class="hint">由系统根据志愿排队情况自动更新</span>
+                </div>
+
+                <div id="volunteerSection" style="display:none;">
+                    <h4>志愿管理</h4>
+                    <span class="hint">每个面试者同时只能有一个志愿在排队中</span>
+                    <div id="volunteerContainer">
+                        <div class="volunteer-item-wrapper">
+                            <span class="volunteer-empty" id="volunteer1">-</span>
+                        </div>
+                        <div class="volunteer-item-wrapper">
+                            <span class="volunteer-empty" id="volunteer2">-</span>
+                        </div>
+                        <div class="volunteer-item-wrapper">
+                            <span class="volunteer-empty" id="volunteer3">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>权限等级 <span class="required">*</span></label>
+                    <select id="editRole"></select>
+                    <span class="hint">只有超级管理员和主管理员可以修改权限</span>
+                </div>
+
+                <div id="activeSection" style="display:none;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>
+                            <input type="checkbox" id="editIsActive" checked> 激活状态
+                        </label>
+                        <span class="hint">停用后用户将无法登录</span>
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--color-border); margin: 16px 0;">
+
+                <div id="resetPwdSection">
+                    <h4>重置密码</h4>
+                    <div>
+                        <input type="text" id="editNewPassword" placeholder="输入新密码（至少6位）">
+                        <button type="button" class="btn btn-warning" id="resetPwdBtn">重置密码</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="modalCancel">取消</button>
+            <button class="btn btn-primary" id="modalSave">保存</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.isSuperuser = {{ is_superuser|yesno:"true,false" }};
+    window.isAdmin = {{ is_admin|yesno:"true,false" }};
+</script>
+<script src="{% static 'js/addmin/addmin_users.js' %}"></script>
+{% endblock %}

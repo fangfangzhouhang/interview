@@ -1,0 +1,1387 @@
+/* ============================================================
+   interview.css - 面试评价页面样式
+   面试官评价操作页面专用样式
+   统一使用方案二配色（亮蓝主题）
+   始终保持左右结构
+   ============================================================ */
+
+/* ============================================================
+   1. CSS 变量 - 方案二（统一亮蓝主题）
+   ============================================================ */
+
+:root {
+    --color-bg: #F0F7FF;
+    --color-bg-white: #FFFFFF;
+    --color-surface: #F5F9FF;
+    --color-primary: #2563EB;
+    --color-primary-dark: #1D4ED8;
+    --color-primary-light: #3B82F6;
+    --color-info: #3B82F6;
+    --color-info-light: #DBEAFE;
+    --color-text: #111827;
+    --color-text-secondary: #475569;
+    --color-text-muted: #94A3B8;
+    --color-border: #BFDBFE;
+    --color-border-dark: #93C5FD;
+    --color-success: #22C55E;
+    --color-warning: #F59E0B;
+    --color-warning-light: #FBBF24;
+    --color-danger: #EF4444;
+    --color-shadow: rgba(37, 99, 235, 0.15);
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(37, 99, 235, 0.12);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+    --transition: 0.2s ease;
+}
+
+/* ============================================================
+   2. 页面容器
+   ============================================================ */
+
+.interview-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: var(--color-bg);
+}
+
+/* ============================================================
+   3. 顶部栏
+   ============================================================ */
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 24px;
+    background: var(--color-bg-white);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+    min-height: 52px;
+}
+
+.top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+}
+
+/* ============================================================
+   4. 返回按钮
+   ============================================================ */
+
+.back-btn {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    transition: all var(--transition);
+}
+
+.back-btn:hover {
+    background: var(--color-border);
+}
+
+/* ============================================================
+   5. 场次标题和状态
+   ============================================================ */
+
+.group-title {
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--color-text);
+}
+
+.group-status {
+    font-size: 15px;
+    padding: 2px 14px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.group-status.PENDING,
+.group-status.ONGOING,
+.group-status.PAUSE,
+.group-status.ENDED,
+.group-status.CANCELLED {
+    background: #DBEAFE;
+    color: #1D4ED8;
+}
+
+/* ============================================================
+   6. 计时器
+   ============================================================ */
+
+.timer-display {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1D4ED8;
+    background: #DBEAFE;
+    padding: 2px 14px;
+    border-radius: 12px;
+    font-variant-numeric: tabular-nums;
+    border: 1px solid #93C5FD;
+}
+
+/* ============================================================
+   7. 状态控制按钮
+   ============================================================ */
+
+.status-control {
+    display: inline-block;
+}
+
+.status-control-btn {
+    padding: 8px 24px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    position: relative;
+    letter-spacing: 0.3px;
+}
+
+.status-control-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 25px rgba(37, 99, 235, 0.5);
+}
+
+.status-control-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.status-control-btn .indicator-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--color-success);
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: dot-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes dot-blink {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.4;
+        transform: scale(0.8);
+    }
+}
+
+/* ============================================================
+   8. 主体布局 - 左右结构（始终保持）
+   ============================================================ */
+
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    flex-direction: row !important; /* 强制左右布局 */
+}
+
+/* ============================================================
+   9. 左侧面板（面试者信息区域）
+   ============================================================ */
+
+.left-panel {
+    display: flex;
+    width: 50%;
+    min-width: 300px;
+    background: var(--color-bg-white);
+    border-right: 1px solid var(--color-border);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   10. 候选人按钮列（左侧的 1-6 按钮）
+   ============================================================ */
+
+.candidate-buttons {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 10px;
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    gap: 6px;
+    flex-shrink: 0;
+    width: 56px;
+}
+
+.candidate-btn {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-white);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    color: var(--color-text-secondary);
+}
+
+.candidate-btn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    background: var(--color-info-light);
+}
+
+.candidate-btn.active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.candidate-btn.empty {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.candidate-btn:disabled {
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   11. 候选人信息面板（按钮右侧的信息展示区）
+   ============================================================ */
+
+.candidate-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.info-header h3 {
+    font-size: 17px;
+    color: var(--color-text);
+}
+
+.loading-text {
+    font-size: 15px;
+    color: var(--color-text-muted);
+}
+
+.info-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+}
+
+/* 移除信息行的横线 */
+.info-row {
+    display: flex;
+    padding: 6px 0;
+    font-size: 16px;
+    border-bottom: none;
+}
+
+.info-row label {
+    color: var(--color-text-secondary);
+    width: 80px;
+    flex-shrink: 0;
+    font-size: 16px;
+}
+
+.info-row.full {
+    grid-column: 1/-1;
+}
+
+.info-row .value {
+    color: var(--color-text);
+    word-break: break-all;
+    font-size: 16px;
+}
+
+.placeholder {
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 40px 0;
+    font-size: 16px;
+}
+
+/* ============================================================
+   12. 评分标签
+   ============================================================ */
+
+.score-tag {
+    background: var(--color-info-light);
+    padding: 2px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--color-primary-dark);
+    display: inline-block;
+    margin: 1px 3px 1px 0;
+}
+
+.score-tag.avg {
+    background: var(--color-success);
+    color: #fff;
+}
+
+.my-score-tag {
+    background: var(--color-info-light);
+    padding: 2px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--color-primary-dark);
+    display: inline-block;
+    margin: 1px 3px 1px 0;
+    font-weight: 600;
+}
+
+/* ============================================================
+   13. 右侧面板（面试评价表）- 始终保持右侧
+   ============================================================ */
+
+.right-panel {
+    flex: 1;
+    min-width: 300px;
+    background: var(--color-surface);
+    padding: 16px 24px;
+    overflow-y: auto;
+}
+
+.form-header {
+    margin-bottom: 12px;
+}
+
+.form-header h3 {
+    font-size: 19px;
+    color: var(--color-text);
+}
+
+/* ============================================================
+   14. 评价表单
+   ============================================================ */
+
+#evaluationForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-section {
+    background: var(--color-bg-white);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.chief-only-badge {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    padding: 0 8px;
+    border-radius: 4px;
+}
+
+/* ============================================================
+   15. 自我介绍区（每个面试者一行）
+   ============================================================ */
+
+#selfIntroContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+}
+
+.intro-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.intro-item label {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.intro-item textarea {
+    padding: 6px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-family: inherit;
+    resize: vertical;
+    background: var(--color-bg-white);
+    min-height: 50px;
+    transition: all var(--transition);
+}
+
+.intro-item textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.intro-item textarea:disabled {
+    background: var(--color-surface);
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   16. 评价卡片（评分 + 评语）
+   ============================================================ */
+
+#evaluationContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.evaluation-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    background: var(--color-bg-white);
+}
+
+.evaluation-card .eval-header {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed var(--color-border);
+}
+
+.evaluation-card .eval-score-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.evaluation-card .eval-score-label {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    min-width: 60px;
+}
+
+.evaluation-card .eval-score-input {
+    width: 100px;
+    padding: 4px 10px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    background: var(--color-bg-white);
+    transition: all var(--transition);
+}
+
+.evaluation-card .eval-score-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.evaluation-card .eval-score-input:disabled {
+    background: var(--color-surface);
+    cursor: not-allowed;
+}
+
+.evaluation-card .eval-unit {
+    font-size: 16px;
+    color: var(--color-text-muted);
+}
+
+.evaluation-card .eval-comment-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.evaluation-card .eval-comment-label {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    min-width: 60px;
+    padding-top: 4px;
+}
+
+.evaluation-card .eval-comment-input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-family: inherit;
+    resize: vertical;
+    background: var(--color-bg-white);
+    min-height: 36px;
+    transition: all var(--transition);
+}
+
+.evaluation-card .eval-comment-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.evaluation-card .eval-comment-input:disabled {
+    background: var(--color-surface);
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   17. 题目输入框
+   ============================================================ */
+
+.question-text {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-family: inherit;
+    resize: vertical;
+    background: var(--color-bg-white);
+    transition: all var(--transition);
+}
+
+.question-text:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.question-text:disabled {
+    background: var(--color-surface);
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   18. 表单操作按钮
+   ============================================================ */
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 4px;
+}
+
+.btn-save,
+.btn-clear {
+    padding: 8px 28px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.btn-save {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.btn-save:hover {
+    background: var(--color-primary-dark);
+}
+
+.btn-save:disabled {
+    background: var(--color-text-muted);
+    cursor: not-allowed;
+}
+
+.btn-clear {
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+}
+
+.btn-clear:hover {
+    background: var(--color-border);
+}
+
+.btn-clear:disabled {
+    background: var(--color-border);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   19. 消息提示
+   ============================================================ */
+
+#messageContainer {
+    min-height: 0;
+}
+
+.msg-success,
+.msg-error {
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+.msg-success {
+    background: #e0f0e0;
+    color: #4a7a4a;
+    border: 1px solid var(--color-success);
+}
+
+.msg-error {
+    background: #f0e0e0;
+    color: #8a5a5a;
+    border: 1px solid var(--color-danger);
+}
+
+/* ============================================================
+   20. 状态弹窗（覆盖层）
+   ============================================================ */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-modal {
+    background: var(--color-bg-white);
+    border-radius: var(--radius-lg);
+    padding: 40px 48px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.status-modal-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.status-modal-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 8px;
+}
+
+.status-modal-desc {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    margin-bottom: 12px;
+}
+
+.status-modal-chief {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    margin-bottom: 20px;
+}
+
+.status-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.status-modal-btn {
+    padding: 10px 32px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 17px;
+    font-weight: 600;
+    background: var(--color-primary);
+    color: #fff;
+    cursor: pointer;
+    transition: all var(--transition);
+    width: 100%;
+}
+
+.status-modal-btn:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.status-modal-back-btn {
+    padding: 10px 32px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 17px;
+    font-weight: 500;
+    background: var(--color-bg-white);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+.status-modal-back-btn:hover {
+    background: var(--color-surface);
+    border-color: var(--color-border-dark);
+}
+
+/* ============================================================
+   21. 控制弹窗
+   ============================================================ */
+
+.control-modal {
+    background: var(--color-bg-white);
+    border-radius: var(--radius-lg);
+    padding: 0;
+    max-width: 440px;
+    width: 90%;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease;
+}
+
+.control-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.control-modal-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+}
+
+.control-modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition);
+    line-height: 1;
+    padding: 0 4px;
+}
+
+.control-modal-close:hover {
+    color: var(--color-text);
+}
+
+.control-modal-body {
+    padding: 24px;
+}
+
+.control-current-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    color: var(--color-text-secondary);
+    margin-bottom: 20px;
+}
+
+.control-status-badge {
+    padding: 2px 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.control-status-badge.PENDING,
+.control-status-badge.ONGOING,
+.control-status-badge.PAUSE,
+.control-status-badge.ENDED,
+.control-status-badge.CANCELLED {
+    background: #DBEAFE;
+    color: #1D4ED8;
+}
+
+/* ============================================================
+   22. 控制按钮
+   ============================================================ */
+
+.control-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.control-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.control-btn:hover {
+    transform: translateY(-1px);
+}
+
+.control-btn-start {
+    background: var(--color-success);
+    color: #fff;
+}
+
+.control-btn-start:hover {
+    background: #16A34A;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.control-btn-pause {
+    background: var(--color-warning);
+    color: #fff;
+}
+
+.control-btn-pause:hover {
+    background: #D97706;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.control-btn-end {
+    background: var(--color-danger);
+    color: #fff;
+}
+
+.control-btn-end:hover {
+    background: #DC2626;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ============================================================
+   23. 响应式 - 保持左右结构，只调整宽度
+   ============================================================ */
+
+/* 中等屏幕：左侧宽度调整 */
+@media (max-width: 1024px) {
+    .left-panel {
+        width: 45%;
+        min-width: 250px;
+    }
+    .right-panel {
+        min-width: 250px;
+        padding: 12px 16px;
+    }
+}
+
+/* 小屏幕：保持左右结构，进一步调整宽度 */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: row !important;
+    }
+
+    .left-panel {
+        width: 40%;
+        min-width: 200px;
+    }
+
+    .right-panel {
+        min-width: 200px;
+        padding: 10px 12px;
+    }
+
+    .candidate-buttons {
+        width: 44px;
+        padding: 8px 8px;
+    }
+
+    .candidate-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+
+    #selfIntroContainer {
+        grid-template-columns: 1fr 1fr;
+        gap: 4px 8px;
+    }
+
+    .evaluation-card .eval-score-row {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .evaluation-card .eval-comment-row {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .evaluation-card .eval-score-input {
+        width: 70px;
+        font-size: 16px;
+    }
+
+    .form-section {
+        padding: 8px 12px;
+    }
+
+    .top-bar {
+        padding: 6px 12px;
+    }
+
+    .group-title {
+        font-size: 16px;
+    }
+
+    .info-row {
+        font-size: 14px;
+    }
+
+    .info-row label {
+        font-size: 14px;
+        width: 70px;
+    }
+
+    .info-row .value {
+        font-size: 14px;
+    }
+}
+
+/* 超小屏幕：依然保持左右结构 */
+@media (max-width: 600px) {
+    .main-content {
+        flex-direction: row !important;
+    }
+
+    .left-panel {
+        width: 35%;
+        min-width: 160px;
+    }
+
+    .right-panel {
+        min-width: 160px;
+        padding: 8px 10px;
+    }
+
+    .candidate-buttons {
+        width: 36px;
+        padding: 6px 6px;
+        gap: 4px;
+    }
+
+    .candidate-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+        border-width: 1.5px;
+    }
+
+    .info-body {
+        padding: 6px 8px;
+    }
+
+    .info-row {
+        font-size: 13px;
+        padding: 4px 0;
+    }
+
+    .info-row label {
+        width: 60px;
+        font-size: 13px;
+    }
+
+    .info-row .value {
+        font-size: 13px;
+    }
+
+    .info-header h3 {
+        font-size: 15px;
+    }
+
+    #selfIntroContainer {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .intro-item textarea {
+        min-height: 32px;
+        font-size: 14px;
+        padding: 4px 8px;
+    }
+
+    .intro-item label {
+        font-size: 14px;
+    }
+
+    .evaluation-card {
+        padding: 6px 10px;
+    }
+
+    .evaluation-card .eval-header {
+        font-size: 15px;
+    }
+
+    .evaluation-card .eval-score-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        margin-bottom: 4px;
+    }
+
+    .evaluation-card .eval-comment-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+    }
+
+    .evaluation-card .eval-score-label,
+    .evaluation-card .eval-comment-label {
+        min-width: auto;
+        font-size: 14px;
+    }
+
+    .evaluation-card .eval-score-input {
+        width: 100%;
+        font-size: 16px;
+        padding: 4px 8px;
+    }
+
+    .evaluation-card .eval-comment-input {
+        font-size: 14px;
+        padding: 4px 8px;
+        min-height: 28px;
+    }
+
+    .form-section {
+        padding: 6px 8px;
+    }
+
+    .section-title {
+        font-size: 15px;
+    }
+
+    .question-text {
+        font-size: 14px;
+        padding: 4px 8px;
+        min-height: 28px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .btn-save,
+    .btn-clear {
+        width: 100%;
+        padding: 6px 16px;
+        font-size: 15px;
+    }
+
+    .status-modal {
+        padding: 24px 16px;
+    }
+
+    .status-modal-title {
+        font-size: 20px;
+    }
+
+    .control-modal {
+        max-width: 95%;
+    }
+
+    .top-bar {
+        padding: 4px 8px;
+        min-height: 40px;
+    }
+
+    .status-control-btn {
+        padding: 4px 12px;
+        font-size: 14px;
+    }
+
+    .timer-display {
+        font-size: 14px;
+        padding: 2px 10px;
+    }
+
+    .back-btn {
+        font-size: 14px;
+        padding: 2px 8px;
+    }
+
+    .group-title {
+        font-size: 15px;
+    }
+
+    .group-status {
+        font-size: 13px;
+        padding: 1px 10px;
+    }
+
+    #userName {
+        font-size: 14px;
+    }
+}
+
+/* 极小屏幕：强制保持左右 */
+@media (max-width: 400px) {
+    .main-content {
+        flex-direction: row !important;
+    }
+
+    .left-panel {
+        width: 30%;
+        min-width: 120px;
+    }
+
+    .right-panel {
+        min-width: 120px;
+        padding: 4px 6px;
+    }
+
+    .candidate-buttons {
+        width: 28px;
+        padding: 4px 4px;
+        gap: 3px;
+    }
+
+    .candidate-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        border-width: 1px;
+    }
+
+    .info-body {
+        padding: 4px 6px;
+    }
+
+    .info-row {
+        font-size: 12px;
+        padding: 3px 0;
+    }
+
+    .info-row label {
+        width: 50px;
+        font-size: 12px;
+    }
+
+    .info-row .value {
+        font-size: 12px;
+    }
+
+    .info-header {
+        padding: 4px 8px;
+    }
+
+    .info-header h3 {
+        font-size: 13px;
+    }
+
+    .loading-text {
+        font-size: 12px;
+    }
+
+    #selfIntroContainer {
+        grid-template-columns: 1fr;
+        gap: 3px;
+    }
+
+    .intro-item textarea {
+        min-height: 24px;
+        font-size: 12px;
+        padding: 3px 6px;
+    }
+
+    .evaluation-card {
+        padding: 4px 6px;
+    }
+
+    .evaluation-card .eval-header {
+        font-size: 13px;
+    }
+
+    .form-section {
+        padding: 4px 6px;
+    }
+
+    .section-title {
+        font-size: 13px;
+        margin-bottom: 4px;
+        padding-bottom: 4px;
+    }
+
+    .question-text {
+        font-size: 12px;
+        padding: 3px 6px;
+        min-height: 22px;
+    }
+
+    .btn-save,
+    .btn-clear {
+        padding: 4px 12px;
+        font-size: 13px;
+    }
+
+    .status-modal {
+        padding: 16px 12px;
+    }
+}
+
+/* WSS 状态显示 */
+.wss-status {
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: #f0f0f0;
+    color: #999;
+    font-weight: 500;
+    margin-left: 8px;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.wss-status.online {
+    background: #e6f7e6;
+    color: #2e7d32;
+}
+
+.wss-status.online::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4caf50;
+    margin-right: 6px;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+.wss-status.offline {
+    background: #fde8e8;
+    color: #c62828;
+}
+
+.wss-status.offline::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e53935;
+    margin-right: 6px;
+}
+
+@keyframes pulse-dot {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
+}
+
+/* interview.css - 添加头像样式 */
+
+.candidate-avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0;
+    margin-bottom: 8px;
+}
+
+.candidate-avatar-thumb {
+    width: 80px;
+    height: 106px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 2px solid #e2e8f0;
+    background: #f7fafc;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.candidate-avatar-placeholder {
+    width: 80px;
+    height: 106px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-size: 36px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e2e8f0;
+}
+
+.avatar-row {
+    border-bottom: 2px solid #edf2f7;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+}

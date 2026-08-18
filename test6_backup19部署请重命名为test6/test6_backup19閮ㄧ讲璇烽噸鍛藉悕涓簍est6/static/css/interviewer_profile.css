@@ -1,0 +1,46 @@
+.profile-container {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+    .form-section {
+        margin-bottom: 24px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--color-border);
+    }
+    .form-section:last-of-type {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    .form-section h3 {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--color-text);
+        margin-bottom: 14px;
+        padding-left: 10px;
+        border-left: 3px solid var(--color-primary);
+    }
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+        padding-top: 18px;
+        border-top: 1px solid var(--color-border);
+    }
+    .success-message, .error-message {
+        display: none;
+        padding: 10px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        margin-top: 14px;
+    }
+    .success-message {
+        background: #e0f0e0;
+        color: #4a7a4a;
+        border: 1px solid var(--color-success);
+    }
+    .error-message {
+        background: #f0e0e0;
+        color: #8a5a5a;
+        border: 1px solid var(--color-danger);
+    }

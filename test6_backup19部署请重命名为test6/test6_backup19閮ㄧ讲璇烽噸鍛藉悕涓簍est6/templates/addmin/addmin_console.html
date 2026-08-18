@@ -1,0 +1,219 @@
+<!-- addmin_download.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}下载专区 - 面试系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">面试系统</span>
+            </div>
+            <button class="toggle-btn" id="toggleSidebar">◀</button>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{% url 'admin_users' %}" class="menu-item">
+                <span class="menu-icon">👥</span>
+                <span class="menu-text">用户管理</span>
+            </a>
+            <a href="{% url 'admin_interviewers' %}" class="menu-item">
+                <span class="menu-icon">🧑‍💼</span>
+                <span class="menu-text">面试官管理</span>
+            </a>
+            <a href="{% url 'admin_groups' %}" class="menu-item">
+                <span class="menu-icon">📅</span>
+                <span class="menu-text">面试场次</span>
+            </a>
+            <a href="{% url 'admin_scores' %}" class="menu-item">
+                <span class="menu-icon">⭐</span>
+                <span class="menu-text">评价信息</span>
+            </a>
+            <a href="{% url 'admin_console' %}" class="menu-item active">
+                <span class="menu-icon">📥</span>
+                <span class="menu-text">信息导出</span>
+            </a>
+            <a href="{% url 'logout' %}" class="menu-item logout-item">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">退出登录</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1>下载专区</h1>
+            <div class="user-info">
+                <span class="username">{{ request.user.username }}</span>
+                <span class="role-badge admin">管理员</span>
+            </div>
+        </div>
+        <div class="content-body">
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="搜索姓名、学号..." />
+                            <span class="search-icon">🔍</span>
+                        </div>
+                        <div class="filter-box">
+                            <select id="departmentFilter">
+                                <option value="">全部部门</option>
+                                <option value="BGS">办公</option>
+                                <option value="XCB">信传</option>
+                                <option value="QYB">权益</option>
+                                <option value="XSB">学实</option>
+                                <option value="WYB">文艺</option>
+                                <option value="TYB">体育</option>
+                            </select>
+                        </div>
+                        <div class="batch-actions">
+                            <button class="btn btn-primary btn-sm" id="selectAllBtn">全选</button>
+                            <button class="btn btn-secondary btn-sm" id="deselectAllBtn">取消全选</button>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <span class="record-count">已选 <span id="selectedCount">0</span> 人 / 共 <span id="totalCount">0</span> 人</span>
+                        <button class="btn btn-success" id="batchDownloadBtn">📥 批量下载</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper" id="tableWrapper">
+                    <table class="data-table" id="downloadTable">
+                        <thead>
+                            <tr>
+                                <th style="width:5%;"><input type="checkbox" id="checkAll"></th>
+                                <th style="width:5%;">序号</th>
+                                <th style="width:15%;">姓名</th>
+                                <th style="width:12%;">学院</th>
+                                <th style="width:10%;">状态</th>
+                                <th style="width:28%;">志愿</th>
+                                <th style="width:10%;">分数</th>
+                                <th style="width:15%;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr><td colspan="8" class="loading-text">加载中...</td></tr>
+                        </tbody>
+                    </table>
+                    <!-- 加载更多指示器 -->
+                    <div id="loadMoreIndicator" style="display:none; text-align:center; padding:20px; color:var(--color-text-muted);">
+                        <span>加载中...</span>
+                    </div>
+                    <div id="noMoreData" style="display:none; text-align:center; padding:20px; color:var(--color-text-muted);">
+                        <span>— 已加载全部数据 —</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- 批量下载弹窗 -->
+<div class="modal" id="downloadModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-download">
+        <div class="modal-header">
+            <h3>📥 批量下载</h3>
+            <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+            <!-- 统计信息 -->
+            <div class="download-stats">
+                <div class="stat-item">
+                    <span class="stat-label">已选面试者</span>
+                    <span class="stat-value" id="selectedCountDisplay">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">当前部门</span>
+                    <span class="stat-value" id="currentDepartmentDisplay">全部</span>
+                </div>
+            </div>
+
+            <!-- 附加内容 -->
+            <div class="download-section">
+                <div class="section-header">
+                    <span class="section-icon">📎</span>
+                    <span class="section-title">附加内容</span>
+                    <span class="section-hint">选择需要导出的附加信息</span>
+                </div>
+                <div class="option-grid">
+                    <label class="option-card" data-field="contact">
+                        <input type="checkbox" class="include-field" value="contact">
+                        <div class="option-card-content">
+                            <span class="option-icon">📞</span>
+                            <span class="option-name">联系方式</span>
+                            <span class="option-desc">QQ、微信、邮箱</span>
+                        </div>
+                    </label>
+                    <label class="option-card" data-field="photo">
+                        <input type="checkbox" class="include-field" value="photo">
+                        <div class="option-card-content">
+                            <span class="option-icon">🖼️</span>
+                            <span class="option-name">证件照</span>
+                            <span class="option-desc">原图 + 缩略图</span>
+                        </div>
+                    </label>
+                    <label class="option-card" data-field="interview_record">
+                        <input type="checkbox" class="include-field" value="interview_record">
+                        <div class="option-card-content">
+                            <span class="option-icon">📝</span>
+                            <span class="option-name">面试记录</span>
+                            <span class="option-desc">面试题目记录</span>
+                        </div>
+                    </label>
+                    <label class="option-card" data-field="evaluation">
+                        <input type="checkbox" class="include-field" value="evaluation">
+                        <div class="option-card-content">
+                            <span class="option-icon">⭐</span>
+                            <span class="option-name">评价信息</span>
+                            <span class="option-desc">评分、评语、自我介绍</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 下载格式 -->
+            <div class="download-section">
+                <div class="section-header">
+                    <span class="section-icon">📄</span>
+                    <span class="section-title">下载格式</span>
+                    <span class="section-hint">选择导出文件格式</span>
+                </div>
+                <div class="option-grid option-grid-format">
+                    <label class="option-card option-card-format" data-format="standard_data">
+                        <input type="checkbox" class="export-format" value="standard_data" checked>
+                        <div class="option-card-content">
+                            <span class="option-icon">📊</span>
+                            <span class="option-name">标准化数据</span>
+                            <span class="option-desc">JSON 格式，含 MD5 校验</span>
+                        </div>
+                    </label>
+                    <label class="option-card option-card-format" data-format="pdf">
+                        <input type="checkbox" class="export-format" value="pdf">
+                        <div class="option-card-content">
+                            <span class="option-icon">📑</span>
+                            <span class="option-name">PDF 文件</span>
+                            <span class="option-desc">可打印的文档格式</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="downloadCancel">取消</button>
+            <button class="btn btn-success" id="downloadConfirm">✅ 确认下载</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/addmin/addmin_download.js' %}"></script>
+{% endblock %}

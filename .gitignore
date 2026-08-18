@@ -1,0 +1,44 @@
+# Operating-system metadata
+.DS_Store
+._*
+__MACOSX/
+Thumbs.db
+Desktop.ini
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Django runtime data and generated assets
+db.sqlite3
+db.sqlite3-*
+media/
+staticfiles/
+*.log
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Tool caches and reports
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Editors
+.vscode/
+.idea/
+
+# Bundled third-party deployment software
+support/

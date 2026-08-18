@@ -1,0 +1,254 @@
+/* 复用 admin.css 的侧边栏样式 */
+@import url('admin.css');
+
+/* 表格行可点击 */
+.clickable-row {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.clickable-row:hover {
+    background: #f7fafc !important;
+}
+
+/* 状态标签 */
+.status-tag {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+}
+.status-pending { background: #fefcbf; color: #975a16; }
+.status-ongoing { background: #bee3f8; color: #2a69ac; }
+.status-pause { background: #feebc8; color: #9c4221; }
+.status-ended { background: #c6f6d5; color: #276749; }
+.status-cancelled { background: #fed7d7; color: #9b2c2c; }
+
+/* 表格容器 */
+.table-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+
+/* 工具栏 */
+.table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #edf2f7;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.record-count {
+    font-size: 14px;
+    color: #718096;
+}
+
+.record-count span {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+/* 搜索框 */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-box input {
+    padding: 8px 16px 8px 40px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 260px;
+    transition: all 0.2s;
+    background: #f7fafc;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    background: #fff;
+}
+
+.search-box input::placeholder {
+    color: #a0aec0;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    color: #a0aec0;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+/* 表格样式 */
+.table-wrapper {
+    overflow-x: auto;
+    padding: 0 4px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.data-table thead {
+    background: #f7fafc;
+}
+
+.data-table th {
+    padding: 14px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: #4a5568;
+    border-bottom: 2px solid #e2e8f0;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.data-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #edf2f7;
+    color: #2d3748;
+    vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.loading-text {
+    text-align: center;
+    color: #a0aec0;
+    padding: 40px !important;
+}
+
+/* 分页 */
+.table-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    border-top: 1px solid #edf2f7;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: #718096;
+}
+
+.pagination-info span {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-btn {
+    padding: 6px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: #fff;
+    color: #4a5568;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: #f7fafc;
+    border-color: #4299e1;
+    color: #4299e1;
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-current {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 14px;
+    padding: 0 4px;
+}
+
+.page-total {
+    color: #a0aec0;
+    font-size: 14px;
+}
+
+.page-total span {
+    color: #718096;
+}
+
+/* 角色徽章 */
+.role-badge {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 8px;
+}
+
+.role-badge.interviewer {
+    background: #bee3f8;
+    color: #2a69ac;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-left {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+
+    .table-pagination {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .pagination-info {
+        text-align: center;
+    }
+}

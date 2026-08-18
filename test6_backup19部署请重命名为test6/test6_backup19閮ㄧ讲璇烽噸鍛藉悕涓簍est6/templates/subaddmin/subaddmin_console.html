@@ -1,0 +1,162 @@
+<!-- subaddmin_dashboard.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}志愿管理 - 面试系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core.css' %}">
+<link rel="stylesheet" href="{% static 'css/subadmin.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">面试系统</span>
+            </div>
+            <button class="toggle-btn" id="toggleSidebar">◀</button>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{% url 'subadmin_users' %}" class="menu-item">
+                <span class="menu-icon">👥</span>
+                <span class="menu-text">用户管理</span>
+            </a>
+            <a href="{% url 'subadmin_interviewers' %}" class="menu-item">
+                <span class="menu-icon">🧑‍💼</span>
+                <span class="menu-text">面试官管理</span>
+            </a>
+            <a href="{% url 'subadmin_groups' %}" class="menu-item">
+                <span class="menu-icon">📅</span>
+                <span class="menu-text">面试场次</span>
+            </a>
+            <a href="{% url 'subadmin_scores' %}" class="menu-item">
+                <span class="menu-icon">⭐</span>
+                <span class="menu-text">评价信息</span>
+            </a>
+            <a href="{% url 'subadmin_console' %}" class="menu-item active">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">决策中心</span>
+            </a>
+            <a href="{% url 'logout' %}" class="menu-item logout-item">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">退出登录</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1>志愿管理</h1>
+            <div class="user-info">
+                <span class="username">{{ request.user.username }}</span>
+                <span class="role-badge subadmin">部门管理员</span>
+            </div>
+        </div>
+        <div class="content-body">
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="搜索姓名、学号..." />
+                            <span class="search-icon">🔍</span>
+                        </div>
+                        <div class="filter-box">
+                            <select id="departmentFilter">
+                                <!-- 由 JavaScript 动态渲染 -->
+                            </select>
+                        </div>
+                        <div class="filter-box">
+                            <select id="statusFilter">
+                                <option value="">全部状态</option>
+                                <option value="INCOMPLETE">未完善</option>
+                                <option value="REGISTERED">已报名</option>
+                                <option value="WAITING">候场中</option>
+                                <option value="INQUEUE">队列中</option>
+                                <option value="INTERVIEWING">面试中</option>
+                                <option value="COMPLETED">已完成</option>
+                            </select>
+                        </div>
+                        <div class="batch-actions">
+                            <button class="btn btn-primary btn-sm" id="selectAllBtn">全选</button>
+                            <button class="btn btn-secondary btn-sm" id="deselectAllBtn">取消全选</button>
+                            <button class="btn btn-success btn-sm" id="batchAcceptBtn">✅ 批量接受</button>
+                            <button class="btn btn-danger btn-sm" id="batchRejectBtn">❌ 批量拒绝</button>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <span class="record-count">已选 <span id="selectedCount">0</span> 人 / 共 <span id="totalCount">0</span> 人</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper" id="tableWrapper">
+                    <table class="data-table" id="candidateTable">
+                        <thead>
+                            <tr>
+                                <th style="width:5%;"><input type="checkbox" id="checkAll"></th>
+                                <th style="width:5%;">序号</th>
+                                <th style="width:14%;">姓名</th>
+                                <th style="width:10%;">学院</th>
+                                <th style="width:10%;">状态</th>
+                                <th style="width:22%;">志愿</th>
+                                <th style="width:10%;">分数</th>
+                                <th style="width:24%;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr><td colspan="8" class="loading-text">加载中...</td></tr>
+                        </tbody>
+                    </table>
+                    <div id="loadMoreIndicator" style="display:none; text-align:center; padding:20px; color:var(--color-text-muted);">
+                        <span>加载中...</span>
+                    </div>
+                    <div id="noMoreData" style="display:none; text-align:center; padding:20px; color:var(--color-text-muted);">
+                        <span>— 已加载全部数据 —</span>
+                    </div>
+                </div>
+
+                <div class="table-pagination">
+                    <div class="pagination-info">
+                        显示第 <span id="pageStart">1</span>-<span id="pageEnd">10</span> 条，共 <span id="pageTotal">0</span> 条
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="page-btn" id="prevPage" disabled>上一页</button>
+                        <span class="page-current" id="currentPage">1</span>
+                        <span class="page-total">/ <span id="totalPages">1</span></span>
+                        <button class="page-btn" id="nextPage">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- 操作结果弹窗 -->
+<div class="modal" id="resultModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="resultModalTitle">操作结果</h3>
+            <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body" id="resultModalBody">
+            <div id="resultContent"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" id="resultModalClose">确定</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 从后端传递用户部门信息
+    window.userDepartment = "{{ user_department|default:'' }}";
+    window.isSubadmin = {{ is_subadmin|yesno:"true,false" }};
+    window.csrfToken = "{{ csrf_token }}";
+</script>
+<script src="{% static 'js/subaddmin/subaddmin_dashboard.js' %}"></script>
+{% endblock %}

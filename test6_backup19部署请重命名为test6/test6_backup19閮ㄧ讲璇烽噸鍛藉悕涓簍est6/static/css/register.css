@@ -1,0 +1,483 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.register-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.register-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px 44px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+.register-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.register-header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.register-header p {
+    color: #718096;
+    font-size: 15px;
+}
+
+/* ========== 角色选择模态框 ========== */
+.role-modal {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.role-modal-content {
+    background: #fff;
+    border-radius: 20px;
+    padding: 48px 56px;
+    max-width: 560px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.4s ease;
+}
+
+.role-modal-content h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.role-modal-desc {
+    color: #718096;
+    font-size: 15px;
+    margin-bottom: 32px;
+}
+
+.role-options {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.role-btn {
+    flex: 1;
+    padding: 30px 20px;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    background: #f7fafc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.role-btn:hover {
+    border-color: #667eea;
+    background: #edf2f7;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+}
+
+.role-btn:active {
+    transform: translateY(0);
+}
+
+.role-btn .role-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.role-btn .role-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 4px;
+}
+
+.role-btn .role-desc {
+    font-size: 13px;
+    color: #a0aec0;
+}
+
+.role-btn.candidate-role:hover {
+    border-color: #48bb78;
+    background: #f0fff4;
+}
+
+.role-btn.interviewer-role:hover {
+    border-color: #ed8936;
+    background: #fffbeb;
+}
+
+/* ========== 当前身份显示 ========== */
+.current-role-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #f7fafc;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #4a5568;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.current-role-display .role-tag {
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.current-role-display .role-tag.role-candidate {
+    background: #c6f6d5;
+    color: #276749;
+}
+
+.current-role-display .role-tag.role-interviewer {
+    background: #fbd38d;
+    color: #9c4221;
+}
+
+.current-role-display .role-tag:not(.role-candidate):not(.role-interviewer) {
+    background: #e2e8f0;
+    color: #a0aec0;
+}
+
+.change-role-btn {
+    margin-left: auto;
+    padding: 6px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: #fff;
+    color: #4a5568;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.change-role-btn:hover {
+    border-color: #e53e3e;
+    color: #e53e3e;
+    background: #fff5f5;
+}
+
+/* ========== 表单样式 ========== */
+.form-section {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.form-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    border-left: 3px solid #667eea;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-group {
+    flex: 1;
+    margin-bottom: 16px;
+}
+
+.form-group.half {
+    flex: 0 0 calc(50% - 10px);
+}
+
+.form-group.full {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 6px;
+}
+
+.required {
+    color: #e53e3e;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+}
+
+.form-group input:invalid:not(:focus),
+.form-group select:invalid:not(:focus) {
+    border-color: #fc8181;
+}
+
+.form-group input:valid:not(:empty),
+.form-group select:valid:not(:empty) {
+    border-color: #68d391;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-group .hint {
+    display: block;
+    font-size: 12px;
+    color: #a0aec0;
+    margin-top: 4px;
+    transition: color 0.3s;
+}
+
+.form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+    cursor: pointer;
+}
+
+.form-group select:disabled {
+    background-color: #f7fafc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.form-group select option {
+    padding: 8px;
+}
+
+/* ========== 错误和成功消息 ========== */
+.error-message {
+    display: none;
+    background: #fff5f5;
+    color: #e53e3e;
+    padding: 12px 16px;
+    border-radius: 6px;
+    border: 1px solid #fc8181;
+    margin-top: 16px;
+    font-size: 14px;
+}
+
+.success-message {
+    display: none;
+    background: #f0fff4;
+    color: #38a169;
+    padding: 12px 16px;
+    border-radius: 6px;
+    border: 1px solid #68d391;
+    margin-top: 16px;
+    font-size: 14px;
+}
+
+/* ========== 表单操作按钮 ========== */
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.register-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.register-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+.register-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.login-link {
+    color: #667eea;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.login-link:hover {
+    color: #5a67d8;
+    text-decoration: underline;
+}
+
+/* ========== 响应式设计 ========== */
+@media (max-width: 768px) {
+    .register-box {
+        padding: 24px 20px;
+    }
+
+    .register-header h1 {
+        font-size: 24px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-group.half {
+        flex: 1;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .register-btn {
+        width: 100%;
+    }
+
+    .role-modal-content {
+        padding: 32px 24px;
+    }
+
+    .role-options {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .role-btn {
+        padding: 20px;
+    }
+
+    .current-role-display {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .change-role-btn {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-container {
+        padding: 16px 10px;
+    }
+
+    .register-box {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+
+    .register-header h1 {
+        font-size: 20px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .role-modal-content {
+        padding: 24px 16px;
+    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}

@@ -1,0 +1,78 @@
+<!-- queue_management.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}排队管理 - 面试系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core.css' %}">
+<link rel="stylesheet" href="{% static 'css/queue.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">面试系统</span>
+            </div>
+            <button class="toggle-btn" id="toggleSidebar">◀</button>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{% url 'profile' %}" class="menu-item">
+                <span class="menu-icon">👤</span>
+                <span class="menu-text">个人页面</span>
+            </a>
+            <a href="{% url 'queue' %}" class="menu-item active">
+                <span class="menu-icon">⏳</span>
+                <span class="menu-text">排队进度</span>
+            </a>
+            <a href="{% url 'logout' %}" class="menu-item logout-item">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">退出登录</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1 id="pageTitle">排队管理</h1>
+            <div class="user-info">
+                <span class="username">{{ request.user.username }}</span>
+            </div>
+        </div>
+
+        <div class="content-body">
+            <!-- 志愿列表 -->
+            <div class="queue-list-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 style="font-size: 18px;">我的志愿排队状态</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- 预计等待时间（最短） -->
+                        <div class="wait-time-summary" id="waitTimeSummary">
+                            <span class="wait-time-label">⏱️ 预计等待时间</span>
+                            <span class="wait-time-value" id="minWaitTime">暂无数据</span>
+                        </div>
+                        <div id="queueList">
+                            <div class="loading-state">⏳ 加载中...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 刷新按钮 -->
+            <div class="action-bar">
+                <button class="btn btn-primary" id="refreshBtn">🔄 刷新排队状态</button>
+                <span class="auto-refresh-hint">每120秒自动刷新</span>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/candidate/queue.js' %}"></script>
+{% endblock %}

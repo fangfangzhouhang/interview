@@ -1,0 +1,1049 @@
+/* ============================================================
+   profile.css - 个人中心样式
+   面试者个人信息编辑页面专用样式
+   ============================================================ */
+
+@import url("core.css");
+
+/* ============================================================
+   0. 配色变量覆盖 (基于 #F0F7FF 主题)
+   ============================================================ */
+
+:root {
+    --profile-bg: #F0F7FF;
+    --profile-card-bg: #FFFFFF;
+    --profile-primary: #2563EB;
+    --profile-primary-light: #3B82F6;
+    --profile-text: #111827;
+    --profile-text-secondary: #475569;
+    --profile-border: #BFDBFE;
+    --profile-surface: #F8FAFF;
+    --profile-success: #5a9a86;
+    --profile-danger: #c48a8a;
+    --profile-warning: #c4a67a;
+}
+
+/* ============================================================
+   1. 个人资料容器
+   ============================================================ */
+
+.profile-container {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   2. 表单区块
+   ============================================================ */
+
+.form-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--profile-border);
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.form-section h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--profile-text);
+    margin-bottom: 14px;
+    padding-left: 10px;
+    border-left: 3px solid var(--profile-primary);
+}
+
+/* ============================================================
+   3. 编辑状态提示
+   ============================================================ */
+
+.edit-hint {
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background: var(--profile-surface);
+    border: 1px solid var(--profile-border);
+}
+
+/* ============================================================
+   4. 志愿管理区块
+   ============================================================ */
+
+.volunteer-section {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 2px solid var(--profile-border);
+}
+
+.volunteer-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--profile-text);
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-left: 3px solid var(--profile-primary);
+}
+
+.volunteer-section .section-hint {
+    font-size: 13px;
+    color: var(--profile-text-secondary);
+    margin-bottom: 12px;
+}
+
+/* ============================================================
+   5. 赛道和调剂区块
+   ============================================================ */
+
+.racetrack-section {
+    background: var(--profile-surface);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    border: 1px solid var(--profile-border);
+}
+
+.adjustable-message {
+    padding: 10px 14px;
+    background: #fef3c7;
+    border-radius: var(--radius-sm);
+    border-left: 4px solid #f59e0b;
+    color: #92400e;
+    font-size: 14px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   6. 志愿编辑器头部
+   ============================================================ */
+
+.volunteer-editor-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: var(--profile-surface);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--profile-border);
+}
+
+.volunteer-editor-hint {
+    font-size: 13px;
+    color: var(--profile-text-secondary);
+}
+
+/* ============================================================
+   7. 志愿编辑器列表
+   ============================================================ */
+
+.volunteer-editor-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.volunteer-editor-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--profile-card-bg);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--profile-border);
+    transition: all var(--transition);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.volunteer-editor-item:hover {
+    border-color: var(--profile-primary-light);
+}
+
+.volunteer-editor-item.disabled {
+    background: var(--profile-surface);
+    opacity: 0.7;
+}
+
+/* ============================================================
+   8. 志愿编辑器信息区
+   ============================================================ */
+
+.volunteer-editor-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.volunteer-editor-priority {
+    font-weight: 600;
+    color: var(--profile-text);
+    min-width: 70px;
+    font-size: 14px;
+}
+
+.volunteer-dept-select {
+    padding: 6px 12px;
+    border: 1px solid var(--profile-border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background: var(--profile-card-bg);
+    min-width: 140px;
+    transition: all var(--transition);
+}
+
+.volunteer-dept-select:focus {
+    outline: none;
+    border-color: var(--profile-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.volunteer-dept-select:disabled {
+    background: var(--profile-surface);
+    cursor: not-allowed;
+}
+
+.volunteer-dept-select option:disabled {
+    color: var(--profile-border);
+}
+
+.volunteer-locked {
+    font-size: 16px;
+    color: var(--profile-text-secondary);
+}
+
+/* ============================================================
+   9. 志愿编辑器状态区
+   ============================================================ */
+
+.volunteer-editor-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.volunteer-status {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.volunteer-status.waiting {
+    background: #f0ebe0;
+    color: #8a7a5a;
+}
+
+.volunteer-status.inqueue {
+    background: #e8ddd0;
+    color: #8a6a4a;
+}
+
+.volunteer-status.interviewing {
+    background: #d5dde8;
+    color: #4a6a7a;
+}
+
+.volunteer-status.completed {
+    background: #d0e0c8;
+    color: #4a7a4a;
+}
+
+.volunteer-status.rejected {
+    background: #e8d0d0;
+    color: #8a5a5a;
+}
+
+.volunteer-status.accepted {
+    background: #d0e0c8;
+    color: #4a7a4a;
+}
+
+.volunteer-status.empty {
+    background: var(--profile-border);
+    color: var(--profile-text-secondary);
+}
+
+.volunteer-status.filled {
+    background: #e8e8e8;
+    color: #666;
+}
+
+/* ============================================================
+   10. 排队时间
+   ============================================================ */
+
+.volunteer-queue-time {
+    font-size: 12px;
+    color: var(--profile-text-secondary);
+    background: var(--profile-border);
+    padding: 2px 10px;
+    border-radius: 12px;
+}
+
+/* ============================================================
+   11. 志愿编辑器操作区 - 美化按钮
+   ============================================================ */
+
+.volunteer-editor-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.volunteer-editor-actions .btn-sm {
+    padding: 4px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.volunteer-editor-actions .btn-sm:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.volunteer-editor-actions .btn-sm:active {
+    transform: translateY(0);
+}
+
+.volunteer-editor-actions .btn-sm.btn-success {
+    background: linear-gradient(135deg, #7cb8a4, #5a9a86);
+    color: #fff;
+}
+
+.volunteer-editor-actions .btn-sm.btn-success:hover {
+    background: linear-gradient(135deg, #8ac8b4, #6aaa96);
+    box-shadow: 0 2px 12px rgba(90, 154, 134, 0.35);
+}
+
+.volunteer-editor-actions .btn-sm.btn-danger {
+    background: linear-gradient(135deg, #d4a0a0, #c48a8a);
+    color: #fff;
+}
+
+.volunteer-editor-actions .btn-sm.btn-danger:hover {
+    background: linear-gradient(135deg, #e0b0b0, #d09a9a);
+    box-shadow: 0 2px 12px rgba(196, 138, 138, 0.35);
+}
+
+.volunteer-editor-actions .btn-sm.btn-warning {
+    background: linear-gradient(135deg, #d4b87a, #c4a67a);
+    color: #fff;
+}
+
+.volunteer-editor-actions .btn-sm.btn-warning:hover {
+    background: linear-gradient(135deg, #e0c88a, #d0b68a);
+    box-shadow: 0 2px 12px rgba(196, 166, 122, 0.35);
+}
+
+.volunteer-editor-actions .btn-sm:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.volunteer-editor-actions-bottom {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.volunteer-editor-actions-bottom .btn {
+    padding: 8px 24px;
+}
+
+.volunteer-save-hint {
+    font-size: 13px;
+    color: var(--profile-text-secondary);
+}
+
+/* ============================================================
+   12. 空状态
+   ============================================================ */
+
+.volunteer-empty {
+    color: var(--profile-text-secondary);
+    text-align: center;
+    padding: 20px;
+    background: var(--profile-surface);
+    border-radius: var(--radius-sm);
+    border: 1px dashed var(--profile-border);
+}
+
+.volunteer-loading {
+    text-align: center;
+    color: var(--profile-text-secondary);
+    padding: 30px;
+}
+
+.volunteer-error {
+    text-align: center;
+    color: var(--profile-danger);
+    padding: 30px;
+}
+
+.volunteer-status-text {
+    color: var(--profile-text-secondary);
+    font-size: 13px;
+}
+
+/* ============================================================
+   13. 面试状态标签
+   ============================================================ */
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status-badge.incomplete {
+    background: var(--profile-border);
+    color: var(--profile-text-secondary);
+}
+
+.status-badge.registered {
+    background: #d5dde8;
+    color: #4a6a7a;
+}
+
+.status-badge.waiting {
+    background: #f0ebe0;
+    color: #8a7a5a;
+}
+
+.status-badge.inqueue {
+    background: #e8ddd0;
+    color: #8a6a4a;
+}
+
+.status-badge.interviewing {
+    background: #e8ddd0;
+    color: #8a6a4a;
+}
+
+.status-badge.completed {
+    background: #d0e0c8;
+    color: #4a7a4a;
+}
+
+/* ============================================================
+   14. 状态展示区
+   ============================================================ */
+
+.status-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--profile-surface);
+    border-radius: var(--radius-sm);
+    margin-bottom: 16px;
+    border: 1px solid var(--profile-border);
+    flex-wrap: wrap;
+}
+
+.status-section .status-label {
+    font-weight: 500;
+    color: var(--profile-text-secondary);
+    font-size: 14px;
+}
+
+/* ============================================================
+   15. 表单操作按钮 - 美化 (使用 #2563EB 主色)
+   ============================================================ */
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--profile-border);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    color: #fff;
+    border: none;
+    padding: 10px 32px;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-secondary {
+    background: var(--profile-surface);
+    color: var(--profile-text-secondary);
+    border: 1px solid var(--profile-border);
+    padding: 10px 32px;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: var(--profile-border);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-lg {
+    padding: 12px 40px;
+    font-size: 16px;
+}
+
+/* ============================================================
+   16. 消息提示 - 美化
+   ============================================================ */
+
+#messageContainer {
+    margin-top: 16px;
+}
+
+.success-message,
+.error-message {
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    animation: slideDown 0.4s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.success-message {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    border-left: 4px solid #10b981;
+    border-radius: var(--radius-sm);
+}
+
+.success-message::before {
+    content: "✅";
+    font-size: 18px;
+}
+
+.error-message {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    border-left: 4px solid #ef4444;
+    border-radius: var(--radius-sm);
+}
+
+.error-message::before {
+    content: "❌";
+    font-size: 18px;
+}
+
+/* ============================================================
+   17. 特色功能占位
+   ============================================================ */
+
+.feature-container {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: var(--profile-card-bg);
+    border-radius: var(--radius-md);
+    padding: 40px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--profile-border);
+}
+
+.feature-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.feature-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--profile-text);
+}
+
+.feature-header p {
+    color: var(--profile-text-secondary);
+    margin-top: 6px;
+}
+
+.placeholder-content {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.placeholder-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+
+.placeholder-content h3 {
+    font-size: 20px;
+    color: var(--profile-text);
+    margin-bottom: 8px;
+}
+
+.placeholder-content > p {
+    color: var(--profile-text-secondary);
+}
+
+.feature-suggestions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background: var(--profile-surface);
+    border-radius: var(--radius-sm);
+    color: var(--profile-text-secondary);
+    transition: all var(--transition);
+}
+
+.suggestion-item:hover {
+    background: var(--profile-border);
+    transform: translateY(-2px);
+}
+
+.suggestion-icon {
+    font-size: 20px;
+}
+
+/* ============================================================
+   18. 响应式
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .profile-container {
+        max-width: 100%;
+    }
+
+    .profile-card {
+        padding: 20px 16px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-group.half {
+        flex: 1;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .volunteer-editor-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .volunteer-editor-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .volunteer-editor-info {
+        width: 100%;
+    }
+
+    .volunteer-dept-select {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .volunteer-editor-status {
+        width: 100%;
+    }
+
+    .status-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .volunteer-editor-actions-bottom {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .volunteer-editor-actions-bottom .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .feature-suggestions {
+        grid-template-columns: 1fr;
+    }
+
+    .feature-card {
+        padding: 24px 20px;
+    }
+
+    .racetrack-section .form-row {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .volunteer-editor-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .volunteer-dept-select {
+        width: 100%;
+    }
+
+    .volunteer-editor-priority {
+        min-width: auto;
+        font-size: 13px;
+    }
+
+    .volunteer-status {
+        font-size: 11px;
+        padding: 1px 8px;
+    }
+
+    .volunteer-queue-time {
+        font-size: 11px;
+        padding: 1px 8px;
+    }
+
+    .volunteer-editor-actions .btn-sm {
+        font-size: 11px;
+        padding: 2px 8px;
+    }
+
+    .status-badge {
+        font-size: 12px;
+        padding: 3px 12px;
+    }
+
+    .profile-card {
+        padding: 16px 12px;
+    }
+
+    .form-section h3 {
+        font-size: 14px;
+    }
+
+    .placeholder-content h3 {
+        font-size: 18px;
+    }
+
+    .placeholder-icon {
+        font-size: 48px;
+    }
+
+    .btn-lg {
+        padding: 10px 24px;
+        font-size: 14px;
+    }
+}
+
+/* profile.css - 在文件末尾添加 */
+
+/* ============================================================
+   19. 头像上传区域
+   ============================================================ */
+
+.avatar-section {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--profile-border);
+    margin-bottom: 24px;
+}
+
+.avatar-section h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--profile-text);
+    margin-bottom: 14px;
+    padding-left: 10px;
+    border-left: 3px solid var(--profile-primary);
+}
+
+.avatar-upload-container {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.avatar-preview-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.avatar-preview {
+    width: 120px;
+    height: 160px;
+    border-radius: 8px;
+    border: 2px dashed var(--profile-border);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    background: var(--profile-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.avatar-preview:hover {
+    border-color: var(--profile-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.avatar-preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.avatar-preview-img.visible {
+    display: block;
+}
+
+.avatar-preview-img.loaded {
+    opacity: 1;
+}
+
+.avatar-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--profile-text-secondary);
+    gap: 6px;
+    padding: 12px;
+}
+
+.avatar-placeholder.hidden {
+    display: none;
+}
+
+.avatar-placeholder-icon {
+    font-size: 36px;
+    line-height: 1;
+}
+
+.avatar-placeholder-text {
+    font-size: 12px;
+    text-align: center;
+}
+
+.avatar-placeholder-text small {
+    font-size: 11px;
+    color: var(--profile-text-muted);
+}
+
+/* ===== 头像错误状态 ===== */
+.avatar-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--profile-text-secondary);
+    gap: 4px;
+    padding: 12px;
+    width: 100%;
+    height: 100%;
+    background: var(--profile-surface);
+}
+
+.avatar-error .avatar-error-icon {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.avatar-error .avatar-error-text {
+    font-size: 12px;
+    color: var(--profile-text-muted);
+}
+
+.avatar-upload-btn-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.avatar-upload-btn-wrapper .btn-outline {
+    padding: 6px 18px;
+    border: 1px solid var(--profile-border);
+    border-radius: var(--radius-sm);
+    background: var(--profile-card-bg);
+    color: var(--profile-text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.avatar-upload-btn-wrapper .btn-outline:hover {
+    border-color: var(--profile-primary);
+    color: var(--profile-primary);
+    background: var(--profile-surface);
+}
+
+.avatar-upload-btn-wrapper .btn-danger {
+    padding: 6px 18px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--profile-danger);
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.avatar-upload-btn-wrapper .btn-danger:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+}
+
+.avatar-upload-btn-wrapper .btn-danger:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.avatar-hint {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12px;
+    color: var(--profile-text-secondary);
+}
+
+.avatar-hint span:first-child {
+    color: var(--profile-text-muted);
+}
+
+/* ============================================================
+   20. 响应式 - 头像
+   ============================================================ */
+
+@media (max-width: 600px) {
+    .avatar-upload-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .avatar-preview-wrapper {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .avatar-preview {
+        width: 100px;
+        height: 140px;
+    }
+
+    .avatar-upload-btn-wrapper {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .avatar-hint {
+        text-align: center;
+        width: 100%;
+    }
+}
+
+@media (max-width: 400px) {
+    .avatar-preview {
+        width: 80px;
+        height: 112px;
+    }
+
+    .avatar-placeholder-icon {
+        font-size: 28px;
+    }
+
+    .avatar-placeholder-text {
+        font-size: 10px;
+    }
+}

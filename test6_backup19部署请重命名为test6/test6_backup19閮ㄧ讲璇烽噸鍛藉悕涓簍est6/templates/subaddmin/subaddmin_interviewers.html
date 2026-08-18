@@ -1,0 +1,282 @@
+<!-- subaddmin_interviewers.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}面试官分组管理{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core.css' %}">
+<link rel="stylesheet" href="{% static 'css/subadmin.css' %}">
+<style>
+    .members-section {
+        margin-top: 12px;
+        border-top: 1px solid var(--color-border);
+        padding-top: 16px;
+    }
+    .members-management { display: flex; flex-direction: column; gap: 10px; }
+    .members-add {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    .members-add select {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        background: var(--color-bg-white);
+        min-width: 160px;
+        transition: all var(--transition);
+    }
+    .members-add select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(139, 158, 176, 0.12);
+    }
+    .members-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-height: 50px;
+        padding: 10px;
+        background: var(--color-surface);
+        border-radius: var(--radius-sm);
+        border: 1px dashed var(--color-border-dark);
+    }
+    .members-list .empty-hint {
+        color: var(--color-text-muted);
+        text-align: center;
+        padding: 12px;
+        font-size: 14px;
+    }
+    .member-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 14px;
+        background: var(--color-bg-white);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--color-border);
+        transition: all var(--transition);
+    }
+    .member-item:hover { border-color: var(--color-primary); }
+    .member-item .member-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .member-item .member-name {
+        font-weight: 500;
+        color: var(--color-text);
+        font-size: 14px;
+    }
+    .member-item .member-name.chief { color: var(--color-primary); }
+    .member-item .member-detail { font-size: 13px; color: var(--color-text-secondary); }
+    .member-item .chief-badge {
+        display: inline-block;
+        padding: 1px 10px;
+        background: var(--color-primary);
+        color: #fff;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 500;
+    }
+    .member-item .remove-btn {
+        color: var(--color-danger);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        padding: 0 4px;
+        transition: color var(--transition);
+        line-height: 1;
+    }
+    .member-item .remove-btn:hover { color: #c48a8a; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">面试系统</span>
+            </div>
+            <button class="toggle-btn" id="toggleSidebar">◀</button>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{% url 'subadmin_users' %}" class="menu-item">
+                <span class="menu-icon">👥</span>
+                <span class="menu-text">用户管理</span>
+            </a>
+            <a href="{% url 'subadmin_interviewers' %}" class="menu-item active">
+                <span class="menu-icon">🧑‍💼</span>
+                <span class="menu-text">面试官管理</span>
+            </a>
+            <a href="{% url 'subadmin_groups' %}" class="menu-item">
+                <span class="menu-icon">📅</span>
+                <span class="menu-text">面试场次</span>
+            </a>
+            <a href="{% url 'subadmin_scores' %}" class="menu-item">
+                <span class="menu-icon">⭐</span>
+                <span class="menu-text">评价信息</span>
+            </a>
+            <a href="{% url 'subadmin_console' %}" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">决策中心</span>
+            </a>
+            <a href="{% url 'logout' %}" class="menu-item logout-item">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">退出登录</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1>面试官分组管理</h1>
+            <div class="user-info">
+                <span class="username">{{ request.user.username }}</span>
+                <span class="role-badge admin">部门管理员</span>
+            </div>
+        </div>
+        <div class="content-body">
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="searchInput" placeholder="搜索分组名、部门...">
+                            <button class="clear-btn" id="clearSearchBtn" style="display:none;">✕</button>
+                        </div>
+                        <div class="filter-box">
+                            <select id="statusFilter">
+                                <option value="">全部状态</option>
+                                <option value="ONUSE">启用中</option>
+                                <option value="ENDED">已销毁</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="batch-actions">
+                        <button class="btn btn-secondary btn-sm" id="selectAllBtn">全选</button>
+                        <button class="btn btn-secondary btn-sm" id="deselectAllBtn">取消全选</button>
+                        <button class="btn btn-success btn-sm" id="addBtn">➕ 新增分组</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="data-table" id="interviewerTable">
+                        <thead>
+                            <tr>
+                                <th style="width:36px;text-align:center;"><input type="checkbox" id="checkAll"></th>
+                                <th data-sort="id" style="width:56px;text-align:center;">ID</th>
+                                <th data-sort="name">组名</th>
+                                <th data-sort="department">部门</th>
+                                <th data-sort="chief">主面试官</th>
+                                <th data-sort="member_names">成员</th>
+                                <th data-sort="status" style="width:90px;">状态</th>
+                                <th data-sort="member_count" style="width:70px;">成员数</th>
+                                <th style="width:140px;text-align:center;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr><td colspan="9" class="loading-text">加载中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-pagination">
+                    <div class="pagination-info">
+                        共 <span id="totalCount">0</span> 条记录，当前第 <span id="pageStart">0</span>-<span id="pageEnd">0</span> 条
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="page-btn" id="prevPage" disabled>上一页</button>
+                        <span class="page-current" id="currentPage">1</span>
+                        <span class="page-total">/ <span id="totalPages">1</span></span>
+                        <button class="page-btn" id="nextPage" disabled>下一页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="modal" id="editModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h3 id="modalTitle">编辑分组信息</h3>
+            <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="editForm">
+                <input type="hidden" id="editId" name="id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>组名</label>
+                        <input type="text" id="editName" placeholder="留空自动生成">
+                        <span class="hint">留空将自动生成</span>
+                    </div>
+                    <div class="form-group">
+                        <label>部门 <span class="required">*</span></label>
+                        <select id="editDepartment" disabled>
+                            <!-- 由JS动态渲染 -->
+                        </select>
+                        <span class="hint">部门固定为当前用户所属部门</span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>状态</label>
+                        <select id="editStatus">
+                            <!-- 由JS动态渲染 -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>创建时间</label>
+                        <input type="text" id="editCreatedAt" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group members-section">
+                    <label>成员管理</label>
+                    <div class="members-management">
+                        <div class="members-add">
+                            <select id="memberSelect">
+                                <option value="">-- 选择面试官 --</option>
+                            </select>
+                            <button type="button" class="btn btn-success btn-sm" id="addMemberBtn">添加</button>
+                        </div>
+                        <div class="members-list" id="membersList">
+                            <div class="empty-hint">暂无成员</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>主面试官</label>
+                    <select id="editChief">
+                        <option value="">-- 选择主面试官 --</option>
+                    </select>
+                    <span class="hint">只能从已添加的成员中选择</span>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="modalCancel">取消</button>
+            <button class="btn btn-primary" id="modalSave">保存</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.userDepartment = '{{ request.user.interviewer.department|default:"" }}';
+    window.currentUserId = {{ request.user.id }};
+</script>
+<script src="{% static 'js/subaddmin/subaddmin_interviewers.js' %}"></script>
+{% endblock %}

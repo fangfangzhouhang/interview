@@ -1,0 +1,2098 @@
+/* ============================================================
+   subadmin.css - 部门管理员专用样式
+   基于core.css扩展部门管理员专用样式
+   ============================================================ */
+
+@import url("core.css");
+
+/* ============================================================
+   1. 全局部门管理员样式
+   ============================================================ */
+
+/* 角色标签 */
+.role-badge.subadmin {
+    background: #dde0e8;
+    color: #4a5a6a;
+}
+
+/* ============================================================
+   2. 统计卡片 - 扩展core.css
+   ============================================================ */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    background: var(--color-bg-white);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary);
+}
+
+.stat-icon {
+    font-size: 36px;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary-bg);
+    border-radius: var(--radius-sm);
+    color: var(--color-primary);
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+/* ============================================================
+   3. 表格样式 - 扩展core.css
+   ============================================================ */
+
+.table-container {
+    background: var(--color-bg-white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+}
+
+.table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+    gap: 12px;
+    background: var(--color-surface);
+}
+
+.toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box input {
+    padding: 8px 12px 8px 36px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    width: 220px;
+    transition: all var(--transition);
+    background: var(--color-bg-white);
+    color: var(--color-text);
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+}
+
+.search-box .clear-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 4px;
+    display: none;
+}
+
+.search-box .clear-btn.visible {
+    display: block;
+}
+
+.search-box .clear-btn:hover {
+    color: var(--color-text);
+}
+
+.batch-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-box select {
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background: var(--color-bg-white);
+    cursor: pointer;
+    outline: none;
+    height: 38px;
+    min-width: 120px;
+    color: var(--color-text);
+    transition: all var(--transition);
+}
+
+.filter-box select:hover {
+    border-color: var(--color-border-dark);
+}
+
+.filter-box select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+/* ============================================================
+   4. 按钮样式 - 扩展core.css
+   ============================================================ */
+
+.btn {
+    padding: 6px 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover {
+    background: var(--color-border);
+    color: var(--color-text);
+}
+
+.btn-danger {
+    background: var(--color-danger);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(252, 129, 129, 0.3);
+}
+
+.btn-danger:hover {
+    background: var(--color-danger-dark);
+    box-shadow: 0 4px 16px rgba(252, 129, 129, 0.4);
+}
+
+.btn-success {
+    background: var(--color-success);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+}
+
+.btn-success:hover {
+    background: var(--color-success-dark);
+    box-shadow: 0 4px 16px rgba(72, 187, 120, 0.4);
+}
+
+.btn-warning {
+    background: var(--color-warning);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(246, 173, 85, 0.3);
+}
+
+.btn-warning:hover {
+    background: var(--color-warning-dark);
+    box-shadow: 0 4px 16px rgba(246, 173, 85, 0.4);
+}
+
+.btn-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.btn:disabled,
+.btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn:disabled:hover,
+.btn.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* ============================================================
+   5. 数据表格 - 扩展core.css
+   ============================================================ */
+
+/* 表格使用固定布局，确保列宽百分比生效 */
+.table-wrapper .data-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.data-table thead {
+    background: var(--color-surface);
+}
+
+.data-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    border-bottom: 2px solid var(--color-border);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.data-table th:hover {
+    color: var(--color-text);
+}
+
+.data-table th.sort-asc::after {
+    content: ' ▲';
+    color: var(--color-primary);
+}
+
+.data-table th.sort-desc::after {
+    content: ' ▼';
+    color: var(--color-primary);
+}
+
+.data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.data-table tbody tr:hover {
+    background: var(--color-primary-bg);
+}
+
+.data-table tbody tr.selected {
+    background: #ebf8ff;
+}
+
+.data-table tbody tr.clickable {
+    cursor: pointer;
+}
+
+.data-table td .btn {
+    margin: 2px;
+}
+
+.data-table input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+.data-table th:first-child,
+.data-table td:first-child {
+    text-align: center;
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+    text-align: center;
+}
+
+/* ============================================================
+   5a. 用户管理页面 (subadmin_users) 列宽控制
+   表头: 复选框 | 序号 | 姓名 | 用户名 | 部门 | 权限等级 | 状态 | 操作
+   ============================================================ */
+#userTable thead th:nth-child(1),
+#userTable tbody td:nth-child(1) { width: 5%; }  /* 复选框 */
+#userTable thead th:nth-child(2),
+#userTable tbody td:nth-child(2) { width: 5%; }  /* 序号 */
+#userTable thead th:nth-child(3),
+#userTable tbody td:nth-child(3) { width: 15%; } /* 姓名 */
+#userTable thead th:nth-child(4),
+#userTable tbody td:nth-child(4) { width: 15%; } /* 用户名 */
+#userTable thead th:nth-child(5),
+#userTable tbody td:nth-child(5) { width: 20%; } /* 部门 */
+#userTable thead th:nth-child(6),
+#userTable tbody td:nth-child(6) { width: 20%; } /* 权限等级 */
+#userTable thead th:nth-child(7),
+#userTable tbody td:nth-child(7) { width: 10%; } /* 状态 */
+#userTable thead th:nth-child(8),
+#userTable tbody td:nth-child(8) { width: 10%; } /* 操作 */
+
+/* ============================================================
+   5b. 面试官管理页面 (subadmin_interviewers) 列宽控制
+   表头: 复选框 | ID | 组名 | 部门 | 主面试官 | 成员 | 状态 | 成员数 | 操作
+   ============================================================ */
+#interviewerTable thead th:nth-child(1),
+#interviewerTable tbody td:nth-child(1) { width: 5%; }  /* 复选框 */
+#interviewerTable thead th:nth-child(2),
+#interviewerTable tbody td:nth-child(2) { width: 5%; }  /* ID */
+#interviewerTable thead th:nth-child(3),
+#interviewerTable tbody td:nth-child(3) { width: 12%; } /* 组名 */
+#interviewerTable thead th:nth-child(4),
+#interviewerTable tbody td:nth-child(4) { width: 8%; }  /* 部门 */
+#interviewerTable thead th:nth-child(5),
+#interviewerTable tbody td:nth-child(5) { width: 10%; } /* 主面试官 */
+#interviewerTable thead th:nth-child(6),
+#interviewerTable tbody td:nth-child(6) { width: 22%; } /* 成员 */
+#interviewerTable thead th:nth-child(7),
+#interviewerTable tbody td:nth-child(7) { width: 12%; } /* 状态 */
+#interviewerTable thead th:nth-child(8),
+#interviewerTable tbody td:nth-child(8) { width: 10%; } /* 成员数 */
+#interviewerTable thead th:nth-child(9),
+#interviewerTable tbody td:nth-child(9) { width: 16%; } /* 操作 */
+
+/* ============================================================
+   5c. 面试场次管理页面 (subadmin_groups) 列宽控制
+   表头: 复选框 | ID | 组名 | 部门 | 关联面试者 | 状态 | 面试官 | 面试官数 | 面试者数 | 操作
+   ============================================================ */
+#groupTable thead th:nth-child(1),
+#groupTable tbody td:nth-child(1) { width: 5%; }  /* 复选框 */
+#groupTable thead th:nth-child(2),
+#groupTable tbody td:nth-child(2) { width: 5%; }  /* ID */
+#groupTable thead th:nth-child(3),
+#groupTable tbody td:nth-child(3) { width: 10%; } /* 组名 */
+#groupTable thead th:nth-child(4),
+#groupTable tbody td:nth-child(4) { width: 8%; }  /* 部门 */
+#groupTable thead th:nth-child(5),
+#groupTable tbody td:nth-child(5) { width: 18%; } /* 关联面试者 */
+#groupTable thead th:nth-child(6),
+#groupTable tbody td:nth-child(6) { width: 12%; } /* 状态 */
+#groupTable thead th:nth-child(7),
+#groupTable tbody td:nth-child(7) { width: 18%; } /* 面试官 */
+#groupTable thead th:nth-child(8),
+#groupTable tbody td:nth-child(8) { width: 7%; }  /* 面试官数 */
+#groupTable thead th:nth-child(9),
+#groupTable tbody td:nth-child(9) { width: 7%; }  /* 面试者数 */
+#groupTable thead th:nth-child(10),
+#groupTable tbody td:nth-child(10) { width: 10%; } /* 操作 */
+
+/* ============================================================
+   5d. 评价信息页面 (subadmin_scores) 列宽控制
+   表头: 复选框 | ID | 部门 | 面试官 | 面试者 | 评分 | 关联场次 | 场次状态 | 操作
+   ============================================================ */
+#scoreTable thead th:nth-child(1),
+#scoreTable tbody td:nth-child(1) { width: 5%; }  /* 复选框 */
+#scoreTable thead th:nth-child(2),
+#scoreTable tbody td:nth-child(2) { width: 5%; }  /* ID */
+#scoreTable thead th:nth-child(3),
+#scoreTable tbody td:nth-child(3) { width: 10%; } /* 部门 */
+#scoreTable thead th:nth-child(4),
+#scoreTable tbody td:nth-child(4) { width: 15%; } /* 面试官 */
+#scoreTable thead th:nth-child(5),
+#scoreTable tbody td:nth-child(5) { width: 15%; } /* 面试者 */
+#scoreTable thead th:nth-child(6),
+#scoreTable tbody td:nth-child(6) { width: 10%; } /* 评分 */
+#scoreTable thead th:nth-child(7),
+#scoreTable tbody td:nth-child(7) { width: 15%; } /* 关联场次 */
+#scoreTable thead th:nth-child(8),
+#scoreTable tbody td:nth-child(8) { width: 10%; } /* 场次状态 */
+#scoreTable thead th:nth-child(9),
+#scoreTable tbody td:nth-child(9) { width: 15%; } /* 操作 */
+
+/* ============================================================
+   6. 分页 - 扩展core.css
+   ============================================================ */
+
+.table-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-top: 1px solid var(--color-border);
+    flex-wrap: wrap;
+    gap: 8px;
+    background: var(--color-surface);
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-btn {
+    padding: 6px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-white);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all var(--transition);
+    color: var(--color-text-secondary);
+}
+
+.page-btn:hover:not(:disabled) {
+    background: var(--color-primary-bg);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.page-current {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.page-total {
+    color: var(--color-text-muted);
+}
+
+/* ============================================================
+   7. 弹窗 / 模态框 - 扩展core.css
+   ============================================================ */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    background: var(--color-bg-white);
+    border-radius: var(--radius-lg);
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-large .modal-content {
+    max-width: 800px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition);
+}
+
+.modal-close:hover {
+    color: var(--color-text);
+}
+
+.modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modal-body .loading-text {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 40px 20px;
+    font-style: italic;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+/* ============================================================
+   8. 表单样式 - 扩展core.css
+   ============================================================ */
+
+.modal-body .form-group {
+    margin-bottom: 14px;
+}
+
+.modal-body .form-group label {
+    font-size: 13px;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--color-text-secondary);
+}
+
+.modal-body .form-group .hint {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+    display: block;
+}
+
+.modal-body .form-group input,
+.modal-body .form-group select {
+    font-size: 13px;
+    padding: 8px 12px;
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition);
+    background: var(--color-bg-white);
+    color: var(--color-text);
+}
+
+.modal-body .form-group input:focus,
+.modal-body .form-group select:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.modal-body .form-group input[readonly] {
+    background: var(--color-surface);
+    cursor: not-allowed;
+    color: var(--color-text-secondary);
+}
+
+.modal-body .form-group input[readonly]:focus {
+    border-color: var(--color-border);
+    box-shadow: none;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.required {
+    color: var(--color-danger);
+    margin-left: 2px;
+}
+
+/* ============================================================
+   9. 用户信息展示区（只读样式）
+   ============================================================ */
+
+.user-info-section {
+    background: var(--color-surface);
+    padding: 16px 20px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 16px;
+    border: 1px solid var(--color-border);
+}
+
+.user-info-section h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.user-info-section .form-group label {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.user-info-section .form-group input[readonly] {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    cursor: default;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    width: 100%;
+}
+
+.user-info-section .form-group input[readonly]:focus {
+    border-color: var(--color-border);
+    box-shadow: none;
+}
+
+/* ============================================================
+   10. 状态标签 / 徽章 - 扩展core.css
+   ============================================================ */
+
+.status-tag {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-pending {
+    background: #fefcbf;
+    color: #975a16;
+}
+
+.status-ongoing {
+    background: #bee3f8;
+    color: #2a69ac;
+}
+
+.status-pause {
+    background: #feebc8;
+    color: #9c4221;
+}
+
+.status-ended {
+    background: #c6f6d5;
+    color: #276749;
+}
+
+.status-cancelled {
+    background: #fed7d7;
+    color: #9b2c2c;
+}
+
+.status-tag.status-onuse {
+    background: #c6f6d5;
+    color: #276749;
+}
+
+.status-tag.status-ended {
+    background: #fed7d7;
+    color: #9b2c2c;
+}
+
+.department-tag {
+    display: inline-block;
+    padding: 2px 10px;
+    background: #ebf8ff;
+    color: #2b6cb0;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* ============================================================
+   11. 评分标签 - 扩展core.css
+   ============================================================ */
+
+.score-tag {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 40px;
+    text-align: center;
+}
+
+.score-high {
+    background: #c6f6d5;
+    color: #276749;
+}
+
+.score-medium {
+    background: #fefcbf;
+    color: #975a16;
+}
+
+.score-low {
+    background: #feebc8;
+    color: #9c4221;
+}
+
+.score-very-low {
+    background: #fed7d7;
+    color: #9b2c2c;
+}
+
+/* ============================================================
+   12. 角色权限标签 - 扩展core.css
+   ============================================================ */
+
+.role-tag {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.role-tag.role-superadmin {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #f59e0b;
+}
+
+.role-tag.role-admin {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #60a5fa;
+}
+
+.role-tag.role-subadmin {
+    background: #e0e7ff;
+    color: #3730a3;
+    border: 1px solid #818cf8;
+}
+
+.role-tag.role-interviewer {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #34d399;
+}
+
+.role-tag.role-candidate {
+    background: #fce4ec;
+    color: #9a3412;
+    border: 1px solid #fb7185;
+}
+
+.role-tag.role-guest {
+    background: #f3f4f6;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+/* ============================================================
+   13. 重置密码区域 - 隐藏（部门管理员不可用）
+   ============================================================ */
+
+#resetPwdSection {
+    display: none !important;
+}
+
+/* ============================================================
+   14. 权限选择提示
+   ============================================================ */
+
+.role-hint {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+    display: block;
+}
+
+.role-hint.warning {
+    color: var(--color-danger);
+}
+
+#editRole:disabled {
+    background: var(--color-surface);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* ============================================================
+   15. 空状态
+   ============================================================ */
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--color-text-muted);
+}
+
+.empty-state .empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.empty-state .empty-text {
+    font-size: 16px;
+}
+
+.empty-state .empty-hint {
+    font-size: 13px;
+    color: var(--color-border-dark);
+    margin-top: 4px;
+}
+
+/* ============================================================
+   16. 加载状态
+   ============================================================ */
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   17. 评价详情样式
+   ============================================================ */
+
+.detail-scores {
+    padding: 5px 0;
+}
+
+.detail-candidate {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--color-surface);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+}
+
+.detail-candidate:last-child {
+    margin-bottom: 0;
+}
+
+.detail-candidate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.detail-candidate-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.detail-candidate-info {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+}
+
+.detail-scores-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.detail-score-item {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 14px;
+    background: var(--color-bg-white);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    transition: all var(--transition);
+    gap: 6px;
+}
+
+.detail-score-item:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.detail-score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.detail-score-interviewer {
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.detail-score-total {
+    font-weight: 600;
+    font-size: 15px;
+    padding: 2px 12px;
+    border-radius: 12px;
+}
+
+.detail-score-total.score-zero {
+    background: var(--color-border);
+    color: var(--color-text-muted);
+}
+
+.detail-score-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 2px;
+}
+
+.detail-score-field {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 2px 0;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.detail-score-label {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    white-space: nowrap;
+    min-width: 90px;
+    flex-shrink: 0;
+    text-align: left;
+}
+
+.detail-score-text {
+    font-size: 13px;
+    color: var(--color-text);
+    word-break: break-word;
+    line-height: 1.6;
+    flex: 1;
+    text-align: left;
+}
+
+.detail-score-text.empty-text {
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+.detail-score-average {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #ebf8ff;
+    border-radius: var(--radius-sm);
+    text-align: right;
+    font-size: 14px;
+    color: var(--color-text);
+    border: 1px solid #bee3f8;
+}
+
+.detail-score-average strong {
+    color: var(--color-primary);
+    font-size: 18px;
+}
+
+/* ============================================================
+   18. 面试者 / 面试官管理（弹窗内）
+   ============================================================ */
+
+.candidates-section,
+.interviewers-section,
+.members-section {
+    border-top: 1px solid var(--color-border);
+    padding-top: 16px;
+    margin-top: 8px;
+}
+
+.candidates-management,
+.interviewers-management,
+.members-management {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.candidates-add,
+.interviewers-add,
+.members-add {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.candidates-add select,
+.interviewers-add select,
+.members-add select {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background: var(--color-bg-white);
+    color: var(--color-text);
+    transition: all var(--transition);
+    min-width: 180px;
+}
+
+.candidates-add select:focus,
+.interviewers-add select:focus,
+.members-add select:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.candidates-list,
+.interviewers-list,
+.members-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 60px;
+    padding: 8px;
+    background: var(--color-surface);
+    border-radius: var(--radius-sm);
+    border: 1px dashed var(--color-border-dark);
+}
+
+.candidates-list .empty-hint,
+.interviewers-list .empty-hint,
+.members-list .empty-hint {
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 16px;
+    font-size: 14px;
+}
+
+.candidate-item,
+.interviewer-item,
+.member-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 14px;
+    background: var(--color-bg-white);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    transition: all var(--transition);
+}
+
+.candidate-item:hover,
+.interviewer-item:hover,
+.member-item:hover {
+    border-color: var(--color-primary);
+}
+
+.candidate-item .candidate-info,
+.interviewer-item .interviewer-info,
+.member-item .member-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.candidate-item .candidate-order {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+}
+
+.candidate-item .candidate-order select {
+    padding: 2px 6px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 13px;
+    background: var(--color-bg-white);
+}
+
+.candidate-item .candidate-name,
+.interviewer-item .interviewer-name,
+.member-item .member-name {
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+.member-item .member-name.chief {
+    color: var(--color-primary);
+}
+
+.candidate-item .candidate-detail,
+.interviewer-item .interviewer-detail,
+.member-item .member-detail {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+}
+
+.member-item .chief-badge {
+    display: inline-block;
+    padding: 1px 10px;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.candidate-item .remove-btn,
+.interviewer-item .remove-btn,
+.member-item .remove-btn {
+    color: var(--color-danger);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 4px;
+    transition: color var(--transition);
+}
+
+.candidate-item .remove-btn:hover,
+.interviewer-item .remove-btn:hover,
+.member-item .remove-btn:hover {
+    color: var(--color-danger-dark);
+}
+
+/* ============================================================
+   19. 面试官快速导入
+   ============================================================ */
+
+.interviewers-import {
+    margin-bottom: 8px;
+}
+
+.import-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.import-row .form-group {
+    margin-bottom: 0;
+}
+
+.interviewers-manual {
+    padding-top: 8px;
+    border-top: 1px dashed var(--color-border);
+}
+
+.interviewers-manual .hint {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+}
+
+#importInterviewerBtn {
+    background: var(--color-primary);
+    color: #fff;
+    padding: 6px 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+}
+
+#importInterviewerBtn:hover {
+    background: var(--color-primary-dark);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* ============================================================
+   20. 主面试官提示样式
+   ============================================================ */
+
+#chiefHint {
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+}
+
+#chiefHint.error {
+    color: var(--color-danger);
+    background: #fff5f5;
+    border-color: #fed7d7;
+}
+
+#chiefHint.success {
+    color: var(--color-success);
+    background: #f0fff4;
+    border-color: #c6f6d5;
+}
+
+#editChief {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-bg);
+}
+
+#editChief:focus {
+    border-color: var(--color-primary-dark);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+/* ============================================================
+   21. 移动端侧边栏
+   ============================================================ */
+
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    padding: 4px 8px;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* ============================================================
+   22. 工具类
+   ============================================================ */
+
+.hint {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+    display: block;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: var(--color-text-muted);
+}
+
+.mt-8 {
+    margin-top: 8px;
+}
+
+.mt-16 {
+    margin-top: 16px;
+}
+
+.mb-8 {
+    margin-bottom: 8px;
+}
+
+.mb-16 {
+    margin-bottom: 16px;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gap-8 {
+    gap: 8px;
+}
+
+.gap-16 {
+    gap: 16px;
+}
+
+.w-full {
+    width: 100%;
+}
+
+/* ============================================================
+   23. 响应式 - subadmin专用
+   ============================================================ */
+
+@media (max-width: 1024px) {
+    /* 平板及以下：适度缩小列宽，让表格更紧凑 */
+    #userTable thead th,
+    #userTable tbody td,
+    #interviewerTable thead th,
+    #interviewerTable tbody td,
+    #groupTable thead th,
+    #groupTable tbody td,
+    #scoreTable thead th,
+    #scoreTable tbody td {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-left {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+
+    .batch-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .table-pagination {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .modal-large .modal-content {
+        max-width: 95%;
+    }
+
+    .candidates-add,
+    .interviewers-add,
+    .members-add {
+        flex-direction: column;
+    }
+
+    .candidates-add select,
+    .interviewers-add select,
+    .members-add select {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .candidate-item,
+    .interviewer-item,
+    .member-item {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .volunteer-item-wrapper {
+        flex-wrap: wrap;
+        gap: 10px 16px;
+        padding: 10px 12px;
+    }
+
+    .volunteer-info-left {
+        flex: 1 1 100%;
+        gap: 8px;
+    }
+
+    .volunteer-actions {
+        flex: 0 0 auto;
+        margin-left: 0;
+        padding-top: 4px;
+    }
+
+    .volunteer-dept {
+        min-width: 60px;
+        font-size: 13px;
+    }
+
+    .volunteer-actions .btn-sm {
+        padding: 2px 10px;
+        font-size: 11px;
+    }
+
+    .detail-score-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .detail-score-values {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .detail-candidate-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    #resetPwdSection > div {
+        flex-direction: column;
+    }
+
+    #resetPwdSection input {
+        width: 100%;
+    }
+
+    #resetPwdSection .btn {
+        width: 100%;
+    }
+
+    .filter-box {
+        min-width: 120px;
+    }
+
+    .hamburger-menu {
+        display: block;
+    }
+
+    /* 响应式：重置固定列宽为自动 */
+    #userTable thead th,
+    #userTable tbody td,
+    #interviewerTable thead th,
+    #interviewerTable tbody td,
+    #groupTable thead th,
+    #groupTable tbody td,
+    #scoreTable thead th,
+    #scoreTable tbody td {
+        width: auto !important;
+    }
+
+    .table-wrapper .data-table {
+        table-layout: auto !important;
+    }
+
+    .data-table td {
+        white-space: normal;
+        word-break: break-word;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .data-table {
+        font-size: 12px;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 6px 8px;
+    }
+
+    .modal-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .modal-body {
+        padding: 16px;
+    }
+
+    .volunteer-item-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 10px 12px;
+    }
+
+    .volunteer-info-left {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px 10px;
+        width: 100%;
+    }
+
+    .volunteer-actions {
+        width: 100%;
+        justify-content: flex-start;
+        padding-top: 8px;
+        border-top: 1px solid var(--color-border);
+        gap: 4px;
+    }
+
+    .volunteer-dept {
+        font-size: 13px;
+        min-width: 50px;
+    }
+
+    .volunteer-queue-time {
+        font-size: 11px;
+        padding: 1px 8px;
+    }
+
+    .volunteer-status {
+        font-size: 11px;
+        padding: 1px 10px;
+    }
+
+    .volunteer-actions .btn-sm {
+        padding: 2px 8px;
+        font-size: 11px;
+    }
+
+    .detail-score-values {
+        gap: 8px;
+    }
+
+    .detail-score-label {
+        font-size: 12px;
+    }
+
+    .detail-score-total {
+        font-size: 13px;
+    }
+
+    .role-tag {
+        font-size: 10px;
+        padding: 1px 6px;
+    }
+
+    .status-tag {
+        font-size: 10px;
+        padding: 1px 8px;
+    }
+
+    .score-tag {
+        font-size: 12px;
+        padding: 1px 8px;
+    }
+
+    .detail-score-item {
+        padding: 8px 10px;
+    }
+
+    .detail-score-label {
+        min-width: 60px;
+        font-size: 11px;
+    }
+
+    .detail-score-text {
+        font-size: 11px;
+    }
+
+    .candidate-item .candidate-info {
+        gap: 8px;
+    }
+
+    .candidate-item .candidate-detail {
+        font-size: 11px;
+    }
+
+    .member-item .member-info {
+        gap: 6px;
+    }
+
+    .member-item .member-name {
+        font-size: 13px;
+    }
+
+    .member-item .member-detail {
+        font-size: 12px;
+    }
+
+    .member-item .chief-badge {
+        font-size: 10px;
+        padding: 0 8px;
+    }
+
+    .data-table td .action-buttons {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .data-table td .action-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* 响应式：重置固定列宽为自动 */
+    #userTable thead th,
+    #userTable tbody td,
+    #interviewerTable thead th,
+    #interviewerTable tbody td,
+    #groupTable thead th,
+    #groupTable tbody td,
+    #scoreTable thead th,
+    #scoreTable tbody td {
+        width: auto !important;
+    }
+
+    .table-wrapper .data-table {
+        table-layout: auto !important;
+    }
+
+    .data-table td {
+        white-space: normal;
+        word-break: break-word;
+    }
+}
+
+/* ============================================================
+   24. 打印样式
+   ============================================================ */
+
+@media print {
+    .sidebar,
+    .top-bar,
+    .table-toolbar,
+    .table-pagination,
+    .batch-actions {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 20px !important;
+    }
+
+    .data-table {
+        font-size: 12px;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 4px 8px;
+    }
+
+    .modal {
+        display: none !important;
+    }
+}
+
+/* subadmin.css - 补充样式 */
+
+/* ============================================================
+   志愿管理表格列宽
+   ============================================================ */
+#candidateTable thead th:nth-child(1),
+#candidateTable tbody td:nth-child(1) { width: 5%; text-align: center; }
+#candidateTable thead th:nth-child(2),
+#candidateTable tbody td:nth-child(2) { width: 5%; text-align: center; }
+#candidateTable thead th:nth-child(3),
+#candidateTable tbody td:nth-child(3) { width: 14%; }
+#candidateTable thead th:nth-child(4),
+#candidateTable tbody td:nth-child(4) { width: 10%; }
+#candidateTable thead th:nth-child(5),
+#candidateTable tbody td:nth-child(5) { width: 10%; text-align: center; }
+#candidateTable thead th:nth-child(6),
+#candidateTable tbody td:nth-child(6) { width: 22%; }
+#candidateTable thead th:nth-child(7),
+#candidateTable tbody td:nth-child(7) { width: 10%; text-align: center; }
+#candidateTable thead th:nth-child(8),
+#candidateTable tbody td:nth-child(8) { width: 24%; text-align: center; }
+
+/* ============================================================
+   志愿标签 - 根据状态显示颜色
+   ============================================================ */
+.volunteer-dept-tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 2px 3px;
+}
+
+/* 默认蓝色（待处理） */
+.volunteer-dept-tag.volunteer-blue {
+    background: #ebf8ff;
+    color: #2b6cb0;
+    border: 1px solid #bee3f8;
+}
+
+/* 绿色（已接受） */
+.volunteer-dept-tag.volunteer-green {
+    background: #c6f6d5;
+    color: #276749;
+    border: 1px solid #9ae6b4;
+}
+
+/* 红色（已拒绝） */
+.volunteer-dept-tag.volunteer-red {
+    background: #fed7d7;
+    color: #9b2c2c;
+    border: 1px solid #feb2b2;
+}
+
+/* ============================================================
+   操作按钮 - 禁用状态
+   ============================================================ */
+.single-action-btn {
+    margin: 2px 4px;
+    padding: 3px 12px;
+    font-size: 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition);
+    min-width: 50px;
+}
+
+.single-action-btn.btn-success {
+    background: var(--color-success);
+    color: #fff;
+}
+
+.single-action-btn.btn-success:hover:not(:disabled) {
+    background: var(--color-success-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+}
+
+.single-action-btn.btn-danger {
+    background: var(--color-danger);
+    color: #fff;
+}
+
+.single-action-btn.btn-danger:hover:not(:disabled) {
+    background: var(--color-danger-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(252, 129, 129, 0.3);
+}
+
+.single-action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.single-action-btn:disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ============================================================
+   批量操作按钮
+   ============================================================ */
+#batchAcceptBtn {
+    background: var(--color-success);
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-weight: 500;
+}
+
+#batchAcceptBtn:hover {
+    background: var(--color-success-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+}
+
+#batchRejectBtn {
+    background: var(--color-danger);
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-weight: 500;
+}
+
+#batchRejectBtn:hover {
+    background: var(--color-danger-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(252, 129, 129, 0.3);
+}
+
+/* ============================================================
+   表格容器滚动
+   ============================================================ */
+.table-wrapper {
+    overflow-y: auto;
+    max-height: calc(100vh - 320px);
+    min-height: 400px;
+}
+
+.table-wrapper .data-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* ============================================================
+   分数标签
+   ============================================================ */
+.score-tag {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 44px;
+    text-align: center;
+}
+
+.score-high { background: #c6f6d5; color: #276749; }
+.score-medium { background: #fefcbf; color: #975a16; }
+.score-low { background: #feebc8; color: #9c4221; }
+.score-very-low { background: #fed7d7; color: #9b2c2c; }
+
+/* ============================================================
+   状态标签
+   ============================================================ */
+.status-tag {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-tag.status-incomplete { background: #f3f4f6; color: #6b7280; }
+.status-tag.status-registered { background: #dbeafe; color: #1e40af; }
+.status-tag.status-waiting { background: #fefcbf; color: #975a16; }
+.status-tag.status-inqueue { background: #fef3c7; color: #92400e; }
+.status-tag.status-interviewing { background: #bee3f8; color: #2a69ac; }
+.status-tag.status-completed { background: #c6f6d5; color: #276749; }
+
+/* ============================================================
+   表格行样式
+   ============================================================ */
+#candidateTable tbody tr {
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+#candidateTable tbody tr:hover {
+    background: var(--color-primary-bg);
+}
+
+/* ============================================================
+   结果弹窗样式
+   ============================================================ */
+#resultModal .modal-content {
+    max-width: 520px;
+}
+
+#resultModal .modal-body {
+    padding: 20px 24px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#resultContent {
+    font-size: 14px;
+    color: var(--color-text);
+}
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width: 768px) {
+    .table-wrapper {
+        max-height: calc(100vh - 280px);
+        min-height: 300px;
+    }
+
+    #candidateTable thead th,
+    #candidateTable tbody td {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+
+    #candidateTable thead th:nth-child(6),
+    #candidateTable tbody td:nth-child(6) {
+        min-width: 80px;
+    }
+
+    .volunteer-dept-tag {
+        font-size: 10px;
+        padding: 1px 6px;
+    }
+
+    .single-action-btn {
+        font-size: 11px;
+        padding: 2px 8px;
+        margin: 1px 2px;
+        min-width: 40px;
+    }
+
+    .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-left {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+
+    .batch-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    #batchAcceptBtn,
+    #batchRejectBtn {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+
+    #candidateTable thead th:nth-child(8),
+    #candidateTable tbody td:nth-child(8) {
+        white-space: normal;
+    }
+}
+
+@media (max-width: 480px) {
+    .table-wrapper {
+        max-height: calc(100vh - 240px);
+        min-height: 200px;
+    }
+
+    #candidateTable thead th,
+    #candidateTable tbody td {
+        font-size: 11px;
+        padding: 4px 6px;
+    }
+
+    #candidateTable thead th:nth-child(6),
+    #candidateTable tbody td:nth-child(6) {
+        min-width: 60px;
+    }
+
+    .volunteer-dept-tag {
+        font-size: 9px;
+        padding: 1px 4px;
+        margin: 1px;
+    }
+
+    .score-tag {
+        font-size: 11px;
+        padding: 1px 8px;
+        min-width: 30px;
+    }
+
+    .single-action-btn {
+        font-size: 10px;
+        padding: 1px 6px;
+        min-width: 32px;
+    }
+
+    .status-tag {
+        font-size: 10px;
+        padding: 1px 8px;
+    }
+
+    .batch-actions .btn-sm {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+
+    #candidateTable thead th:nth-child(8),
+    #candidateTable tbody td:nth-child(8) {
+        white-space: normal;
+    }
+}

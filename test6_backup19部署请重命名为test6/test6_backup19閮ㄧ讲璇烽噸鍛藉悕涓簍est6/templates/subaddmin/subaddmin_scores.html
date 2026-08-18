@@ -1,0 +1,135 @@
+<!-- subaddmin_scores.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}部门评价管理{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core.css' %}">
+<link rel="stylesheet" href="{% static 'css/subadmin.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">面试系统</span>
+            </div>
+            <button class="toggle-btn" id="toggleSidebar">◀</button>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{% url 'subadmin_users' %}" class="menu-item">
+                <span class="menu-icon">👥</span>
+                <span class="menu-text">用户管理</span>
+            </a>
+            <a href="{% url 'subadmin_interviewers' %}" class="menu-item">
+                <span class="menu-icon">🧑‍💼</span>
+                <span class="menu-text">面试官管理</span>
+            </a>
+            <a href="{% url 'subadmin_groups' %}" class="menu-item">
+                <span class="menu-icon">📅</span>
+                <span class="menu-text">面试场次</span>
+            </a>
+            <a href="{% url 'subadmin_scores' %}" class="menu-item active">
+                <span class="menu-icon">⭐</span>
+                <span class="menu-text">评价信息</span>
+            </a>
+            <a href="{% url 'subadmin_console' %}" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">决策中心</span>
+            </a>
+            <a href="{% url 'logout' %}" class="menu-item logout-item">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">退出登录</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1>部门评价管理</h1>
+            <div class="user-info">
+                <span class="username">{{ request.user.username }}</span>
+                <span class="role-badge admin">部门管理员</span>
+            </div>
+        </div>
+        <div class="content-body">
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="searchInput" placeholder="搜索面试者、面试官、场次...">
+                            <button class="clear-btn" id="clearSearchBtn" style="display:none;">✕</button>
+                        </div>
+                        <div class="filter-box">
+                            <select id="statusFilter">
+                                <option value="">全部状态</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="batch-actions">
+                        <button class="btn btn-secondary btn-sm" id="selectAllBtn">全选</button>
+                        <button class="btn btn-secondary btn-sm" id="deselectAllBtn">取消全选</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="data-table" id="scoreTable">
+                        <thead>
+                            <tr>
+                                <th style="width:40px;"><input type="checkbox" id="checkAll"></th>
+                                <th data-sort="id" style="width:60px;">ID</th>
+                                <th data-sort="department" style="width:100px;">部门</th>
+                                <th data-sort="interviewer_name">面试官</th>
+                                <th data-sort="candidate_name">面试者</th>
+                                <th data-sort="score" style="width:80px;">评分</th>
+                                <th data-sort="group_name">场次</th>
+                                <th data-sort="group_status" style="width:100px;">状态</th>
+                                <th style="width:100px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr><td colspan="9" class="loading-text">加载中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-pagination">
+                    <div class="pagination-info">
+                        共 <span id="totalCount">0</span> 条记录，当前第 <span id="pageStart">0</span>-<span id="pageEnd">0</span> 条
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="page-btn" id="prevPage" disabled>上一页</button>
+                        <span class="page-current" id="currentPage">1</span>
+                        <span class="page-total">/ <span id="totalPages">1</span></span>
+                        <button class="page-btn" id="nextPage" disabled>下一页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="modal modal-large" id="detailModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📊 场次评价详情</h3>
+            <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body" id="detailContent">
+            <div class="loading-text">加载中...</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="detailModalCancel">关闭</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/subaddmin/subaddmin_scores.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}新定义功能 - 面试系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <!-- 左侧导航栏 -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">面试系统</span>
+            </div>
+            <button class="toggle-btn" id="toggleSidebar">
+                <span class="toggle-icon">◀</span>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="{% url 'profile' %}" class="menu-item" data-page="profile">
+                <span class="menu-icon">👤</span>
+                <span class="menu-text">个人页面</span>
+            </a>
+            <a href="{% url 'new_feature' %}" class="menu-item active" data-page="new-feature">
+                <span class="menu-icon">✨</span>
+                <span class="menu-text">新定义功能</span>
+            </a>
+            <a href="{% url 'logout' %}" class="menu-item logout-item">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">退出登录</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- 右侧功能区 -->
+    <main class="main-content" id="mainContent">
+        <div class="content-header">
+            <h1 id="pageTitle">新定义功能</h1>
+            <div class="user-info">
+                <span class="username">{{ request.user.username }}</span>
+            </div>
+        </div>
+        
+        <div class="content-body" id="contentBody">
+            <!-- 个人资料编辑区域 -->
+            <div class="profile-container" id="profileContainer" style="display: none;">
+                <!-- 这里会被profile.js控制显示 -->
+            </div>
+            
+            <!-- 新功能区域 -->
+            <div class="feature-container" id="featureContainer">
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <h2>✨ 新定义功能</h2>
+                        <p>这是一个可以扩展的功能模块</p>
+                    </div>
+                    <div class="feature-content">
+                        <div class="placeholder-content">
+                            <div class="placeholder-icon">🚀</div>
+                            <h3>功能开发中</h3>
+                            <p>您可以根据需求在这里添加新的功能模块</p>
+                            <div class="feature-suggestions">
+                                <div class="suggestion-item">
+                                    <span class="suggestion-icon">📊</span>
+                                    <span>数据统计面板</span>
+                                </div>
+                                <div class="suggestion-item">
+                                    <span class="suggestion-icon">📈</span>
+                                    <span>面试结果分析</span>
+                                </div>
+                                <div class="suggestion-item">
+                                    <span class="suggestion-icon">📋</span>
+                                    <span>面试记录查看</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}

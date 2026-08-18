@@ -1,0 +1,439 @@
+/* queue.css - 移除进度条相关样式 */
+
+@import url("core.css");
+
+:root {
+    --queue-bg: #F0F7FF;
+    --queue-card-bg: #FFFFFF;
+    --queue-primary: #2563EB;
+    --queue-primary-light: #3B82F6;
+    --queue-text: #111827;
+    --queue-text-secondary: #475569;
+    --queue-border: #BFDBFE;
+    --queue-surface: #F8FAFF;
+    --queue-success: #5a9a86;
+    --queue-warning: #c4a67a;
+    --queue-danger: #c48a8a;
+    --queue-info: #6a8a9a;
+}
+
+/* ============================================================
+   1. 预计等待时间汇总
+   ============================================================ */
+
+.wait-time-summary {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.wait-time-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.wait-time-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* ============================================================
+   2. 队列列表
+   ============================================================ */
+
+.queue-list-container {
+    margin-bottom: 20px;
+}
+
+/* ============================================================
+   3. 队列项
+   ============================================================ */
+
+.queue-item {
+    padding: 16px 20px;
+    border: 1px solid var(--queue-border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    background: var(--queue-card-bg);
+    transition: all 0.3s ease;
+}
+
+.queue-item:last-child {
+    margin-bottom: 0;
+}
+
+.queue-item:hover {
+    border-color: var(--queue-primary-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.queue-item .queue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.queue-item .queue-department {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--queue-text);
+}
+
+.queue-item .queue-priority {
+    font-size: 13px;
+    color: var(--queue-text-secondary);
+    background: var(--queue-surface);
+    padding: 2px 12px;
+    border-radius: 12px;
+}
+
+.queue-item .queue-status-badge {
+    display: inline-block;
+    padding: 2px 14px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.queue-status-badge.waiting {
+    background: #f0ebe0;
+    color: #8a7a5a;
+}
+
+.queue-status-badge.inqueue {
+    background: #e8ddd0;
+    color: #8a6a4a;
+}
+
+.queue-status-badge.filled {
+    background: #e8e8e8;
+    color: #666;
+}
+
+.queue-status-badge.interviewing {
+    background: #d5dde8;
+    color: #4a6a7a;
+}
+
+.queue-status-badge.completed {
+    background: #d0e0c8;
+    color: #4a7a4a;
+}
+
+/* ============================================================
+   4. 排队详情（展开区域）- 只有排队中显示
+   ============================================================ */
+
+.queue-details {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--queue-border);
+    display: none;
+}
+
+.queue-details.expanded {
+    display: block;
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.queue-details .detail-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 3px 0;
+    font-size: 14px;
+    flex-wrap: wrap;
+}
+
+.queue-details .detail-row .detail-label {
+    color: var(--queue-text-secondary);
+    min-width: 80px;
+}
+
+.queue-details .detail-row .detail-value {
+    color: var(--queue-text);
+    font-weight: 500;
+}
+
+.queue-details .detail-row .detail-value.position {
+    font-size: 18px;
+    color: var(--queue-primary);
+}
+
+.queue-details .detail-row .detail-value.wait-time {
+    font-size: 18px;
+    color: var(--queue-warning);
+}
+
+.queue-details .detail-row .detail-value.total {
+    color: var(--queue-text-secondary);
+}
+
+/* ============================================================
+   5. 操作按钮
+   ============================================================ */
+
+.queue-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.queue-actions .btn-sm {
+    padding: 5px 16px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.queue-actions .btn-sm:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.queue-actions .btn-sm:active {
+    transform: translateY(0);
+}
+
+.queue-actions .btn-sm.btn-success {
+    background: linear-gradient(135deg, #7cb8a4, #5a9a86);
+    color: #fff;
+}
+
+.queue-actions .btn-sm.btn-success:hover {
+    background: linear-gradient(135deg, #8ac8b4, #6aaa96);
+    box-shadow: 0 2px 12px rgba(90, 154, 134, 0.35);
+}
+
+.queue-actions .btn-sm.btn-danger {
+    background: linear-gradient(135deg, #d4a0a0, #c48a8a);
+    color: #fff;
+}
+
+.queue-actions .btn-sm.btn-danger:hover {
+    background: linear-gradient(135deg, #e0b0b0, #d09a9a);
+    box-shadow: 0 2px 12px rgba(196, 138, 138, 0.35);
+}
+
+.queue-actions .btn-sm.btn-warning {
+    background: linear-gradient(135deg, #d4b87a, #c4a67a);
+    color: #fff;
+}
+
+.queue-actions .btn-sm.btn-warning:hover {
+    background: linear-gradient(135deg, #e0c88a, #d0b68a);
+    box-shadow: 0 2px 12px rgba(196, 166, 122, 0.35);
+}
+
+.queue-actions .btn-sm:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* ============================================================
+   6. 空状态 / 加载状态
+   ============================================================ */
+
+.loading-state {
+    text-align: center;
+    color: var(--queue-text-secondary);
+    padding: 40px 20px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-state .empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.empty-state .empty-title {
+    font-size: 18px;
+    color: var(--queue-text);
+    margin-bottom: 4px;
+}
+
+.empty-state .empty-desc {
+    color: var(--queue-text-secondary);
+    font-size: 14px;
+}
+
+/* ============================================================
+   7. 操作栏
+   ============================================================ */
+
+.action-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--queue-card-bg);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--queue-border);
+    flex-wrap: wrap;
+}
+
+.action-bar .btn-primary {
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    color: #fff;
+    border: none;
+    padding: 10px 28px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-bar .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
+}
+
+.action-bar .btn-primary:active {
+    transform: translateY(0);
+}
+
+.action-bar .auto-refresh-hint {
+    font-size: 13px;
+    color: var(--queue-text-secondary);
+}
+
+/* ============================================================
+   8. 消息提示
+   ============================================================ */
+
+#messageContainer {
+    margin-top: 16px;
+}
+
+.success-message,
+.error-message {
+    padding: 12px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    animation: slideDown 0.4s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.success-message {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    border-left: 4px solid #10b981;
+}
+
+.success-message::before {
+    content: "✅";
+    font-size: 18px;
+}
+
+.error-message {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    border-left: 4px solid #ef4444;
+}
+
+.error-message::before {
+    content: "❌";
+    font-size: 18px;
+}
+
+/* ============================================================
+   9. 响应式
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .wait-time-summary {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+    }
+
+    .wait-time-value {
+        font-size: 20px;
+    }
+
+    .queue-item .queue-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .queue-details .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .queue-details .detail-row .detail-label {
+        min-width: auto;
+        font-size: 13px;
+    }
+
+    .queue-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .queue-actions .btn-sm {
+        width: 100%;
+        text-align: center;
+    }
+
+    .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .action-bar .btn-primary {
+        width: 100%;
+        text-align: center;
+    }
+
+    .action-bar .auto-refresh-hint {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .queue-item {
+        padding: 12px 14px;
+    }
+
+    .queue-item .queue-department {
+        font-size: 14px;
+    }
+
+    .wait-time-value {
+        font-size: 18px;
+    }
+}

@@ -1,0 +1,199 @@
+<!-- admin_interviewers.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}面试官分组管理 - 面试系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">面试系统</span>
+            </div>
+            <button class="toggle-btn" id="toggleSidebar">◀</button>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{% url 'admin_users' %}" class="menu-item">
+                <span class="menu-icon">👥</span>
+                <span class="menu-text">用户管理</span>
+            </a>
+            <a href="{% url 'admin_interviewers' %}" class="menu-item active">
+                <span class="menu-icon">🧑‍💼</span>
+                <span class="menu-text">面试官管理</span>
+            </a>
+            <a href="{% url 'admin_groups' %}" class="menu-item">
+                <span class="menu-icon">📅</span>
+                <span class="menu-text">面试场次</span>
+            </a>
+            <a href="{% url 'admin_scores' %}" class="menu-item">
+                <span class="menu-icon">⭐</span>
+                <span class="menu-text">评价信息</span>
+            </a>
+            <a href="{% url 'admin_console' %}" class="menu-item">
+                <span class="menu-icon">📥</span>
+                <span class="menu-text">信息导出</span>
+            </a>
+            <a href="{% url 'logout' %}" class="menu-item logout-item">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">退出登录</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1>面试官分组管理</h1>
+            <div class="user-info">
+                <span class="username">{{ request.user.username }}</span>
+                <span class="role-badge admin">管理员</span>
+            </div>
+        </div>
+        <div class="content-body">
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="搜索分组..." />
+                            <span class="search-icon">🔍</span>
+                        </div>
+                        <div class="filter-box">
+                            <select id="departmentFilter">
+                                <option value="">全部部门</option>
+                                <option value="BGS">办公</option>
+                                <option value="XCB">信传</option>
+                                <option value="QYB">权益</option>
+                                <option value="XSB">学实</option>
+                                <option value="WYB">文艺</option>
+                                <option value="TYB">体育</option>
+                                <option value="UNK">未知</option>
+                            </select>
+                        </div>
+                        <div class="filter-box">
+                            <select id="statusFilter">
+                                <option value="">全部状态</option>
+                                <option value="ONUSE">启用中</option>
+                                <option value="ENDED">已销毁</option>
+                            </select>
+                        </div>
+                        <div class="batch-actions">
+                            <button class="btn btn-primary btn-sm" id="selectAllBtn">全选</button>
+                            <button class="btn btn-secondary btn-sm" id="deselectAllBtn">取消全选</button>
+                            <button class="btn btn-warning btn-sm" id="batchDestroyBtn">🗑️ 批量销毁</button>
+                            <button class="btn btn-success btn-sm" id="addBtn">➕ 新增分组</button>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <span class="record-count">共 <span id="totalCount">0</span> 条记录</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="data-table" id="interviewerTable">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="checkAll"></th>
+                                <th data-sort="id">ID</th>
+                                <th data-sort="name">组名</th>
+                                <th data-sort="department">部门</th>
+                                <th data-sort="chief">主面试官</th>
+                                <th data-sort="member_names">成员</th>
+                                <th data-sort="status">状态</th>
+                                <th data-sort="member_count">成员数</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr><td colspan="9" class="loading-text">加载中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-pagination">
+                    <div class="pagination-info">
+                        显示第 <span id="pageStart">1</span>-<span id="pageEnd">10</span> 条，共 <span id="pageTotal">0</span> 条
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="page-btn" id="prevPage" disabled>上一页</button>
+                        <span class="page-current" id="currentPage">1</span>
+                        <span class="page-total">/ <span id="totalPages">1</span></span>
+                        <button class="page-btn" id="nextPage">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="modal" id="editModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h3 id="modalTitle">编辑分组信息</h3>
+            <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="editForm">
+                <input type="hidden" id="editId" name="id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>组名</label>
+                        <input type="text" id="editName" placeholder="留空自动生成">
+                        <span class="hint">留空将自动生成</span>
+                    </div>
+                    <div class="form-group">
+                        <label>部门 <span class="required">*</span></label>
+                        <select id="editDepartment"></select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>状态</label>
+                        <select id="editStatus"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>创建时间</label>
+                        <input type="text" id="editCreatedAt" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group members-section">
+                    <label>成员管理</label>
+                    <div class="members-management">
+                        <div class="members-add">
+                            <select id="memberSelect">
+                                <option value="">-- 选择面试官 --</option>
+                            </select>
+                            <button type="button" class="btn btn-success btn-sm" id="addMemberBtn">添加</button>
+                        </div>
+                        <div class="members-list" id="membersList">
+                            <div class="empty-hint">暂无成员</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>主面试官</label>
+                    <select id="editChief">
+                        <option value="">-- 选择主面试官 --</option>
+                    </select>
+                    <span class="hint">只能从已添加的成员中选择</span>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="modalCancel">取消</button>
+            <button class="btn btn-primary" id="modalSave">保存</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/addmin/addmin_interviewers.js' %}"></script>
+{% endblock %}

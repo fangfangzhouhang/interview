@@ -1,0 +1,38 @@
+<!-- login.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}登录 - 面试系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core.css' %}">
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <h1>面试系统登录</h1>
+        <form id="loginForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" required placeholder="请输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" required placeholder="请输入密码">
+            </div>
+            <button type="submit" class="login-btn">登录</button>
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+        <div class="register-link">
+            还没有账号？<a href="{% url 'register' %}">立即注册</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/auth/login.js' %}"></script>
+{% endblock %}

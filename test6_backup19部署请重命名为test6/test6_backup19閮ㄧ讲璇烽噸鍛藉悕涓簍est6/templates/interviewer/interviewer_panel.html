@@ -1,0 +1,105 @@
+<!-- interviewer_panel.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}面试官管理面板{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core.css' %}">
+<style>
+    .clickable-row {
+        cursor: pointer;
+        transition: background var(--transition);
+    }
+    .clickable-row:hover {
+        background: var(--color-surface) !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">面试系统</span>
+            </div>
+            <button class="toggle-btn" id="toggleSidebar">◀</button>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{% url 'interviewer_panel' %}" class="menu-item active">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">我的场次</span>
+            </a>
+            <a href="{% url 'interviewer_panel_groups' %}" class="menu-item">
+                <span class="menu-icon">👥</span>
+                <span class="menu-text">面试官组管理</span>
+            </a>
+            <a href="{% url 'interviewer_profile' %}" class="menu-item">
+                <span class="menu-icon">👤</span>
+                <span class="menu-text">个人信息</span>
+            </a>
+            <a href="{% url 'logout' %}" class="menu-item logout-item">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">退出登录</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1>我的面试场次</h1>
+            <div class="user-info">
+                <span class="username">{{ request.user.username }}</span>
+                <span class="role-badge interviewer">面试官</span>
+            </div>
+        </div>
+        <div class="content-body">
+            <div class="table-container">
+                <div class="table-toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="搜索场次、部门或面试者..." />
+                            <span class="search-icon">🔍</span>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <span class="record-count">共 <span id="totalCount">0</span> 条记录</span>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th width="60">序号</th>
+                                <th>面试者</th>
+                                <th width="120">状态</th>
+                                <th width="160">面试时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr><td colspan="4" class="loading-text">加载中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-pagination">
+                    <div class="pagination-info">
+                        显示第 <span id="pageStart">1</span>-<span id="pageEnd">10</span> 条，共 <span id="pageTotal">0</span> 条
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="page-btn" id="prevPage" disabled>上一页</button>
+                        <span class="page-current" id="currentPage">1</span>
+                        <span class="page-total">/ <span id="totalPages">1</span></span>
+                        <button class="page-btn" id="nextPage">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/interviewer/interviewer_panel.js' %}"></script>
+{% endblock %}
