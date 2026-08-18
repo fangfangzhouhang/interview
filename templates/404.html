@@ -1,0 +1,97 @@
+{# 404 页面找不到 #}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}404 页面不存在 - 面试系统{% endblock %}
+
+{% block extra_css %}
+<style>
+  .notfound-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
+  }
+  .notfound-card {
+    max-width: 520px;
+    width: 100%;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
+    padding: 48px 40px;
+    text-align: center;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .notfound-code {
+    font-size: 84px;
+    line-height: 1;
+    font-weight: 800;
+    background: linear-gradient(135deg, #0ea5e9, #6366f1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 0 0 8px;
+  }
+  .notfound-title {
+    margin: 0 0 12px;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .notfound-msg {
+    margin: 0 0 28px;
+    color: #64748b;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .notfound-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .notfound-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 132px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all .15s ease;
+    cursor: pointer;
+  }
+  .notfound-btn-primary {
+    background: #6366f1;
+    color: #fff;
+  }
+  .notfound-btn-primary:hover { background: #4f46e5; }
+  .notfound-btn-ghost {
+    background: #fff;
+    color: #475569;
+    border-color: #e2e8f0;
+  }
+  .notfound-btn-ghost:hover { background: #f8fafc; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="notfound-wrap">
+  <div class="notfound-card">
+    <div class="notfound-code">404</div>
+    <h1 class="notfound-title">页面不存在</h1>
+    <p class="notfound-msg">
+      您访问的链接可能已经失效、被移动，或者地址输入有误。
+    </p>
+    <div class="notfound-actions">
+      <a href="/" class="notfound-btn notfound-btn-primary">返回首页</a>
+      <a href="{% url 'login' %}" class="notfound-btn notfound-btn-ghost">去登录</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

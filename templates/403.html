@@ -1,0 +1,99 @@
+{# 403 权限不足页面：继承 base.html，与全站 UI 一致，避免出现 Django 默认裸 403/空白页 #}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}403 无权限访问 - 面试系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core.css' %}">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<style>
+  .forbidden-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #eef2ff 100%);
+  }
+  .forbidden-card {
+    max-width: 520px;
+    width: 100%;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
+    padding: 48px 40px;
+    text-align: center;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .forbidden-code {
+    font-size: 84px;
+    line-height: 1;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 0 0 8px;
+  }
+  .forbidden-title {
+    margin: 0 0 12px;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .forbidden-msg {
+    margin: 0 0 28px;
+    color: #64748b;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .forbidden-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .forbidden-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 132px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all .15s ease;
+    cursor: pointer;
+  }
+  .forbidden-btn-primary {
+    background: #6366f1;
+    color: #fff;
+  }
+  .forbidden-btn-primary:hover { background: #4f46e5; }
+  .forbidden-btn-ghost {
+    background: #fff;
+    color: #475569;
+    border-color: #e2e8f0;
+  }
+  .forbidden-btn-ghost:hover { background: #f8fafc; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="forbidden-wrap">
+  <div class="forbidden-card">
+    <div class="forbidden-code">403</div>
+    <h1 class="forbidden-title">没有权限访问此页面</h1>
+    <p class="forbidden-msg">
+      您当前的账号角色不能查看该内容。如果您觉得这是个错误，请联系系统管理员确认您的角色和权限。
+    </p>
+    <div class="forbidden-actions">
+      <a href="{% url 'login' %}" class="forbidden-btn forbidden-btn-primary">去登录</a>
+      <a href="/" class="forbidden-btn forbidden-btn-ghost">返回首页</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
