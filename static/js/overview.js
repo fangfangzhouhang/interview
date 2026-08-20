@@ -21,6 +21,14 @@
     let countdownInterval = null;
     let isPolling = false;
 
+    function setButtonLoading(button, isLoading, label) {
+        const labelElement = $('.button-label', button);
+        button.disabled = isLoading;
+        button.classList.toggle('is-loading', isLoading);
+        button.setAttribute('aria-busy', String(isLoading));
+        if (labelElement) labelElement.textContent = label;
+    }
+
     // ==================== Toast ====================
     function showToast(message, type = 'info') {
         const toast = els.toast;
@@ -150,8 +158,7 @@
     // ==================== 自动分组 + 刷新（一体化） ====================
     async function refreshWithAutoGroup() {
         const btn = els.refreshBtn;
-        btn.disabled = true;
-        btn.textContent = '加载中...';
+        setButtonLoading(btn, true, '正在刷新');
 
         try {
             const response = await fetch('/api/overview/manual_refresh/', {
@@ -185,16 +192,16 @@
             console.error('[Overview] Refresh error:', error);
             showToast('网络错误，请重试', 'error');
         } finally {
-            btn.disabled = false;
-            btn.textContent = '刷新';
+            setButtonLoading(btn, false, '刷新并分组');
         }
     }
 
     // ==================== 仅手动自动分组 ====================
     async function performAutoGroup() {
+        if (!window.confirm('自动分组会按当前规则更新待分配场次。是否继续？')) return;
+
         const btn = els.autoGroupBtn;
-        btn.disabled = true;
-        btn.textContent = '处理中...';
+        setButtonLoading(btn, true, '正在分组');
 
         try {
             const response = await fetch('/api/overview/auto_group/', {
@@ -209,7 +216,9 @@
 
             if (result.success) {
                 showToast(result.message || '自动分组完成', 'success');
-                await refreshWithAutoGroup();
+                await fetchOverviewData();
+                countdown = 180;
+                updateCountdown(countdown);
             } else {
                 showToast(result.message || '自动分组失败', 'error');
             }
@@ -217,8 +226,7 @@
             console.error('[Overview] Auto group error:', error);
             showToast('网络错误，请重试', 'error');
         } finally {
-            btn.disabled = false;
-            btn.textContent = '自动分组';
+            setButtonLoading(btn, false, '自动分组');
         }
     }
 

@@ -1,483 +1,589 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* 分步报名：保留原后端一次提交，前端只负责组织与反馈 */
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    padding: 40px 20px;
+    min-height: 100dvh;
+    background: #edf1f7;
 }
 
 .register-container {
-    max-width: 800px;
-    margin: 0 auto;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: clamp(20px, 4vw, 52px);
+    background:
+        linear-gradient(145deg, rgba(49, 87, 200, 0.07), transparent 42%),
+        #edf1f7;
 }
 
 .register-box {
-    background: #fff;
-    border-radius: 16px;
-    padding: 40px 44px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    width: min(900px, 100%);
     position: relative;
+    padding: clamp(28px, 4vw, 48px);
+    border: 1px solid rgba(24, 34, 48, 0.10);
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 22px 60px rgba(24, 34, 48, 0.12);
 }
 
 .register-header {
-    text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 26px;
+}
+
+.register-kicker,
+.step-heading > span,
+.role-kicker {
+    color: var(--color-primary);
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 0.12em;
 }
 
 .register-header h1 {
-    font-size: 28px;
-    font-weight: 600;
-    color: #2d3748;
-    margin-bottom: 8px;
+    margin-top: 7px;
+    color: var(--color-text);
+    font-size: clamp(26px, 3vw, 34px);
+    line-height: 1.25;
+    letter-spacing: -0.035em;
 }
 
 .register-header p {
-    color: #718096;
-    font-size: 15px;
+    margin-top: 8px;
+    color: var(--color-text-muted);
+    font-size: 14px;
 }
 
-/* ========== 角色选择模态框 ========== */
 .role-modal {
-    display: flex;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(8px);
+    inset: 0;
     z-index: 1000;
-    justify-content: center;
+    display: flex;
     align-items: center;
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    justify-content: center;
+    padding: 20px;
+    background: rgba(17, 24, 39, 0.62);
+    backdrop-filter: blur(6px);
+    animation: role-fade-in 0.18s ease;
 }
 
 .role-modal-content {
-    background: #fff;
-    border-radius: 20px;
-    padding: 48px 56px;
-    max-width: 560px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
-    animation: slideDown 0.4s ease;
+    width: min(620px, 100%);
+    padding: clamp(28px, 5vw, 44px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 24px 72px rgba(17, 24, 39, 0.28);
 }
 
 .role-modal-content h2 {
+    color: var(--color-text);
     font-size: 26px;
-    font-weight: 700;
-    color: #2d3748;
-    margin-bottom: 8px;
+    letter-spacing: -0.025em;
 }
 
 .role-modal-desc {
-    color: #718096;
-    font-size: 15px;
-    margin-bottom: 32px;
+    margin-top: 7px;
+    color: var(--color-text-muted);
+    font-size: 14px;
 }
 
 .role-options {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 26px;
 }
 
 .role-btn {
-    flex: 1;
-    padding: 30px 20px;
-    border: 2px solid #e2e8f0;
-    border-radius: 16px;
-    background: #f7fafc;
+    min-height: 150px;
+    padding: 22px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-surface);
+    color: var(--color-text);
     cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
+    text-align: left;
+    transition: border-color var(--transition), box-shadow var(--transition), background-color var(--transition), transform var(--transition);
 }
 
 .role-btn:hover {
-    border-color: #667eea;
-    background: #edf2f7;
-    transform: translateY(-4px);
-    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+    border-color: var(--color-primary-light);
+    background: #ffffff;
+    box-shadow: 0 10px 24px rgba(49, 87, 200, 0.11);
+    transform: translateY(-2px);
 }
 
 .role-btn:active {
     transform: translateY(0);
 }
 
-.role-btn .role-icon {
-    font-size: 48px;
-    margin-bottom: 12px;
-    display: block;
-}
-
 .role-btn .role-name {
-    font-size: 20px;
-    font-weight: 600;
-    color: #2d3748;
-    margin-bottom: 4px;
+    margin-top: 20px;
+    color: var(--color-text);
+    font-size: 19px;
+    font-weight: 750;
 }
 
 .role-btn .role-desc {
+    margin-top: 7px;
+    color: var(--color-text-muted);
     font-size: 13px;
-    color: #a0aec0;
+    line-height: 1.55;
 }
 
-.role-btn.candidate-role:hover {
-    border-color: #48bb78;
-    background: #f0fff4;
-}
-
-.role-btn.interviewer-role:hover {
-    border-color: #ed8936;
-    background: #fffbeb;
-}
-
-/* ========== 当前身份显示 ========== */
 .current-role-display {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: #f7fafc;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #4a5568;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 44px;
+    margin-bottom: 20px;
+    padding: 8px 10px 8px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-size: 13px;
 }
 
-.current-role-display .role-tag {
-    padding: 4px 16px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 14px;
+.role-tag {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
 }
 
-.current-role-display .role-tag.role-candidate {
-    background: #c6f6d5;
-    color: #276749;
+.role-tag.role-candidate {
+    background: #e9f7f1;
+    color: var(--color-success-dark);
 }
 
-.current-role-display .role-tag.role-interviewer {
-    background: #fbd38d;
-    color: #9c4221;
-}
-
-.current-role-display .role-tag:not(.role-candidate):not(.role-interviewer) {
-    background: #e2e8f0;
-    color: #a0aec0;
+.role-tag.role-interviewer {
+    background: #fff3e4;
+    color: var(--color-warning-dark);
 }
 
 .change-role-btn {
+    min-height: 30px;
     margin-left: auto;
-    padding: 6px 16px;
-    border: 1px solid #e2e8f0;
+    padding: 4px 10px;
+    border: 1px solid var(--color-border);
     border-radius: 6px;
-    background: #fff;
-    color: #4a5568;
-    font-size: 13px;
+    background: #ffffff;
+    color: var(--color-text-secondary);
     cursor: pointer;
-    transition: all 0.2s;
+    font-size: 12px;
+    font-weight: 650;
 }
 
 .change-role-btn:hover {
-    border-color: #e53e3e;
-    color: #e53e3e;
-    background: #fff5f5;
+    border-color: var(--color-danger-light);
+    color: var(--color-danger-dark);
 }
 
-/* ========== 表单样式 ========== */
-.form-section {
-    margin-bottom: 28px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid #edf2f7;
+.register-stepper {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    margin: 0 0 30px;
+    list-style: none;
 }
 
-.form-section:last-of-type {
-    border-bottom: none;
-    margin-bottom: 0;
+.register-stepper li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: var(--color-text-muted);
+    font-size: 12px;
 }
 
-.form-section h3 {
-    font-size: 16px;
-    font-weight: 600;
-    color: #4a5568;
-    margin-bottom: 16px;
-    padding-left: 12px;
-    border-left: 3px solid #667eea;
+.register-stepper li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 34px;
+    right: 8px;
+    height: 1px;
+    background: var(--color-border);
+}
+
+.register-stepper li span {
+    position: relative;
+    z-index: 1;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 28px;
+    border: 1px solid var(--color-border-dark);
+    border-radius: 50%;
+    background: #ffffff;
+    color: var(--color-text-muted);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11px;
+}
+
+.register-stepper li.active,
+.register-stepper li.completed {
+    color: var(--color-text);
+}
+
+.register-stepper li.active span {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: #ffffff;
+    box-shadow: 0 0 0 4px var(--color-primary-bg);
+}
+
+.register-stepper li.completed span {
+    border-color: var(--color-success);
+    background: #e9f7f1;
+    color: var(--color-success-dark);
+}
+
+.form-step {
+    min-height: 330px;
+    animation: step-enter 0.16s ease;
+}
+
+.form-step[hidden] {
+    display: none;
+}
+
+/* Preserve the native hidden contract even for controls that define display:flex. */
+#registerForm [hidden] {
+    display: none !important;
+}
+
+.step-heading {
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.step-heading h3 {
+    margin-top: 5px;
+    color: var(--color-text);
+    font-size: 20px;
+    letter-spacing: -0.02em;
+}
+
+.step-heading p {
+    margin-top: 6px;
+    color: var(--color-text-muted);
+    font-size: 13px;
 }
 
 .form-row {
-    display: flex;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
 }
 
 .form-group {
-    flex: 1;
-    margin-bottom: 16px;
-}
-
-.form-group.half {
-    flex: 0 0 calc(50% - 10px);
-}
-
-.form-group.full {
-    flex: 1;
+    min-width: 0;
+    margin-bottom: 17px;
 }
 
 .form-group label {
     display: block;
-    font-size: 14px;
-    font-weight: 500;
-    color: #4a5568;
     margin-bottom: 6px;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    font-weight: 650;
 }
 
 .required {
-    color: #e53e3e;
+    color: var(--color-danger);
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 10px 14px;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border-dark);
+    border-radius: var(--radius-sm);
+    background: #ffffff;
+    color: var(--color-text);
     font-size: 14px;
-    font-family: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    background: #fff;
+    transition: border-color var(--transition), box-shadow var(--transition), background-color var(--transition);
+}
+
+.form-group input::placeholder {
+    color: #98a2b3;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(49, 87, 200, 0.13);
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
 }
 
-.form-group input:invalid:not(:focus),
-.form-group select:invalid:not(:focus) {
-    border-color: #fc8181;
+.form-group input.is-valid,
+.form-group select.is-valid {
+    border-color: var(--color-success);
 }
 
-.form-group input:valid:not(:empty),
-.form-group select:valid:not(:empty) {
-    border-color: #68d391;
-}
-
-.form-group textarea {
-    resize: vertical;
-    min-height: 60px;
+.form-group input.is-invalid,
+.form-group select.is-invalid {
+    border-color: var(--color-danger);
+    background: #fffafb;
 }
 
 .form-group .hint {
     display: block;
+    margin-top: 5px;
+    color: var(--color-text-muted);
     font-size: 12px;
-    color: #a0aec0;
-    margin-top: 4px;
-    transition: color 0.3s;
 }
 
-.form-group select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 36px;
-    cursor: pointer;
+.form-group .hint.is-error {
+    color: var(--color-danger-dark);
 }
 
-.form-group select:disabled {
-    background-color: #f7fafc;
-    cursor: not-allowed;
-    opacity: 0.6;
+.form-group .hint.is-success {
+    color: var(--color-success-dark);
 }
 
-.form-group select option {
-    padding: 8px;
+.register-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
 }
 
-/* ========== 错误和成功消息 ========== */
-.error-message {
-    display: none;
-    background: #fff5f5;
-    color: #e53e3e;
-    padding: 12px 16px;
-    border-radius: 6px;
-    border: 1px solid #fc8181;
-    margin-top: 16px;
+.summary-item {
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+}
+
+.summary-item span {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: 11px;
+}
+
+.summary-item strong {
+    display: block;
+    margin-top: 3px;
+    overflow-wrap: anywhere;
+    color: var(--color-text);
     font-size: 14px;
 }
 
-.success-message {
-    display: none;
-    background: #f0fff4;
-    color: #38a169;
-    padding: 12px 16px;
-    border-radius: 6px;
-    border: 1px solid #68d391;
-    margin-top: 16px;
-    font-size: 14px;
-}
-
-/* ========== 表单操作按钮 ========== */
-.form-actions {
+.confirmation-check {
     display: flex;
-    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+    margin-top: 18px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.confirmation-check input {
+    width: 17px;
+    height: 17px;
+    margin-top: 1px;
+    accent-color: var(--color-primary);
+}
+
+.form-actions {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--color-border);
+}
+
+.step-actions {
+    display: grid;
+    grid-template-columns: minmax(100px, auto) 1fr minmax(120px, auto);
     align-items: center;
     gap: 12px;
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid #e2e8f0;
+}
+
+.step-position {
+    color: var(--color-text-muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+.step-btn,
+.register-btn {
+    min-height: 42px;
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    transition: background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.step-btn:hover:not(:disabled),
+.register-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.step-btn-secondary {
+    border: 1px solid var(--color-border-dark);
+    background: #ffffff;
+    color: var(--color-text-secondary);
+}
+
+.step-btn-primary,
+.register-btn {
+    border: 1px solid var(--color-primary-dark);
+    background: var(--color-primary);
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(34, 63, 145, 0.20);
+}
+
+.step-btn-primary:hover,
+.register-btn:hover:not(:disabled) {
+    background: var(--color-primary-dark);
 }
 
 .register-btn {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.register-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+.register-btn .button-spinner {
+    display: none;
+}
+
+.register-btn.is-loading .button-spinner {
+    display: inline-block;
 }
 
 .register-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
+    cursor: wait;
+    opacity: 0.68;
 }
 
 .login-link {
-    color: #667eea;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.2s;
+    display: block;
+    width: max-content;
+    margin: 14px auto 0;
+    color: var(--color-primary);
+    font-size: 13px;
+    font-weight: 650;
 }
 
-.login-link:hover {
-    color: #5a67d8;
-    text-decoration: underline;
+.error-message,
+.success-message {
+    display: none;
+    margin-top: 14px;
+    padding: 11px 13px;
+    border: 1px solid;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    line-height: 1.5;
 }
 
-/* ========== 响应式设计 ========== */
-@media (max-width: 768px) {
+.error-message:not(:empty),
+.success-message:not(:empty) {
+    display: block;
+}
+
+.error-message {
+    border-color: #efc2c8;
+    background: #fff4f5;
+    color: var(--color-danger-dark);
+}
+
+.success-message {
+    border-color: #a9d8c3;
+    background: #eef9f4;
+    color: var(--color-success-dark);
+}
+
+@keyframes role-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes step-enter {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 720px) {
+    .register-container {
+        display: block;
+        padding: 0;
+        background: #ffffff;
+    }
+
     .register-box {
-        padding: 24px 20px;
+        min-height: 100dvh;
+        padding: 28px 22px 34px;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
     }
 
-    .register-header h1 {
-        font-size: 24px;
+    .register-stepper strong {
+        display: none;
     }
 
-    .form-row {
-        flex-direction: column;
+    .register-stepper li {
         gap: 0;
     }
 
-    .form-group.half {
-        flex: 1;
+    .register-stepper li:not(:last-child)::after {
+        right: 4px;
     }
 
-    .form-actions {
-        flex-direction: column;
+    .form-row,
+    .register-summary {
+        grid-template-columns: 1fr;
+        gap: 0;
     }
 
-    .register-btn {
-        width: 100%;
+    .form-step {
+        min-height: 0;
     }
+}
 
-    .role-modal-content {
-        padding: 32px 24px;
-    }
-
+@media (max-width: 520px) {
     .role-options {
-        flex-direction: column;
-        gap: 12px;
+        grid-template-columns: 1fr;
     }
 
     .role-btn {
-        padding: 20px;
+        min-height: 116px;
+    }
+
+    .role-btn .role-name {
+        margin-top: 12px;
     }
 
     .current-role-display {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: center;
+        flex-wrap: wrap;
     }
 
     .change-role-btn {
         margin-left: 0;
     }
-}
 
-@media (max-width: 480px) {
-    .register-container {
-        padding: 16px 10px;
+    .step-actions {
+        grid-template-columns: 1fr 1fr;
     }
 
-    .register-box {
-        padding: 20px 16px;
-        border-radius: 12px;
+    .step-position {
+        grid-column: 1 / -1;
+        grid-row: 1;
     }
 
-    .register-header h1 {
-        font-size: 20px;
+    .step-actions > button {
+        width: 100%;
     }
-
-    .form-group label {
-        font-size: 13px;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        font-size: 13px;
-        padding: 8px 12px;
-    }
-
-    .role-modal-content {
-        padding: 24px 16px;
-    }
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.loading-spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-    margin-right: 8px;
-    vertical-align: middle;
 }

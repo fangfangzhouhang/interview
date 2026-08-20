@@ -1,57 +1,57 @@
 /* ============================================================
    core.css - 全局核心样式
    所有页面共用，定义基础变量、重置、通用组件
-   配色：明亮鲜艳，表格紧凑占满
+   配色：克制的校园业务工作台，表格保持紧凑与可读
    ============================================================ */
 
 :root {
-    /* ===== 主色 (60%) - 明亮蓝紫色系 ===== */
-    --color-primary: #667eea;
-    --color-primary-light: #8899ee;
-    --color-primary-dark: #5a67d8;
-    --color-primary-bg: #eef1fb;
+    /* ===== 主色：可靠、清晰的操作蓝 ===== */
+    --color-primary: #3157c8;
+    --color-primary-light: #5f7fe0;
+    --color-primary-dark: #223f91;
+    --color-primary-bg: #eef2ff;
 
-    /* ===== 辅助色 (30%) - 明亮暖色 ===== */
-    --color-secondary: #f6ad55;
-    --color-secondary-light: #f8c478;
-    --color-secondary-dark: #ed8936;
+    /* ===== 辅助色：面试进程与协作状态 ===== */
+    --color-secondary: #168a83;
+    --color-secondary-light: #4daaa5;
+    --color-secondary-dark: #0e6d67;
 
-    /* ===== 强调色 (10%) - 明亮珊瑚粉 ===== */
-    --color-accent: #fc8181;
-    --color-accent-light: #fda8a8;
-    --color-accent-dark: #f56565;
+    /* ===== 强调色：仅用于关键选中态 ===== */
+    --color-accent: #7656d6;
+    --color-accent-light: #9b87e5;
+    --color-accent-dark: #5c3eb9;
 
-    /* ===== 功能色 - 鲜艳明亮 ===== */
-    --color-success: #48bb78;
-    --color-success-light: #88d8a0;
-    --color-success-dark: #38a169;
+    /* ===== 功能色 ===== */
+    --color-success: #16835b;
+    --color-success-light: #69b996;
+    --color-success-dark: #0f6847;
 
-    --color-warning: #f6ad55;
-    --color-warning-light: #f8c478;
-    --color-warning-dark: #ed8936;
+    --color-warning: #b86a0b;
+    --color-warning-light: #dda451;
+    --color-warning-dark: #8f5006;
 
-    --color-danger: #fc8181;
-    --color-danger-light: #fda8a8;
-    --color-danger-dark: #f56565;
+    --color-danger: #c43d4e;
+    --color-danger-light: #e58a95;
+    --color-danger-dark: #9e2c3a;
 
-    --color-info: #63b3ed;
-    --color-info-light: #9accef;
-    --color-info-dark: #4299e1;
+    --color-info: #315ead;
+    --color-info-light: #7e9bcf;
+    --color-info-dark: #254985;
 
     /* ===== 中性色 ===== */
-    --color-bg: #f7fafc;
+    --color-bg: #f4f7fb;
     --color-bg-white: #ffffff;
-    --color-surface: #f7fafc;
-    --color-border: #e2e8f0;
-    --color-border-dark: #cbd5e0;
-    --color-text: #2d3748;
-    --color-text-secondary: #4a5568;
-    --color-text-muted: #a0aec0;
+    --color-surface: #f8fafc;
+    --color-border: #dce3ed;
+    --color-border-dark: #c5cedb;
+    --color-text: #182230;
+    --color-text-secondary: #475467;
+    --color-text-muted: #667085;
 
     /* ===== 阴影 ===== */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.12);
-    --shadow-lg: 0 8px 48px rgba(0, 0, 0, 0.16);
+    --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.08), 0 1px 2px rgba(16, 24, 40, 0.04);
+    --shadow-md: 0 8px 24px rgba(16, 24, 40, 0.10);
+    --shadow-lg: 0 18px 48px rgba(16, 24, 40, 0.16);
 
     /* ===== 圆角 ===== */
     --radius-sm: 8px;
@@ -60,7 +60,7 @@
     --radius-xl: 20px;
 
     /* ===== 过渡 ===== */
-    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: 0.16s cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* ===== 重置 ===== */
@@ -1451,5 +1451,336 @@ a:hover {
     .department-tag {
         font-size: 11px;
         padding: 1px 6px;
+    }
+}
+
+/* ============================================================
+   业务系统 UI 基线增强（2026 第一轮）
+   复用现有类名，统一焦点、反馈、密度与窄屏导航
+   ============================================================ */
+
+html {
+    min-width: 320px;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid rgba(49, 87, 200, 0.24);
+    outline-offset: 2px;
+}
+
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+.sidebar {
+    background: linear-gradient(180deg, #182230 0%, #111827 100%);
+    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.06);
+}
+
+.menu-item.active {
+    background: rgba(95, 127, 224, 0.22);
+    box-shadow: inset 3px 0 0 #8da6f2;
+}
+
+.content-header {
+    min-height: 58px;
+    padding: 12px 24px;
+}
+
+.content-header h1 {
+    letter-spacing: -0.02em;
+}
+
+.content-body {
+    scrollbar-gutter: stable;
+}
+
+.card,
+.table-container {
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-sm);
+}
+
+.card {
+    overflow: clip;
+}
+
+.card-header {
+    background: var(--color-bg-white);
+}
+
+.btn {
+    min-height: 36px;
+    height: auto;
+    justify-content: center;
+    border: 1px solid transparent;
+    transition: background-color var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.10);
+}
+
+.btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    box-shadow: 0 1px 2px rgba(34, 63, 145, 0.20);
+}
+
+.btn-secondary {
+    background: #ffffff;
+}
+
+.btn-sm {
+    min-height: 32px;
+}
+
+.btn-lg {
+    min-height: 44px;
+}
+
+.btn.is-loading,
+.is-loading {
+    cursor: wait;
+    pointer-events: none;
+}
+
+.button-spinner {
+    width: 15px;
+    height: 15px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    animation: ui-spin 0.65s linear infinite;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    min-height: 40px;
+    border-color: var(--color-border-dark);
+    background: #ffffff;
+    color: var(--color-text);
+}
+
+.form-group input:disabled,
+.form-group select:disabled,
+.form-group textarea:disabled {
+    color: var(--color-text-secondary);
+    background: #eef2f6;
+    border-color: #d6dde7;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+.data-table tbody tr {
+    transition: background-color var(--transition);
+}
+
+.data-table tbody tr:hover {
+    background: #f7f9fd;
+}
+
+.table-wrapper {
+    overscroll-behavior-inline: contain;
+    scrollbar-gutter: stable;
+}
+
+.modal-overlay,
+.modal-content {
+    transition: opacity var(--transition), transform var(--transition);
+}
+
+.ui-toast-stack {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 12000;
+    display: grid;
+    gap: 10px;
+    width: min(380px, calc(100vw - 32px));
+    pointer-events: none;
+}
+
+.ui-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-info);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.98);
+    color: var(--color-text);
+    box-shadow: var(--shadow-md);
+    font-size: 14px;
+    line-height: 1.45;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: toast-in 0.18s ease forwards;
+}
+
+.ui-toast.success { border-left-color: var(--color-success); }
+.ui-toast.error { border-left-color: var(--color-danger); }
+.ui-toast.warning { border-left-color: var(--color-warning); }
+
+.ui-toast.is-leaving {
+    animation: toast-out 0.16s ease forwards;
+}
+
+@keyframes ui-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes toast-in {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-out {
+    to { opacity: 0; transform: translateY(6px); }
+}
+
+@media (max-width: 640px) {
+    .app-container {
+        flex-direction: column;
+        height: 100dvh;
+        min-height: 100dvh;
+    }
+
+    .sidebar,
+    .sidebar.collapsed {
+        width: 100%;
+        min-width: 100%;
+        height: 58px;
+        min-height: 58px;
+        flex-direction: row;
+        overflow: hidden;
+        box-shadow: 0 1px 0 rgba(16, 24, 40, 0.10);
+    }
+
+    .sidebar-header {
+        min-width: 52px;
+        padding: 8px 12px;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 0;
+    }
+
+    .sidebar .logo-text,
+    .sidebar .toggle-btn {
+        display: none;
+    }
+
+    .sidebar-menu {
+        min-width: 0;
+        padding: 7px 8px;
+        flex-direction: row;
+        gap: 4px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .sidebar .menu-item,
+    .sidebar.collapsed .menu-item {
+        width: auto;
+        min-width: max-content;
+        height: 44px;
+        padding: 8px 12px;
+        margin: 0;
+        border: 0;
+        border-radius: 7px;
+        gap: 7px;
+        font-size: 13px;
+    }
+
+    .sidebar .menu-text,
+    .sidebar.collapsed .menu-text {
+        width: auto;
+        opacity: 1;
+        overflow: visible;
+        font-size: 13px;
+    }
+
+    .sidebar .menu-icon {
+        font-size: 16px;
+    }
+
+    .sidebar .menu-item.active {
+        box-shadow: inset 0 -2px 0 #9bb0f0;
+    }
+
+    .sidebar .logout-item {
+        margin-top: 0;
+        padding-top: 8px;
+    }
+
+    .main-content {
+        width: 100%;
+        min-height: 0;
+    }
+
+    .content-header {
+        min-height: 50px;
+    }
+
+    .ui-toast-stack {
+        right: 16px;
+        bottom: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn,
+    .btn-sm,
+    .btn-lg {
+        min-height: 42px;
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .page-btn {
+        min-height: 36px;
+    }
+
+    .modal-content {
+        max-height: calc(100dvh - 24px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

@@ -5,30 +5,56 @@
 {% block title %}登录 - 面试系统{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/core.css' %}">
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<link rel="stylesheet" href="{% static 'css/core.css' %}?v=20260821-mobile">
+<link rel="stylesheet" href="{% static 'css/login.css' %}?v=20260821-mobile">
 {% endblock %}
 
 {% block content %}
 <div class="login-container">
-    <div class="login-box">
-        <h1>面试系统登录</h1>
-        <form id="loginForm">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="username">用户名</label>
-                <input type="text" id="username" name="username" required placeholder="请输入用户名">
+    <div class="login-shell">
+        <aside class="login-context" aria-label="系统介绍">
+            <div>
+                <span class="login-kicker">学生会招新 · 面试工作台</span>
+                <h1>让报名、候场和评价<br>在同一条流程里完成</h1>
+                <p>不同身份进入各自工作区，信息与操作按当前阶段清晰呈现。</p>
             </div>
-            <div class="form-group">
-                <label for="password">密码</label>
-                <input type="password" id="password" name="password" required placeholder="请输入密码">
+            <div class="login-stage-list" aria-label="系统核心流程">
+                <div><span>01</span><strong>报名资料</strong><small>一次填写，按步骤确认</small></div>
+                <div><span>02</span><strong>面试候场</strong><small>查看队列与当前状态</small></div>
+                <div><span>03</span><strong>评价流转</strong><small>按场次记录并保存评分</small></div>
             </div>
-            <button type="submit" class="login-btn">登录</button>
-            <div class="error-message" id="errorMessage"></div>
-        </form>
-        <div class="register-link">
-            还没有账号？<a href="{% url 'register' %}">立即注册</a>
-        </div>
+            <p class="login-context-note">身份权限由系统自动识别，请使用本人账号登录。</p>
+        </aside>
+
+        <main class="login-box">
+            <div class="login-heading">
+                <span class="login-eyebrow">WELCOME BACK</span>
+                <h2>登录面试系统</h2>
+                <p>继续进入你的报名或面试工作区</p>
+            </div>
+            <form id="loginForm" novalidate>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" required autocomplete="username" placeholder="请输入用户名">
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <div class="password-field">
+                        <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="请输入密码">
+                        <button type="button" class="password-toggle" id="passwordToggle" aria-controls="password" aria-pressed="false">显示</button>
+                    </div>
+                </div>
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="button-spinner" aria-hidden="true"></span>
+                    <span class="login-btn-label">登录</span>
+                </button>
+                <div class="error-message" id="errorMessage" role="alert" aria-live="polite"></div>
+            </form>
+            <div class="register-link">
+                <span>第一次使用？</span><a href="{% url 'register' %}">创建报名账号</a>
+            </div>
+        </main>
     </div>
 </div>
 {% endblock %}

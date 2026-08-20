@@ -3,7 +3,11 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 移动端关键：按设备逻辑像素渲染 + 禁止用户缩放 + 刘海屏安全区
+         避免微信/QQ 内置浏览器把桌面宽 980px 缩放塞进手机，造成两栏 grid 被挤爆 + 元素重叠 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no,email=no,address=no">
+    <meta name="theme-color" content="#223f91">
     <title>{% block title %}面试系统{% endblock %}</title>
     {% block extra_css %}{% endblock %}
 </head>

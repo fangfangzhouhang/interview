@@ -13,8 +13,9 @@
 <div class="register-container">
     <div class="register-box">
         <div class="register-header">
-            <h1>面试系统注册</h1>
-            <p>请选择注册身份并填写相关信息</p>
+            <span class="register-kicker">学生会招新 · 报名入口</span>
+            <h1>创建报名账号</h1>
+            <p>按步骤填写，最后确认后统一提交</p>
         </div>
 
         <div id="roleModal" class="role-modal">
@@ -23,14 +24,14 @@
                 <p class="role-modal-desc">请选择您要注册的身份类型</p>
                 <div class="role-options">
                     <button type="button" class="role-btn candidate-role" data-role="candidate">
-                        <span class="role-icon">👤</span>
+                        <span class="role-kicker">参与招新</span>
                         <div class="role-name">面试者</div>
-                        <div class="role-desc">参加面试的同学</div>
+                        <div class="role-desc">填写报名资料并查看候场状态</div>
                     </button>
                     <button type="button" class="role-btn interviewer-role" data-role="interviewer">
-                        <span class="role-icon">👔</span>
+                        <span class="role-kicker">组织面试</span>
                         <div class="role-name">工作人员</div>
-                        <div class="role-desc">面试官及组织者</div>
+                        <div class="role-desc">进入面试工作台与评价流程</div>
                     </button>
                 </div>
             </div>
@@ -46,35 +47,50 @@
                 <button type="button" class="change-role-btn" id="changeRoleBtn">重新选择</button>
             </div>
 
-            <div class="form-section">
-                <h3>账号信息</h3>
+            <ol class="register-stepper" aria-label="报名进度">
+                <li class="active" data-step-indicator="1"><span>1</span><strong>账号</strong></li>
+                <li data-step-indicator="2"><span>2</span><strong>基本信息</strong></li>
+                <li data-step-indicator="3"><span>3</span><strong>报名信息</strong></li>
+                <li data-step-indicator="4"><span>4</span><strong>确认</strong></li>
+            </ol>
+
+            <section class="form-step active" data-step="1" aria-labelledby="stepTitle1">
+                <div class="step-heading">
+                    <span>STEP 1 / 4</span>
+                    <h3 id="stepTitle1">设置登录账号</h3>
+                    <p>此账号将用于后续查看报名与面试状态。</p>
+                </div>
                 <div class="form-group">
-                    <label>用户名 <span class="required">*</span></label>
-                    <input type="text" id="username" name="username" required placeholder="请设置用户名" minlength="3" maxlength="150">
+                    <label for="username">用户名 <span class="required">*</span></label>
+                    <input type="text" id="username" name="username" required autocomplete="username" placeholder="请设置用户名" minlength="3" maxlength="150">
                     <span class="hint">至少3个字符</span>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>密码 <span class="required">*</span></label>
-                        <input type="password" id="password" name="password" required placeholder="请设置密码" minlength="8">
+                        <label for="password">密码 <span class="required">*</span></label>
+                        <input type="password" id="password" name="password" required autocomplete="new-password" placeholder="请设置密码" minlength="8">
                         <span class="hint">至少8位字符</span>
                     </div>
                     <div class="form-group">
-                        <label>确认密码 <span class="required">*</span></label>
-                        <input type="password" id="confirm_password" name="confirm_password" required placeholder="请再次输入密码">
+                        <label for="confirm_password">确认密码 <span class="required">*</span></label>
+                        <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password" placeholder="请再次输入密码">
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="form-section">
-                <h3>个人信息</h3>
+            <section class="form-step" data-step="2" aria-labelledby="stepTitle2" hidden>
+                <div class="step-heading">
+                    <span>STEP 2 / 4</span>
+                    <h3 id="stepTitle2">填写基本信息</h3>
+                    <p>请与本人学籍信息保持一致，便于后续核对。</p>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>姓名 <span class="required">*</span></label>
+                        <label for="name">姓名 <span class="required">*</span></label>
                         <input type="text" id="name" name="name" required placeholder="请输入真实姓名" maxlength="20">
                     </div>
                     <div class="form-group">
-                        <label>性别 <span class="required">*</span></label>
+                        <label for="gender">性别 <span class="required">*</span></label>
                         <select id="gender" name="gender" required>
                             <option value="">请选择</option>
                             <option value="M">男</option>
@@ -84,19 +100,26 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>政治面貌 <span class="required">*</span></label>
+                        <label for="political_status">政治面貌 <span class="required">*</span></label>
                         <input type="text" id="political_status" name="political_status" required placeholder="如：共青团员、中共党员" maxlength="20">
                     </div>
                     <div class="form-group">
-                        <label>学号 <span class="required">*</span></label>
+                        <label for="student_number">学号 <span class="required">*</span></label>
                         <input type="text" id="student_number" name="student_number" required placeholder="请输入8位学号" maxlength="8" pattern="^2[0-6]\d{6}$">
                         <span class="hint">2开头的8位数字</span>
                     </div>
                 </div>
+            </section>
 
+            <section class="form-step" data-step="3" aria-labelledby="stepTitle3" hidden>
+                <div class="step-heading">
+                    <span>STEP 3 / 4</span>
+                    <h3 id="stepTitle3">补充报名信息</h3>
+                    <p>系统会根据注册身份显示对应的学院或部门字段。</p>
+                </div>
                 <div class="form-row" id="candidateSchoolRow">
                     <div class="form-group">
-                        <label>学院 <span class="required">*</span></label>
+                        <label for="school">学院 <span class="required">*</span></label>
                         <select id="school" name="school">
                             <option value="UN">请选择学院</option>
                             <option value="HG">化工学院</option>
@@ -122,7 +145,7 @@
 
                 <div class="form-row" id="interviewerDepartmentRow" style="display:none;">
                     <div class="form-group">
-                        <label>部门 <span class="required">*</span></label>
+                        <label for="department">部门 <span class="required">*</span></label>
                         <select id="department" name="department">
                             <option value="UNK">请选择部门</option>
                             <option value="BGS">办公</option>
@@ -136,25 +159,46 @@
                 </div>
 
                 <div class="form-group">
-                    <label id="homeroomLabel">班级 <span class="required">*</span></label>
+                    <label for="homeroom" id="homeroomLabel">班级 <span class="required">*</span></label>
                     <input type="text" id="homeroom" name="homeroom" required placeholder="请输入班级" maxlength="20">
                     <span class="hint" id="homeroomHint">例：数学类2601班</span>
                 </div>
 
                 <div class="form-group">
-                    <label>手机号 <span class="required">*</span></label>
-                    <input type="tel" id="telephone" name="telephone" required placeholder="请输入11位手机号" maxlength="11" pattern="^1[3-9]\d{9}$">
+                    <label for="telephone">手机号 <span class="required">*</span></label>
+                    <input type="tel" id="telephone" name="telephone" required autocomplete="tel" placeholder="请输入11位手机号" maxlength="11" pattern="^1[3-9]\d{9}$">
                     <span class="hint">11位有效手机号</span>
                 </div>
-            </div>
+            </section>
+
+            <section class="form-step" data-step="4" aria-labelledby="stepTitle4" hidden>
+                <div class="step-heading">
+                    <span>STEP 4 / 4</span>
+                    <h3 id="stepTitle4">确认并提交</h3>
+                    <p>请核对关键信息；提交后即可使用新账号登录。</p>
+                </div>
+                <div class="register-summary" id="registerSummary"></div>
+                <label class="confirmation-check">
+                    <input type="checkbox" id="confirmSubmission">
+                    <span>我已核对以上信息，确认内容准确。</span>
+                </label>
+            </section>
 
             <div class="form-actions">
-                <button type="submit" class="register-btn">注册</button>
-                <a href="{% url 'login' %}" class="login-link">已有账号？立即登录</a>
+                <div class="step-actions">
+                    <button type="button" class="step-btn step-btn-secondary" id="prevStepBtn" hidden>上一步</button>
+                    <span class="step-position" id="stepPosition">第 1 步，共 4 步</span>
+                    <button type="button" class="step-btn step-btn-primary" id="nextStepBtn">下一步</button>
+                    <button type="submit" class="register-btn" id="registerBtn" hidden>
+                        <span class="button-spinner" aria-hidden="true"></span>
+                        <span class="register-btn-label">确认注册</span>
+                    </button>
+                </div>
+                <a href="{% url 'login' %}" class="login-link">已有账号？返回登录</a>
             </div>
 
-            <div id="errorMessage" class="error-message"></div>
-            <div id="successMessage" class="success-message"></div>
+            <div id="errorMessage" class="error-message" role="alert" aria-live="assertive"></div>
+            <div id="successMessage" class="success-message" role="status" aria-live="polite"></div>
         </form>
     </div>
 </div>

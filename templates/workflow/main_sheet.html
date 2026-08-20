@@ -120,7 +120,10 @@
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="{% url 'interviewer_panel' %}" class="back-btn" id="backBtn">← 返回</a>
-            <span class="group-title" id="groupTitle">面试场次</span>
+            <div class="group-heading">
+                <span class="panel-eyebrow">场次工作区</span>
+                <span class="group-title" id="groupTitle">面试场次</span>
+            </div>
             <span class="group-status" id="groupStatus">加载中...</span>
             <span class="wss-status" id="wssStatus">WS离线模式</span>
             <span class="timer-display" id="timerDisplay" style="display:none;">00:00</span>
@@ -174,8 +177,14 @@
             <div class="candidate-buttons" id="candidateButtons"></div>
             <div class="candidate-info" id="candidateInfo">
                 <div class="info-header">
-                    <h3>面试者信息</h3>
-                    <span class="loading-text" id="loadingText" style="display:none;">加载中...</span>
+                    <div>
+                        <span class="panel-eyebrow">候选人资料</span>
+                        <h3>当前面试者</h3>
+                    </div>
+                    <div class="info-header-actions">
+                        <span class="loading-text" id="loadingText" style="display:none;">正在更新</span>
+                        <button type="button" class="btn-refresh-candidate" id="refreshCandidateBtn" disabled>刷新当前</button>
+                    </div>
                 </div>
                 <div class="info-body" id="infoBody">
                     <div class="placeholder">请选择左侧编号查看</div>
@@ -185,7 +194,11 @@
 
         <div class="right-panel" id="rightPanel">
             <div class="form-header">
-                <h3>面试评价表</h3>
+                <div>
+                    <span class="panel-eyebrow">当前对象</span>
+                    <h3>面试者评价</h3>
+                    <p>评分和评语只保存到当前场次的评价记录。</p>
+                </div>
             </div>
             <form id="evaluationForm">
                 {% csrf_token %}
@@ -226,11 +239,17 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn-save" id="saveBtn">保存评价</button>
-                    <button type="button" class="btn-clear" id="clearScoreBtn">评分清零</button>
+                    <button type="button" class="btn-clear" id="clearScoreBtn">清空本页评分</button>
+                    <div class="save-actions">
+                        <span class="save-state" id="saveState" aria-live="polite">尚未修改</span>
+                        <button type="submit" class="btn-save" id="saveBtn">
+                            <span class="button-spinner" aria-hidden="true"></span>
+                            <span class="save-btn-label">保存评价</span>
+                        </button>
+                    </div>
                 </div>
 
-                <div id="messageContainer"></div>
+                <div id="messageContainer" role="status" aria-live="polite"></div>
             </form>
         </div>
     </div>

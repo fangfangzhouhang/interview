@@ -5,6 +5,7 @@
 {% block title %}面试排队总览 - 面试系统{% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core.css' %}">
 <link rel="stylesheet" href="{% static 'css/overview.css' %}">
 {% endblock %}
 
@@ -13,17 +14,25 @@
     <!-- 页面头部 -->
     <header class="overview-header">
         <div class="header-left">
+            <span class="overview-kicker">实时面试调度</span>
             <h1>面试排队总览</h1>
+            <p>按部门查看待开始、进行中和暂停中的场次</p>
         </div>
         <div class="header-right">
             <div class="polling-status">
                 <span class="status-dot active"></span>
                 <span class="status-text">自动刷新</span>
-                <span class="status-countdown" id="countdownTimer">60s</span>
+                <span class="status-countdown" id="countdownTimer">180s</span>
             </div>
             <span class="last-updated" id="lastUpdated">--</span>
-            <button class="btn btn-success" id="autoGroupBtn">自动分组</button>
-            <button class="btn btn-primary" id="refreshBtn">刷新</button>
+            <button class="btn btn-secondary" id="autoGroupBtn">
+                <span class="button-spinner" aria-hidden="true"></span>
+                <span class="button-label">自动分组</span>
+            </button>
+            <button class="btn btn-primary" id="refreshBtn" title="刷新数据，并按现有规则执行自动分组">
+                <span class="button-spinner" aria-hidden="true"></span>
+                <span class="button-label">刷新并分组</span>
+            </button>
         </div>
     </header>
 
@@ -42,7 +51,7 @@
 </div>
 
 <!-- Toast 通知 -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 {% endblock %}
 
 {% block extra_js %}

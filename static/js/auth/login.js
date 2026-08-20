@@ -1,15 +1,42 @@
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     const errorMessage = document.getElementById('errorMessage');
-    const loginBtn = document.querySelector('.login-btn');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginBtnLabel = loginBtn.querySelector('.login-btn-label');
+    const passwordInput = document.getElementById('password');
+    const passwordToggle = document.getElementById('passwordToggle');
+
+    function setLoading(isLoading) {
+        loginBtn.disabled = isLoading;
+        loginBtn.classList.toggle('is-loading', isLoading);
+        loginBtn.setAttribute('aria-busy', String(isLoading));
+        loginBtnLabel.textContent = isLoading ? '正在登录' : '登录';
+    }
+
+    function showError(message) {
+        errorMessage.textContent = message;
+    }
+
+    passwordToggle.addEventListener('click', function() {
+        const shouldShow = passwordInput.type === 'password';
+        passwordInput.type = shouldShow ? 'text' : 'password';
+        passwordToggle.textContent = shouldShow ? '隐藏' : '显示';
+        passwordToggle.setAttribute('aria-pressed', String(shouldShow));
+        passwordInput.focus({ preventScroll: true });
+    });
 
     loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        // 禁用按钮，防止重复提交
-        loginBtn.disabled = true;
-        loginBtn.textContent = '登录中...';
-        errorMessage.textContent = '';
+        if (!loginForm.checkValidity()) {
+            const invalidField = loginForm.querySelector(':invalid');
+            showError('请填写用户名和密码后再登录');
+            if (invalidField) invalidField.focus();
+            return;
+        }
+
+        setLoading(true);
+        showError('');
 
         const formData = new FormData(loginForm);
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -23,42 +50,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: formData
             });
 
-            // 检查响应状态
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            const contentType = response.headers.get('content-type') || '';
+            const data = contentType.includes('application/json')
+                ? await response.json()
+                : { success: false, message: '登录服务返回了异常页面，请稍后重试' };
 
-            const data = await response.json();
-
-            if (data.success) {
-                // 获取重定向URL
-                const redirectUrl = data.redirect_url; // || '/profile/';
-
-                // 打印调试信息
-                console.log('登录成功，跳转到:', redirectUrl);
-                console.log('用户角色:', data.role);
-
-                // 使用 window.location.href 进行跳转
-                window.location.href = redirectUrl;
+            if (response.ok && data.success) {
+                window.location.assign(data.redirect_url || '/');
             } else {
-                errorMessage.textContent = data.message || '登录失败，请检查用户名和密码';
-                loginBtn.disabled = false;
-                loginBtn.textContent = '登录';
+                showError(data.message || '登录失败，请检查用户名和密码');
+                setLoading(false);
             }
         } catch (error) {
-            errorMessage.textContent = '登录失败，请检查网络连接后重试';
+            showError('暂时无法连接登录服务，请检查网络后重试');
             console.error('Login error:', error);
-            loginBtn.disabled = false;
-            loginBtn.textContent = '登录';
+            setLoading(false);
         }
-    });
-
-    // 回车键提交表单
-    document.querySelectorAll('#loginForm input').forEach(input => {
-        input.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                loginForm.dispatchEvent(new Event('submit'));
-            }
-        });
     });
 });

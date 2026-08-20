@@ -3,8 +3,6 @@
    基于core.css扩展部门管理员专用样式
    ============================================================ */
 
-@import url("core.css");
-
 /* ============================================================
    1. 全局部门管理员样式
    ============================================================ */
@@ -2043,6 +2041,194 @@
     #candidateTable thead th:nth-child(8),
     #candidateTable tbody td:nth-child(8) {
         white-space: normal;
+    }
+}
+
+/* 第一轮后台基线：与管理员页面共享密度与窄屏行为 */
+.content-body {
+    padding: 18px 22px;
+    overflow-x: hidden;
+}
+
+.table-container {
+    min-width: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+}
+
+.table-toolbar {
+    min-height: 56px;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    background: #ffffff;
+}
+
+.toolbar-left,
+.toolbar-right,
+.batch-actions {
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    min-width: min(260px, 100%);
+}
+
+.table-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+}
+
+.data-table {
+    min-width: 720px;
+}
+
+.modal-content {
+    width: min(640px, calc(100vw - 32px));
+    max-height: calc(100dvh - 32px);
+    overflow: hidden;
+}
+
+.modal-large .modal-content {
+    width: min(900px, calc(100vw - 32px));
+}
+
+.modal-body {
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+}
+
+.modal-footer {
+    position: sticky;
+    bottom: 0;
+    background: #ffffff;
+}
+
+@media (max-width: 640px) {
+    .app-container {
+        flex-direction: column;
+        height: 100dvh;
+    }
+
+    .sidebar,
+    .sidebar.collapsed {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        min-width: 100%;
+        height: 58px;
+        min-height: 58px;
+        display: flex;
+        flex-direction: row;
+        transform: none;
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        min-width: 52px;
+        padding: 8px 12px;
+        border: 0;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar .logo-text,
+    .sidebar .toggle-btn {
+        display: none;
+    }
+
+    .sidebar-menu {
+        min-width: 0;
+        padding: 7px 8px;
+        display: flex;
+        flex-direction: row;
+        gap: 4px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .sidebar .menu-item,
+    .sidebar.collapsed .menu-item {
+        width: auto;
+        min-width: max-content;
+        height: 44px;
+        margin: 0;
+        padding: 8px 12px;
+        border: 0;
+        border-radius: 7px;
+        gap: 7px;
+    }
+
+    .sidebar .menu-text,
+    .sidebar.collapsed .menu-text {
+        width: auto;
+        opacity: 1;
+        overflow: visible;
+        font-size: 13px;
+    }
+
+    .sidebar .logout-item {
+        margin-top: 0;
+        padding-top: 8px;
+    }
+
+    .main-content {
+        width: 100%;
+        min-height: 0;
+    }
+
+    .content-header {
+        min-height: 50px;
+        padding: 8px 12px;
+    }
+
+    .content-header h1 {
+        font-size: 16px;
+    }
+
+    .content-body {
+        padding: 10px;
+    }
+
+    .table-toolbar {
+        display: grid;
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .toolbar-left,
+    .toolbar-right,
+    .search-box,
+    .search-box input {
+        width: 100%;
+        max-width: none;
+    }
+
+    .toolbar-right {
+        justify-content: flex-start;
+    }
+
+    .table-pagination {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .modal-content,
+    .modal-large .modal-content {
+        width: calc(100vw - 20px);
+        max-width: none;
+        max-height: calc(100dvh - 20px);
+    }
+
+    .modal-footer {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .modal-footer .btn {
+        min-height: 42px;
     }
 }
 

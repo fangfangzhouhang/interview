@@ -90,6 +90,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const groupIdInput = document.getElementById('groupId');
     const evaluationForm = document.getElementById('evaluationForm');
     const clearScoreBtn = document.getElementById('clearScoreBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const saveBtnLabel = saveBtn ? saveBtn.querySelector('.save-btn-label') : null;
+    const saveState = document.getElementById('saveState');
+    const refreshCandidateBtn = document.getElementById('refreshCandidateBtn');
     const backBtn = document.getElementById('backBtn');
     const messageContainer = document.getElementById('messageContainer');
     const statusModal = document.getElementById('statusModal');
@@ -126,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentGroupStatus = '';
     let currentChiefName = '';
     let isSaving = false;
+    let isDirty = false;
     let timerInterval = null;
     let timerStartTime = null;
     let ws = null;
@@ -138,6 +143,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const POLLING_INTERVAL = 10000;
 
     let isWssUpdating = false;
+
+    function updateSaveState(state, text) {
+        if (!saveState) return;
+        saveState.classList.remove('is-dirty', 'is-saved');
+        if (state === 'dirty') saveState.classList.add('is-dirty');
+        if (state === 'saved') saveState.classList.add('is-saved');
+        saveState.textContent = text;
+    }
+
+    function setSaveLoading(isLoading) {
+        if (!saveBtn) return;
+        saveBtn.classList.toggle('is-loading', isLoading);
+        saveBtn.setAttribute('aria-busy', String(isLoading));
+        if (saveBtnLabel) saveBtnLabel.textContent = isLoading ? '保存中' : '保存评价';
+        saveBtn.disabled = isLoading || currentGroupStatus !== 'ONGOING';
+    }
 
     // ===== WebSocket 连接 =====
     function getWebSocketUrl() {
@@ -555,9 +576,9 @@ document.addEventListener('DOMContentLoaded', function() {
         evaluationContainer.querySelectorAll('.eval-comment-input').forEach(ta => {
             ta.disabled = !editable;
         });
-        const saveBtn = document.getElementById('saveBtn');
         if (saveBtn) saveBtn.disabled = !editable;
         if (clearScoreBtn) clearScoreBtn.disabled = !editable;
+        if (refreshCandidateBtn) refreshCandidateBtn.disabled = !currentCandidateInGroupId;
     }
 
     function setQuestionsEditable() {
@@ -711,16 +732,26 @@ document.addEventListener('DOMContentLoaded', function() {
         candidateButtons.innerHTML = html;
 
         document.querySelectorAll('.candidate-btn:not(.empty)').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', async function() {
+                const nextId = parseInt(this.dataset.id);
+                if (isDirty && currentCandidateInGroupId && nextId !== currentCandidateInGroupId) {
+                    const shouldSwitch = window.confirm('当前评价尚未保存，切换面试者会覆盖本页未保存内容。是否继续？');
+                    if (!shouldSwitch) return;
+                }
+
                 document.querySelectorAll('.candidate-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                const id = parseInt(this.dataset.id);
+                const id = nextId;
                 const order = parseInt(this.dataset.order);
                 currentCandidateInGroupId = id;
                 currentOrder = order;
                 if (currentCandidateId) currentCandidateId.value = id;
-                loadCandidateInfo(id, order);
-                loadEvaluationToForm(id, order);
+                if (refreshCandidateBtn) refreshCandidateBtn.disabled = false;
+                updateSaveState('idle', '正在读取评价');
+                await Promise.all([
+                    loadCandidateInfo(id, order),
+                    loadEvaluationToForm(id, order)
+                ]);
             });
         });
     }
@@ -793,19 +824,30 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         commentInput.value = data[commentKey] || '';
                     });
+                    updateSaveState('saved', '已载入现有评价');
                 } else {
                     clearForm();
+                    updateSaveState('idle', '尚未保存');
                 }
+                isDirty = false;
             } else {
                 clearForm();
+                isDirty = false;
+                updateSaveState('idle', '评价读取失败');
+                showMessage('评价读取失败，请点击刷新资料重试', 'error');
             }
         } catch (e) {
             clearForm();
+            isDirty = false;
+            updateSaveState('idle', '网络连接异常');
+            showMessage('网络连接异常，未能读取评价', 'error');
         }
     }
 
     function clearScores() {
         evaluationContainer.querySelectorAll('.eval-score-input').forEach(inp => inp.value = '0.00');
+        isDirty = true;
+        updateSaveState('dirty', '有未保存修改');
         showMessage('评分已清零', 'success');
     }
 
@@ -856,6 +898,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         isSaving = true;
+        setSaveLoading(true);
+        updateSaveState('idle', '正在保存评价');
 
         const payload = getCurrentFormData();
 
@@ -870,17 +914,23 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             const data = await res.json();
             if (res.ok && data.success) {
-                if (showSuccessMsg && !silent) showMessage('✅ 保存成功！', 'success');
+                isDirty = false;
+                const savedAt = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                updateSaveState('saved', `${savedAt} 已保存`);
+                if (showSuccessMsg && !silent) showMessage('评价已保存', 'success');
                 return true;
             } else {
+                updateSaveState('dirty', '保存失败，修改仍保留');
                 if (showSuccessMsg && !silent) showMessage('保存失败: ' + (data.error || '未知'), 'error');
                 return false;
             }
         } catch (e) {
+            updateSaveState('dirty', '网络异常，修改仍保留');
             if (showSuccessMsg && !silent) showMessage('网络错误', 'error');
             return false;
         } finally {
             isSaving = false;
+            setSaveLoading(false);
         }
     }
 
@@ -1020,7 +1070,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function showMessage(text, type) {
         if (!messageContainer) return;
         const cls = type === 'error' ? 'msg-error' : 'msg-success';
-        messageContainer.innerHTML = `<div class="${cls}">${text}</div>`;
+        const message = document.createElement('div');
+        message.className = cls;
+        message.textContent = text;
+        messageContainer.replaceChildren(message);
         setTimeout(() => { messageContainer.innerHTML = ''; }, 4000);
     }
 
@@ -1041,13 +1094,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.length > 0 && isInitialLoad) {
                     const first = document.querySelector('.candidate-btn:not(.empty)');
                     if (first) {
-                        first.click();
-                        const id = parseInt(first.dataset.id);
-                        const order = parseInt(first.dataset.order);
-                        currentCandidateInGroupId = id;
-                        currentOrder = order;
-                        await loadCandidateInfo(id, order);
-                        await loadEvaluationToForm(id, order);
+                        await first.click();
                         isInitialLoad = false;
                     }
                 }
@@ -1279,6 +1326,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== 事件绑定 =====
     if (evaluationForm) {
+        evaluationForm.addEventListener('input', function(event) {
+            if (!event.target.matches('.intro-item textarea, .eval-score-input, .eval-comment-input')) return;
+            isDirty = true;
+            updateSaveState('dirty', '有未保存修改');
+        });
+    }
+
+    if (evaluationForm) {
         evaluationForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             await saveEvaluation(true);
@@ -1289,6 +1344,26 @@ document.addEventListener('DOMContentLoaded', function() {
         clearScoreBtn.addEventListener('click', function() {
             if (confirm('确定将所有评分清零吗？（自我介绍、评语不受影响）')) {
                 clearScores();
+            }
+        });
+    }
+
+    if (refreshCandidateBtn) {
+        refreshCandidateBtn.addEventListener('click', async function() {
+            if (!currentCandidateInGroupId) return;
+            if (isDirty && !window.confirm('刷新会覆盖当前未保存的评价内容。是否继续？')) return;
+
+            refreshCandidateBtn.disabled = true;
+            refreshCandidateBtn.textContent = '正在刷新';
+            try {
+                await Promise.all([
+                    loadCandidateInfo(currentCandidateInGroupId, currentOrder),
+                    loadEvaluationToForm(currentCandidateInGroupId, currentOrder)
+                ]);
+                showMessage('当前候选人资料已更新', 'success');
+            } finally {
+                refreshCandidateBtn.disabled = false;
+                refreshCandidateBtn.textContent = '刷新当前';
             }
         });
     }
