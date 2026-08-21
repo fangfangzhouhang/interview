@@ -5,30 +5,34 @@
 {% block title %}登录 - 面试系统{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/core.css' %}?v=20260821-mobile">
-<link rel="stylesheet" href="{% static 'css/login.css' %}?v=20260821-mobile">
+<link rel="stylesheet" href="{% static 'css/core.css' %}?v=ecust-sky-20260821-v8">
+<link rel="stylesheet" href="{% static 'css/login.css' %}?v=ecust-sky-20260821-v8">
 {% endblock %}
 
 {% block content %}
 <div class="login-container">
     <div class="login-shell">
-        <aside class="login-context" aria-label="系统介绍">
-            <div>
-                <span class="login-kicker">学生会招新 · 面试工作台</span>
-                <h1>让报名、候场和评价<br>在同一条流程里完成</h1>
-                <p>不同身份进入各自工作区，信息与操作按当前阶段清晰呈现。</p>
+        <aside class="login-context" aria-label="华东理工大学学生会招新面试工作平台">
+            <!-- 【v8-去倾斜重构】：用户"干脆就不要做倾斜字了"
+                 ① ECUST 纯文本水平排，放左上角 logo 位（不再居中放大、不拆 span 旋转）
+                 ② 圆弧装饰改为 kicker 下方一条短直线（.login-rule），更干净
+                 ③ 大字缩小上移（主要内容），"始"字不再被裁 -->
+            <div class="ecust-watermark" aria-hidden="true">ECUST</div>
+
+            <!-- 极简约：只有"标签 + 分割线 + 两行主标题" -->
+            <div class="login-context-copy">
+                <span class="login-kicker">华东理工大学 · 学生会招新 · 面试工作平台</span>
+                <div class="login-rule" aria-hidden="true"></div>
+                <h1 class="login-title-locked">
+                    让你的加入
+                    <span class="login-title-line2">从一场专业的面试开始</span>
+                </h1>
             </div>
-            <div class="login-stage-list" aria-label="系统核心流程">
-                <div><span>01</span><strong>报名资料</strong><small>一次填写，按步骤确认</small></div>
-                <div><span>02</span><strong>面试候场</strong><small>查看队列与当前状态</small></div>
-                <div><span>03</span><strong>评价流转</strong><small>按场次记录并保存评分</small></div>
-            </div>
-            <p class="login-context-note">身份权限由系统自动识别，请使用本人账号登录。</p>
         </aside>
 
         <main class="login-box">
             <div class="login-heading">
-                <span class="login-eyebrow">WELCOME BACK</span>
+                <span class="login-eyebrow">WELCOME</span>
                 <h2>登录面试系统</h2>
                 <p>继续进入你的报名或面试工作区</p>
             </div>
@@ -45,20 +49,121 @@
                         <button type="button" class="password-toggle" id="passwordToggle" aria-controls="password" aria-pressed="false">显示</button>
                     </div>
                 </div>
+                <!-- 用户要求：登录按钮不再锁定，随时可以点 -->
                 <button type="submit" class="login-btn" id="loginBtn">
                     <span class="button-spinner" aria-hidden="true"></span>
                     <span class="login-btn-label">登录</span>
                 </button>
+                <div class="usage-status" id="usageStatus" role="status" aria-live="polite"></div>
                 <div class="error-message" id="errorMessage" role="alert" aria-live="polite"></div>
             </form>
             <div class="register-link">
-                <span>第一次使用？</span><a href="{% url 'register' %}">创建报名账号</a>
+                <span>第一次使用？</span>
+                <!-- 用户要求：创建报名账号不再锁定，链接随时可点 -->
+                <a href="{% url 'register' %}" id="registerLink">创建报名账号</a>
+            </div>
+            <div class="usage-link">
+                <button type="button" class="usage-open-btn" id="openUsageBtn">
+                    📄 进入系统前请先阅读《使用须知》
+                </button>
             </div>
         </main>
+    </div>
+</div>
+
+<!-- ========= 使用须知 模态框（三层锁：滚动→勾选→解锁按钮） ========= -->
+<div class="usage-modal" id="usageModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="usageTitle">
+    <div class="usage-modal-mask" data-close-usage="1"></div>
+    <div class="usage-modal-dialog" role="document">
+        <button type="button" class="usage-modal-close" aria-label="关闭使用须知" data-close-usage="1">×</button>
+
+        <header class="usage-modal-header">
+            <h3 id="usageTitle">《华东理工大学学生会招新面试系统 · 使用须知》</h3>
+            <p class="usage-modal-sub">请仔细阅读以下条款，滚动到末尾后可勾选同意</p>
+        </header>
+
+        <div class="usage-modal-body" id="usageBody" tabindex="0">
+            <section>
+                <h4>一、系统使用范围</h4>
+                <p>本系统为<strong>华东理工大学学生会招新面试工作平台</strong>，仅用于学生会年度招新期间的候选人报名、候场、面试官评价、管理员审核等流程。仅允许以下三类账号在对应权限范围内使用：</p>
+                <ol>
+                    <li><strong>候选人账号</strong>：已通过官方渠道完成登记、拟参加学生会招新面试的同学；</li>
+                    <li><strong>面试官账号</strong>：学生会各部门部长、副部长及经授权参与面试评价的成员；</li>
+                    <li><strong>管理员账号</strong>：学生会主席团及招新工作小组成员，负责系统配置与秩序维护。</li>
+                </ol>
+            </section>
+
+            <section>
+                <h4>二、账号管理与实名规范</h4>
+                <ol>
+                    <li>本系统实行<strong>一人一号、实名制</strong>，所有账号必须绑定本人真实姓名、学号与联系方式；</li>
+                    <li>严禁将本人账号借予他人使用，或冒用他人账号登录系统。一经核实，候选人取消招新资格，内部成员取消面试资格并通报所在部门；</li>
+                    <li>候选人应妥善保管个人密码，离开公共电脑必须退出登录；因密码泄露造成的一切后果由本人承担。</li>
+                </ol>
+            </section>
+
+            <section>
+                <h4>三、候选人操作流程</h4>
+                <ol>
+                    <li><strong>注册与信息填报</strong>：使用本人真实信息注册账号，按提示填写个人资料、填报 1–3 个志愿部门；资料提交后应核对无误，关键信息（姓名、学号、联系方式）不得随意涂改；</li>
+                    <li><strong>开始排队与候场</strong>：面试当日，在指定候场区连接校园 WiFi 后登录系统，点击"开始排队"进入对应志愿部门队列；排队过程中请保持安静，随时关注系统显示的当前状态与叫号通知；</li>
+                    <li><strong>离场与结果查询</strong>：面试结束后按工作人员指引有序离场；后续可在个人中心查看评价进度与录取结果。</li>
+                </ol>
+            </section>
+
+            <section>
+                <h4>四、面试官与管理员操作规范</h4>
+                <ol>
+                    <li>评价必须<strong>客观、公正、有据可依</strong>，依据候选人现场表现给出量化评分与文字评价，严禁根据个人好恶或非面试相关因素进行评价；</li>
+                    <li>面试过程中知悉的所有候选人个人信息、评价数据、部门拟录取名单均属于<strong>招新工作机密</strong>，严禁以截图、转发、口头传播等方式向无关人员泄露；</li>
+                    <li>管理员在进行用户管理、排队调度、部门配置等关键操作时，必须遵循招新工作组统一安排，严禁擅自更改他人评价、调整排队顺序或跨部门操作数据。</li>
+                </ol>
+            </section>
+
+            <section>
+                <h4>五、信息与隐私保护</h4>
+                <ol>
+                    <li>本系统采集的所有个人信息（姓名、学号、联系方式、面试评价等）<strong>仅用于本次招新流程</strong>，不会用于任何与招新无关的用途；</li>
+                    <li>招新工作结束后，系统内候选人敏感信息（联系方式、成绩明细等）将按照华东理工大学学生会数据管理规定进行封存或安全销毁；</li>
+                    <li>任何账号持有人不得利用系统权限导出、存储、传播他人个人信息，违反者按相关规定严肃处理。</li>
+                </ol>
+            </section>
+
+            <section>
+                <h4>六、违规处理</h4>
+                <p>凡在使用本系统过程中出现下列行为之一者，招新工作组有权视情节轻重采取取消资格、冻结账号、通报学院或上报学校等措施：</p>
+                <ol>
+                    <li>代面、替面、排队作弊等扰乱招新秩序行为；</li>
+                    <li>泄露面试题目、评价标准、拟录取名单等涉密信息；</li>
+                    <li>恶意攻击系统、批量注册刷号、非法获取他人账号；</li>
+                    <li>其他违反《华东理工大学学生手册》或学生会相关规定的行为。</li>
+                </ol>
+            </section>
+
+            <section>
+                <h4>七、技术支持与联系</h4>
+                <p>如遇到登录异常、排队状态错误、页面白屏、评价无法提交等技术问题，请及时联系招新工作组：</p>
+                <ol>
+                    <li>现场同学：联系所在候场区的工作人员；</li>
+                    <li>工作人员：联系招新系统技术支持组（联系方式由工作组内部同步）。</li>
+                </ol>
+                <p class="usage-tip-final">
+                    <strong>提示：</strong>勾选"我已阅读并同意"即表示你已完整阅读并承诺遵守以上全部条款。感谢配合，祝所有候选人取得理想成绩！
+                </p>
+            </section>
+        </div>
+
+        <footer class="usage-modal-footer">
+            <label class="usage-agree-wrap">
+                <input type="checkbox" id="usageAgree" disabled>
+                <span for="usageAgree" class="usage-agree-label">我已详细阅读并同意以上《使用须知》</span>
+            </label>
+            <button type="button" class="login-btn usage-confirm-btn" id="usageConfirmBtn" disabled>同意并开始使用</button>
+        </footer>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/auth/login.js' %}"></script>
+<script src="{% static 'js/auth/login.js' %}?v=ecust-sky-20260821-v8"></script>
 {% endblock %}

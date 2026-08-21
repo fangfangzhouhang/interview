@@ -5,48 +5,48 @@
    ============================================================ */
 
 :root {
-    /* ===== 主色：可靠、清晰的操作蓝 ===== */
-    --color-primary: #3157c8;
-    --color-primary-light: #5f7fe0;
-    --color-primary-dark: #223f91;
-    --color-primary-bg: #eef2ff;
+    /* ===== 主色：专业天蓝系（大学学术氛围，源自 ui-ux-pro-max 设计系统） ===== */
+    --color-primary: #0369A1;           /* 主色：Sky 700，稳重学术 */
+    --color-primary-light: #0EA5E9;     /* 亮主色：Sky 500 */
+    --color-primary-dark: #075985;      /* 深主色：Sky 800，更沉稳 */
+    --color-primary-bg: #E0F2FE;        /* 主色背景：Sky 100 */
 
-    /* ===== 辅助色：面试进程与协作状态 ===== */
-    --color-secondary: #168a83;
-    --color-secondary-light: #4daaa5;
-    --color-secondary-dark: #0e6d67;
+    /* ===== 辅助色：面试进程与协作状态（保留原逻辑，仅调优） ===== */
+    --color-secondary: #0E7490;
+    --color-secondary-light: #06B6D4;
+    --color-secondary-dark: #155E75;
 
-    /* ===== 强调色：仅用于关键选中态 ===== */
-    --color-accent: #7656d6;
-    --color-accent-light: #9b87e5;
-    --color-accent-dark: #5c3eb9;
+    /* ===== 强调色：成功绿（设计系统推荐 #16A34A） ===== */
+    --color-accent: #16A34A;
+    --color-accent-light: #4ADE80;
+    --color-accent-dark: #15803D;
 
-    /* ===== 功能色 ===== */
-    --color-success: #16835b;
-    --color-success-light: #69b996;
-    --color-success-dark: #0f6847;
+    /* ===== 功能色（对齐设计系统推荐色值） ===== */
+    --color-success: #16A34A;
+    --color-success-light: #4ADE80;
+    --color-success-dark: #15803D;
 
-    --color-warning: #b86a0b;
-    --color-warning-light: #dda451;
-    --color-warning-dark: #8f5006;
+    --color-warning: #B45309;
+    --color-warning-light: #F59E0B;
+    --color-warning-dark: #92400E;
 
-    --color-danger: #c43d4e;
-    --color-danger-light: #e58a95;
-    --color-danger-dark: #9e2c3a;
+    --color-danger: #DC2626;
+    --color-danger-light: #F87171;
+    --color-danger-dark: #991B1B;
 
-    --color-info: #315ead;
-    --color-info-light: #7e9bcf;
-    --color-info-dark: #254985;
+    --color-info: #0369A1;
+    --color-info-light: #38BDF8;
+    --color-info-dark: #075985;
 
-    /* ===== 中性色 ===== */
-    --color-bg: #f4f7fb;
+    /* ===== 中性色（对齐 Sky 蓝色系学术背景） ===== */
+    --color-bg: #F0F9FF;
     --color-bg-white: #ffffff;
-    --color-surface: #f8fafc;
-    --color-border: #dce3ed;
-    --color-border-dark: #c5cedb;
-    --color-text: #182230;
-    --color-text-secondary: #475467;
-    --color-text-muted: #667085;
+    --color-surface: #F8FAFC;
+    --color-border: #BAE6FD;
+    --color-border-dark: #7DD3FC;
+    --color-text: #0C4A6E;
+    --color-text-secondary: #334155;
+    --color-text-muted: #64748B;
 
     /* ===== 阴影 ===== */
     --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.08), 0 1px 2px rgba(16, 24, 40, 0.04);

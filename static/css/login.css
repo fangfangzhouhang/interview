@@ -1,8 +1,24 @@
-/* 登录入口：克制的招新工作台，复用 core.css 令牌 */
+/* 登录入口：华东理工大学学生会招新面试系统
+ * 设计原则：高大上但严肃、极简留白、交界处柔和交融、ECUST 含蓄融入、可感知微交互
+ * 设计系统来源：ui-ux-pro-max — Minimalism & Swiss Style
+ * 配色：专业天蓝学术系（Primary #0369A1 / Background #F0F9FF）
+ * 排版：EB Garamond / Crimson Text（学术衬线）+ PingFang SC（中文无衬线）
+ */
+
+/* ===== 学术字体导入：EB Garamond（衬线标题水印）+ Crimson Text（严肃大学风格） ===== */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+:root {
+    /* 登录页专属色调（在 core.css 变量基础上扩展） */
+    --login-sky-deep: #0C4A6E;       /* 深蓝灰，左栏深色区主色 */
+    --login-sky-deep-2: #082F49;     /* 更深一层，渐变底 */
+    --login-sky-glow: rgba(14, 165, 233, 0.12);  /* 蓝色柔光 */
+    --login-academic-serif: "EB Garamond", "Crimson Text", "Georgia", "Times New Roman", ui-serif, serif;
+}
 
 body {
     min-height: 100dvh;
-    background: #edf1f7;
+    background: var(--color-bg);
 }
 
 .login-container {
@@ -11,120 +27,281 @@ body {
     place-items: center;
     padding: clamp(20px, 4vw, 56px);
     background:
-        linear-gradient(110deg, rgba(34, 63, 145, 0.06), transparent 46%),
-        #edf1f7;
+        radial-gradient(1000px 700px at 8% 6%, rgba(14, 165, 233, 0.08), transparent 55%),
+        radial-gradient(800px 600px at 95% 98%, rgba(3, 105, 161, 0.06), transparent 58%),
+        var(--color-bg);
+    overflow-x: hidden;
 }
 
 .login-shell {
-    width: min(1080px, 100%);
-    min-height: 620px;
+    width: min(1120px, 100%);
+    min-height: 640px;
     display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+    grid-template-columns: minmax(0, 1.12fr) minmax(380px, 0.88fr);
     overflow: hidden;
     border: 1px solid rgba(24, 34, 48, 0.10);
-    border-radius: 18px;
+    border-radius: 22px;
     background: #ffffff;
-    box-shadow: 0 24px 64px rgba(24, 34, 48, 0.14);
+    box-shadow: 0 26px 80px rgba(24, 34, 48, 0.16);
 }
 
+/* ================================================================
+   左栏（深色宣传区）：交界处大圆弧交融 + ECUST 水印 + 1/4 圆弧保留
+   配色：深蓝学术系（#082F49 → #0C4A6E），天蓝柔光点缀
+   排版：标题使用 Crimson Text 学术衬线体，体现"大学·严谨·传统"
+================================================================ */
 .login-context {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 40px;
-    padding: clamp(40px, 5vw, 72px);
+    justify-content: center;
+    /* 【问题B修复】：上下 padding 从 clamp(48px,6vw,88px) 收紧到 clamp(38px,4.8vw,72px)
+       → 压缩上/下半部分多余留白，蓝色区域整体更充实 */
+    padding: clamp(38px, 4.8vw, 72px) clamp(38px, 4.8vw, 76px);
     overflow: hidden;
-    background: #182230;
+    /* ================================================================
+       【问题2修复：蓝色左右颜色统一】
+       之前BUG：右边偏色 = 「at 90% 120% 右下柔光径向 + inset -42px 黑色阴影 + ::before 0.88 深蓝遮罩」
+       三层叠加后右半边发黑，和左边 at 14% 10% 左上柔光形成"左右亮暗差"
+       新方案（4层，对称平衡）：
+       ① 左上柔光：at 14% 10%，天蓝 0.14（不变，保留左上呼吸）
+       ② 右上柔光：新增 at 86% 10%，天蓝 0.14（对称左上，让右上也有光，左右颜色统一）
+       ③ 左下柔光：新增 at 14% 110%，天蓝 0.10（对称右下，底部均匀有光）
+       ④ 右下柔光：at 90% 120% 保留但从 0.08→0.10（匹配左下强度）
+       ⑤ 基础线性渐变：160deg 深蓝→深蓝（学术深邃感不变）
+       → 消除"左亮右暗"的不自然色差，左右色调均匀柔和
+       ==================================================================== */
+    background:
+        /* 第1层：天蓝柔光扫光带（【问题1修复】水流放慢 ×1.5 倍，后续动画关键帧 1.9→2.8s） */
+        radial-gradient(800px 600px at 0% 40%, rgba(56, 189, 248, 0.24), rgba(14, 165, 233, 0.10) 42%, transparent 68%),
+        /* 左上柔光 */
+        radial-gradient(900px 560px at 14% 10%, rgba(14, 165, 233, 0.14), transparent 58%),
+        /* 【问题2新增】右上柔光 — 和左上柔光位置对称 (14% ↔ 86%)，亮度对称 (0.14) */
+        radial-gradient(900px 560px at 86% 10%, rgba(14, 165, 233, 0.14), transparent 58%),
+        /* 【问题2新增】左下柔光 — 和右下柔光位置对称 (90% ↔ 14%)，亮度平衡 (0.10) */
+        radial-gradient(1000px 680px at 14% 110%, rgba(56, 189, 248, 0.10), transparent 60%),
+        /* 右下柔光（原第3层保留，强度 0.08→0.10 匹配左下） */
+        radial-gradient(1200px 780px at 90% 120%, rgba(56, 189, 248, 0.10), transparent 60%),
+        /* 基础线性渐变（深邃学术不变） */
+        linear-gradient(160deg, var(--login-sky-deep-2) 0%, var(--login-sky-deep) 100%);
+    /* background-size：第1层扫光带设为 220%×120%（超宽才能让"带"完整从左滑到右），其他5层默认 */
+    background-size: 220% 120%, auto, auto, auto, auto, auto;
+    background-position: -110% 0%, 0 0, 0 0, 0 0, 0 0, 0 0;
+    background-repeat: no-repeat;
     color: #ffffff;
+    border-top-right-radius: 210px 60%;
+    border-bottom-right-radius: 210px 60%;
+    /* ================================================================
+       【问题2修复：去掉黑色 inset 阴影】
+       原 inset -42px 0 60px rgba(0,0,0,0.55) → 纯黑 + 55% opacity = 右侧"黑边感"
+       新：改为深蓝学术系内阴影 rgba(8, 47, 73, 0.45)，和背景色统一，不再"发黑"
+       ================================================================ */
+    box-shadow: inset -42px 0 60px -42px rgba(8, 47, 73, 0.45);
+    z-index: 1;
+    /* 【问题1修复】：skyFlowSweep 水流 1900 → 2800ms（放慢 47%，×1.47≈1.5x），用户"稍微慢一点" */
+    animation: skyFlowSweep 2800ms cubic-bezier(.2,.8,.2,1) forwards;
 }
 
+/* 【问题1修复】：skyFlowSweep 1.9→2.8s，关键帧结构不变 */
+@keyframes skyFlowSweep {
+    0%   { background-position: -110% 0%, 0 0, 0 0, 0 0, 0 0, 0 0; }
+    100% { background-position:  110% 0%, 0 0, 0 0, 0 0, 0 0, 0 0; }
+}
+
+/* ================================================================
+   【问题2修复：右边缘遮罩重新设计】
+   BUG根因：原 `rgba(12,74,110, 0.88)` 深蓝 × 88% + scaleX(-1) 方向反 → 右侧 80px 有"染色加深"斑块
+   新方案：
+   - 颜色改为纯主蓝 rgba(8, 47, 73, 0.55)，强度 55%（不再用 88% 的死黑叠色）
+   - 去掉 scaleX(-1)，直接 `linear-gradient(to left, 透明 → 主蓝55%)` — 方向正确，不反向
+   - 宽度从 80px → 120px，渐隐区域更宽更柔，不会出现"硬边界斑块"
+   ================================================================ */
+.login-context::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;               /* 80 → 120px：渐隐区加宽，更柔和 */
+    height: 100%;
+    /* to left：从右向左，先 主蓝55%（右边界贴合大圆弧）→ 慢慢过渡到透明（向左深入主区） */
+    background: linear-gradient(to left, rgba(8, 47, 73, 0.55) 0%, rgba(12, 74, 110, 0.20) 50%, rgba(12, 74, 110, 0) 100%);
+    /* 【关键修正】：去掉 scaleX(-1) 反向，直接用 to left 正确方向 → 不会再"右边忽深忽浅" */
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* 用户说"1/4圆弧挺好的"→ 保留原位置/风格，改天蓝调 + 极慢脉动（10s 一次，完全不张扬） */
 .login-context::after {
     content: '';
     position: absolute;
-    right: -120px;
-    bottom: -150px;
-    width: 360px;
-    height: 360px;
-    border: 80px solid rgba(95, 127, 224, 0.10);
+    right: -140px;
+    bottom: -170px;
+    width: 420px;
+    height: 420px;
+    border: 92px solid rgba(56, 189, 248, 0.11);
     border-radius: 50%;
+    z-index: 1;
     pointer-events: none;
+    animation: loginCirclePulse 10.5s ease-in-out infinite;
+    transform-origin: 60% 60%;
+}
+
+@keyframes loginCirclePulse {
+    0%, 100% { transform: scale(1);   opacity: 0.11; }
+    50%       { transform: scale(1.07); opacity: 0.07; }
+}
+
+/* ECUST 衬线水印：用户要求融入 5 个字母
+   【v7-拥挤修复】：
+   ① 大幅上移（top 42% → 26%）：解决截图里 ECUST 下半贴小字顶部的问题
+   ② 字号微调放大（clamp 更大）：上方空间本来就有空档，用户说"也可以适当调整一下字母大小让它们放下去"
+   ③ 5 字母拆 span，各自 rotate + translateY → 排成**向上凸的微弧形**（E↘C↘U 顶↗S↗T 形成微笑弧）
+      → 用户原话"ECUST 可以连成一个圆弧状"直接落地，弧形呼应下方独立弧，独立但不单调
+   【v6遗留继续保留】：opacity 0.065 淡、动画左→右 2700ms 统一节奏 */
+/* ECUST 衬线水印（v8-去倾斜重构）
+   ① 用户："直接排成水平，放在左上角之类的地方" → 纯文本水平、左上角 logo 位，
+      left 与左栏 padding 左值一致（和文案左边缘齐平）
+   ② "T 看不到"根因：v7 字号最大 230px，5 字母≈850px > 左栏 627px 被裁
+      → 缩到 clamp(56px, 7.5vw, 88px)（5 字母≈379px，T 完整可见）
+   ③ 去掉 v7 的 5 字母旋转微弧排，字完全水平；保留 0.065 淡水印 + 左→右渐显 */
+.ecust-watermark {
+    position: absolute;
+    left: clamp(38px, 4.8vw, 76px);    /* 与左栏 padding 左值一致 → 和文案左对齐 */
+    top: clamp(28px, 5vh, 64px);       /* 左上角 logo 位 */
+    z-index: 0;
+    font-family: var(--login-academic-serif);
+    font-size: clamp(56px, 7.5vw, 88px);
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    line-height: 1;
+    animation: ecustFlowIn 2700ms cubic-bezier(.2,.8,.2,1) 240ms forwards;
+}
+
+/* 【v8】ECUST 动画：左上角锚定，不再 -50% 居中，仅 X 轴左→右漂入 */
+@keyframes ecustFlowIn {
+    0%   { opacity: 0;     transform: translateX(-18px); }
+    55%  { opacity: 0.07; }
+    100% { opacity: 0.065; transform: translateX(0); }
+}
+
+/* ================================================================
+   【v8-圆弧改直线】：用户"那个圆弧要不改成一条直线，放在小字下面"
+   → .ecust-arc（上凸半圆弧）删除，替换为 .login-rule 短直线：
+   - 位置：kicker 正下方，左对齐（和文案同起点，"标签→线→标题"经典层次）
+   - 尺寸：宽 56px / 高 2px，天蓝渐变（左实右虚），含蓄不抢戏
+   ================================================================ */
+.login-rule {
+    width: 56px;
+    height: 2px;
+    margin: 16px 0 20px;               /* 上贴小字 16px / 下隔大字 20px */
+    background: linear-gradient(to right, rgba(56, 189, 248, 0.55), rgba(56, 189, 248, 0.12));
+    border-radius: 1px;
+    pointer-events: none;
+    opacity: 0;
+    animation: ruleFlowIn 600ms cubic-bezier(.2,.8,.2,1) 420ms forwards;
+}
+
+@keyframes ruleFlowIn {
+    0%   { opacity: 0; transform: translateX(-10px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+/* 左栏 copy 容器（v8-上移）：ECUST 已挪左上角（不占中央），文案块回归垂直居中；
+   margin-top 从 v7 的 11vh 大下压 → 0，加 margin-bottom 配重把视觉重心抬向上半部
+   → 落实用户"大字往上移一点，毕竟它是这个页面的主要内容" */
+.login-context-copy {
+    position: relative;
+    z-index: 2;
+    max-width: 560px;
+    margin-top: 0;                          /* v7 clamp(24px,11vh,160px) → 0：不再下压 */
+    margin-bottom: clamp(24px, 7vh, 96px);  /* 底部配重 → flex 居中时整体视觉上移 */
 }
 
 .login-kicker,
 .login-eyebrow {
     display: inline-block;
-    color: #9bb0f0;
+    color: #7DD3FC;
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
+    /* 【问题1】：小字左→右 2200ms，保持不变；但 v7 新增子级 span 微凹弧旋转 */
+    opacity: 0;
+    animation: kickerFlowIn 2200ms cubic-bezier(.2,.8,.2,1) 360ms forwards;
 }
 
+/* 标题：学术衬线 Crimson Text，体现"大学·严谨·传统"的气质
+   【v8-缩小 + 完整显示】：
+   - "始"字被裁根因：v7 字号最大 58px × 第二行 10 字 ≈ 580px > 左栏内容宽 ~475px，
+     white-space: nowrap 溢出后被 .login-shell overflow:hidden 裁掉
+   - 修复：字号 clamp(38,4.4vw,58) → clamp(30px, 3.4vw, 44px)（10 字≈440px < 475px）
+   - max-width 520 → min(460px, 100%)，行高 1.18 → 1.22（两行更透气） */
 .login-context h1 {
-    max-width: 560px;
-    margin-top: 22px;
-    font-size: clamp(34px, 4vw, 52px);
-    line-height: 1.16;
-    letter-spacing: -0.045em;
+    max-width: min(460px, 100%);
+    margin-top: 0;                     /* 直线已提供 20px 下间距 */
+    font-family: "Crimson Text", var(--login-academic-serif);
+    font-size: clamp(30px, 3.4vw, 44px);
+    line-height: 1.22;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    text-shadow: 0 1px 0 rgba(14, 165, 233, 0.15);
+    /* 动画仍左→右 2400ms + 延迟 480ms（保持 v6 水流错峰节奏） */
+    opacity: 0;
+    animation: titleFlowIn 2400ms cubic-bezier(.2,.8,.2,1) 480ms forwards;
 }
 
-.login-context > div > p {
-    max-width: 500px;
-    margin-top: 20px;
-    color: #c9d2df;
-    font-size: 15px;
-    line-height: 1.8;
+/* 【问题1修复】：kickerFlowIn — 小字左→右漂入（统一方向），替代原 Y 下滑 fadeSlideIn */
+@keyframes kickerFlowIn {
+    0%   { opacity: 0; transform: translateX(-14px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+/* 【问题1保留并重命名】：大字左→右漂入（原方向正确，仅时长调整为 2400ms） */
+@keyframes titleFlowIn {
+    0%   { opacity: 0; transform: translateX(-16px); }
+    100% { opacity: 1; transform: translateX(0); }
 }
 
-.login-stage-list {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    gap: 4px;
+/* ========== 问题1修复：标题强制两行锁定 ========== */
+.login-title-locked {
+    display: flex;
+    flex-direction: column;
+    gap: 0.12em;
+    /* 禁止任何子元素自行换行：每一行就是一个逻辑块 */
+}
+.login-title-locked > .login-title-line2 {
+    display: block;
+    white-space: nowrap;       /* 第二行强制一行，"始"字绝对不掉出来 */
 }
 
-.login-stage-list > div {
-    display: grid;
-    grid-template-columns: 36px minmax(90px, auto) 1fr;
-    align-items: center;
-    gap: 12px;
-    min-height: 52px;
-    padding: 8px 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.10);
-}
-
-.login-stage-list span {
-    color: #8da6f2;
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-    font-size: 12px;
-}
-
-.login-stage-list strong {
-    font-size: 14px;
-}
-
-.login-stage-list small {
-    color: #9eabbc;
-    font-size: 12px;
-}
-
-.login-context-note {
-    position: relative;
-    z-index: 1;
-    color: #9eabbc;
-    font-size: 12px;
-}
-
+/* ================================================================
+   右栏（白色登录卡）：增加呼吸空间（解决"中间信息密集、旁边全白底"）
+   同时左边圆角与左栏凹陷完全匹配，两栏无缝交融
+   【问题2修复（再加强）】：左 padding 再放宽 4-15px，
+       210px 超大圆弧的"吃边"效应再无机会裁到输入框
+   【问题C修复】：输入框统一 1.5px 边框（含默认左线），
+       聚焦态左线加粗到 3px + 其他边高亮 蓝色边框完整不"缺一口"
+================================================================ */
 .login-box {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: clamp(36px, 5vw, 68px);
+    /* 【问题C修复 第1层】：左 padding 再放宽（86→90px / 150→165px），
+       即便 210px 大圆弧最极端的"吃边"也碰不到输入框左侧边界 */
+    padding: clamp(46px, 6.2vw, 92px) clamp(32px, 4.4vw, 60px) clamp(46px, 6.2vw, 92px) clamp(90px, 10.5vw, 165px);
     background: #ffffff;
+    /* 与左栏大圆弧 210px 完全匹配，两栏交融无断层 */
+    border-top-left-radius: 210px 60%;
+    border-bottom-left-radius: 210px 60%;
+    z-index: 2;
 }
 
 .login-heading {
-    margin-bottom: 34px;
+    margin-bottom: 42px; /* 比原 34px 加大，标题区更独立 */
 }
 
 .login-heading h2 {
@@ -142,37 +319,61 @@ body {
 }
 
 .login-box .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 24px; /* 原 20 → 24：输入框之间拉开间距，信息不再密集 */
 }
 
 .login-box .form-group label {
     display: block;
-    margin-bottom: 7px;
+    margin-bottom: 8px;
     color: var(--color-text-secondary);
     font-size: 13px;
     font-weight: 650;
 }
 
+/* 【问题C修复 第2层】：
+   原方案：默认 border:1px 全框 + border-left:3px transparent → 左边框视觉上"没了"
+   新方案：默认统一 1.5px 全框灰色（含左边框！四条边完整不缺口），
+           聚焦时：左边框加粗为 3px 主色 + 其他边框提亮 + 3px 主色光环
+   → 四条边永远完整，用户不会再看到"缺了一口" */
 .login-box .form-group input {
     width: 100%;
-    min-height: 46px;
-    padding: 11px 13px;
-    border: 1px solid var(--color-border-dark);
-    border-radius: var(--radius-sm);
+    min-height: 48px; /* 原 46 → 48，更易点击（≥44px iOS HIG） */
+    padding: 12px 14px;
+    /* 四条边统一 1.5px 深灰 border，默认"闭合完整"，不搞左边框透明 */
+    border: 1.5px solid var(--color-border-dark);
+    border-radius: 10px;
     background: #ffffff;
     color: var(--color-text);
     font-size: 15px;
-    transition: border-color var(--transition), box-shadow var(--transition), background-color var(--transition);
+    position: relative;
+    z-index: 1;
+    transition:
+        border-color var(--transition),
+        border-left-width var(--transition),
+        border-left-color var(--transition),
+        padding-left var(--transition),
+        box-shadow var(--transition),
+        background-color var(--transition),
+        transform var(--transition);
 }
 
 .login-box .form-group input::placeholder {
     color: #98a2b3;
 }
 
+/* 【问题C修复 第3层】聚焦态：
+   - 其他 3 边：天蓝半透明高亮
+   - 左边框：主色 Sky700，加粗到 3px（"聚焦在哪一眼就看到"）
+   - 外圈 3px 淡天蓝光环（克制的企业级视觉）
+   - 因为默认左边框就有 1.5px，聚焦后再"长粗"1.5px → padding-left 微减防内容偏移 */
 .login-box .form-group input:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(49, 87, 200, 0.14);
+    border-color: rgba(3, 105, 161, 0.45);
+    border-left-width: 3px;
+    border-left-color: var(--color-primary);
+    padding-left: 12.5px;   /* 左边框加粗 1.5px → padding-left 减 1.5px，内容位置纹丝不动 */
+    box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.10);
     outline: none;
+    background: rgba(14, 165, 233, 0.02);
 }
 
 .password-field {
@@ -180,70 +381,114 @@ body {
 }
 
 .password-field input {
-    padding-right: 64px !important;
+    padding-right: 68px !important;
 }
 
 .password-toggle {
     position: absolute;
     top: 50%;
-    right: 8px;
-    min-width: 48px;
-    min-height: 32px;
-    padding: 4px 8px;
+    right: 10px;
+    min-width: 52px;
+    min-height: 34px;
+    padding: 4px 10px;
     transform: translateY(-50%);
+    transform-origin: center;
     border: 0;
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
     color: var(--color-primary);
     cursor: pointer;
     font-size: 12px;
-    font-weight: 650;
+    font-weight: 680;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: background-color var(--transition), transform 120ms ease-out;
 }
 
 .password-toggle:hover {
-    background: var(--color-primary-bg);
+    background: rgba(14, 165, 233, 0.10); /* 极淡 10% 填充，不扎眼 */
 }
 
+/* 微缩放：按下时 0.92 → 松开回弹 1.0，触感像手机按键 */
+.password-toggle:active {
+    transform: translateY(-50%) scale(0.92);
+}
+
+/* ================================================================
+   主按钮（登录/同意须知）：克制按压交互 + 未同意须知灰态
+================================================================ */
 .login-btn {
     width: 100%;
-    min-height: 46px;
+    min-height: 48px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 9px;
-    margin-top: 6px;
+    gap: 10px;
+    margin-top: 14px; /* 原 6 → 14，拉开与密码框的距离 */
     border: 1px solid var(--color-primary-dark);
-    border-radius: var(--radius-sm);
-    background: var(--color-primary);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
     color: #ffffff;
-    box-shadow: 0 1px 2px rgba(34, 63, 145, 0.22);
+    box-shadow: 0 1px 2px rgba(3, 105, 161, 0.22);
     cursor: pointer;
     font-size: 15px;
-    font-weight: 700;
-    transition: background-color var(--transition), box-shadow var(--transition), transform var(--transition);
+    font-weight: 720;
+    letter-spacing: 0.01em;
+    transition:
+        background-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition),
+        filter var(--transition),
+        opacity var(--transition);
 }
 
 .login-btn:hover:not(:disabled) {
-    background: var(--color-primary-dark);
-    box-shadow: 0 6px 16px rgba(34, 63, 145, 0.20);
+    background: linear-gradient(135deg, #075985 0%, #0284C7 100%);
+    box-shadow: 0 7px 18px rgba(3, 105, 161, 0.24);
     transform: translateY(-1px);
 }
 
 .login-btn:active:not(:disabled) {
     transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(3, 105, 161, 0.20);
 }
 
+/* 未同意须知：灰态 + 禁止光标 + 透明度低，一眼就懂"按不动" */
 .login-btn:disabled {
-    cursor: wait;
-    opacity: 0.72;
+    cursor: not-allowed;
+    filter: grayscale(0.45);
+    opacity: 0.68;
+    box-shadow: 0 1px 1px rgba(24, 34, 48, 0.08);
 }
 
 .login-btn .button-spinner {
     display: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.45);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: buttonSpin 0.7s linear infinite;
 }
 
 .login-btn.is-loading .button-spinner {
     display: inline-block;
+}
+
+@keyframes buttonSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* 未同意须知点击登录 → 按钮左右轻抖 300ms（像"摇头说不行"） */
+.login-btn.shake {
+    animation: loginShake 300ms cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes loginShake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
 }
 
 .error-message {
@@ -251,100 +496,38 @@ body {
     margin-top: 14px;
     padding: 10px 12px;
     border: 1px solid #efc2c8;
-    border-radius: var(--radius-sm);
+    border-radius: 10px;
     background: #fff4f5;
     color: var(--color-danger-dark);
     font-size: 13px;
-    line-height: 1.5;
+    line-height: 1.55;
 }
 
-/* 有错误内容时才显示：用 :not(:empty) 兜底，兼容通过 JS 写 innerHTML 的错误提示方式 */
 .error-message:not(:empty),
 .error-message.is-visible {
     display: block;
 }
 
-/* ================================================================
-   移动端适配：768px 以下强制单列，隐藏左侧深色宣传区，避免两栏 grid 把 360+px 手机挤爆
-   （之前 390px iPhone/Android 仍然走 minmax(360px, 0.92fr) 右栏 + 左栏 = 总宽 >> 屏幕宽
-    → 元素重叠、登录卡片背景错位、显示密码按钮分离、可横向滑动 等问题）
-================================================================ */
-.login-container {
-    /* 防止用户在微信/QQ 内置浏览器里看到"超出半边页面还能左右划" */
-    overflow-x: hidden;
+/* 使用须知解锁状态：绿色小字提示 */
+.usage-status {
+    margin-top: 10px;
+    min-height: 18px;
+    color: #1e7d4d;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.4;
 }
 
-@media (max-width: 768px) {
-    .login-shell {
-        /* 单列：手机端只保留白色登录卡片一栏，够用且不挤 */
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: auto;
-        min-height: unset;
-        width: min(100%, 520px);
-        border-radius: 14px;
-    }
-
-    .login-context {
-        /* 移动端不需要大段宣传文字（直接被挤成一团视觉垃圾） */
-        display: none;
-    }
-
-    .login-box {
-        padding: 28px 20px 32px;
-    }
-
-    .login-heading {
-        margin-bottom: 22px;
-    }
-
-    .login-heading h2 {
-        font-size: 24px;
-    }
-
-    .login-heading p {
-        font-size: 13px;
-    }
-
-    .login-box .form-group input {
-        min-height: 44px;
-        font-size: 16px; /* iOS Safari ≥16px 才不会自动放大输入框焦点 */
-    }
-
-    .password-field input {
-        padding-right: 60px !important;
-    }
-
-    .password-toggle {
-        /* 关键：干掉 iOS 微信/Safari 对 <button> 的默认蓝色边框/渐变/方形阴影，
-           否则会出现"显示 文字 + 原生方框 分离错位"的截图效果 */
-        -webkit-appearance: none;
-        appearance: none;
-        right: 6px;
-        min-width: 44px;
-        padding: 4px 6px;
-    }
-
-    .login-btn {
-        min-height: 46px;
-        font-size: 15px;
-    }
+.usage-status.is-error {
+    color: var(--color-danger-dark);
 }
 
-@media (max-width: 380px) {
-    /* 小屏 iPhone SE / 安卓小屏再收一档 padding，避免按钮/输入框顶到边缘 */
-    .login-container {
-        padding: 12px;
-    }
-    .login-box {
-        padding: 22px 16px 26px;
-    }
-}
-
+/* ========== 问题3(a)修复：注册链接 & 使用须知链接 解锁 + 精美配色 ========== */
 .register-link {
     display: flex;
     justify-content: center;
     gap: 6px;
-    margin-top: 24px;
+    margin-top: 26px;
     padding-top: 22px;
     border-top: 1px solid var(--color-border);
     color: var(--color-text-muted);
@@ -354,33 +537,339 @@ body {
 .register-link a {
     color: var(--color-primary);
     font-weight: 700;
+    /* 下划线动画：从左向右生长，克制但有感知 */
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    background-position: 0 100%;
+    transition:
+        color 180ms ease-out,
+        background-size 200ms ease-out;
+}
+
+.register-link a:hover {
+    color: var(--color-primary-dark);
+    background-size: 100% 2px;
+}
+
+/* 已移除：.register-link a[data-locked="true"] 灰化规则（用户要求解锁，随时可点） */
+
+.usage-link {
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+}
+
+.usage-open-btn {
+    border: 1px solid transparent;
+    background: var(--color-primary-bg);
+    padding: 8px 16px;
+    cursor: pointer;
+    color: var(--color-primary-dark);
+    font-size: 12.5px;
+    font-weight: 650;
+    border-radius: 10px;
+    transition:
+        background-color var(--transition),
+        color var(--transition),
+        border-color var(--transition),
+        transform var(--transition);
+}
+
+.usage-open-btn:hover {
+    background: rgba(14, 165, 233, 0.12);
+    color: var(--color-primary);
+    border-color: rgba(14, 165, 233, 0.32);
+    transform: translateY(-1px);
+}
+
+/* ================================================================
+   使用须知 模态框（三层锁 UI：遮罩/滚动区域/checkbox+按钮）
+================================================================ */
+.usage-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(14px, 3vw, 28px);
+}
+
+.usage-modal.is-open {
+    display: flex;
+}
+
+.usage-modal-mask {
+    position: absolute;
+    inset: 0;
+    background: rgba(24, 34, 48, 0.58);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    cursor: pointer;
+    animation: maskFade 200ms ease-out;
+}
+
+@keyframes maskFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.usage-modal-dialog {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    max-height: 84vh;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 30px 90px rgba(24, 34, 48, 0.32);
+    display: flex;
+    flex-direction: column;
+    animation: dialogIn 240ms cubic-bezier(.2,.8,.2,1);
+    overflow: hidden;
+}
+
+@keyframes dialogIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.usage-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 22px;
+    line-height: 1;
+    color: #667085;
+    cursor: pointer;
+    transition: background-color var(--transition), color var(--transition);
+    z-index: 2;
+}
+
+.usage-modal-close:hover {
+    background: rgba(24, 34, 48, 0.06);
+    color: #1f2937;
+}
+
+.usage-modal-header {
+    padding: 22px 24px 16px;
+    border-bottom: 1px solid var(--color-border);
+    background:
+        linear-gradient(110deg, rgba(14, 165, 233, 0.06), transparent 55%),
+        #ffffff;
+}
+
+.usage-modal-header h3 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 18px;
+    font-weight: 780;
+    letter-spacing: -0.015em;
+}
+
+.usage-modal-sub {
+    margin: 6px 0 0;
+    color: var(--color-text-muted);
+    font-size: 12.5px;
+}
+
+.usage-modal-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 18px 24px 22px;
+    font-size: 14px;
+    line-height: 1.78;
+    color: #2c3444;
+}
+
+.usage-modal-body h4 {
+    margin: 18px 0 8px;
+    color: #1f2937;
+    font-size: 14.5px;
+    font-weight: 760;
+}
+
+.usage-modal-body h4:first-child {
+    margin-top: 0;
+}
+
+.usage-modal-body p,
+.usage-modal-body li {
+    color: #3a4252;
+}
+
+.usage-modal-body ol {
+    padding-left: 22px;
+    margin: 4px 0 10px;
+}
+
+.usage-modal-body li {
+    margin: 2px 0;
+}
+
+.usage-tip-final {
+    margin-top: 14px;
+    padding: 10px 12px;
+    background: rgba(14, 165, 233, 0.06);
+    border-left: 3px solid var(--color-primary);
+    border-radius: 6px;
+    color: #0C4A6E !important;
+    font-size: 13px;
+}
+
+.usage-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 22px 18px;
+    border-top: 1px solid var(--color-border);
+    background: #fafbff;
+}
+
+.usage-agree-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #2c3444;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.usage-agree-wrap input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+.usage-agree-wrap input[type="checkbox"]:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    accent-color: #9aa6bd;
+}
+
+.usage-agree-wrap input[type="checkbox"]:disabled + .usage-agree-label {
+    color: #6a7283;
+    cursor: not-allowed;
+}
+
+.usage-confirm-btn {
+    width: auto;
+    min-width: 170px;
+    min-height: 42px;
+    margin-top: 0;
+    padding: 0 18px;
+    font-size: 14px;
+    border-radius: 10px;
+}
+
+/* ================================================================
+   响应式：平板（≤1024） 小屏平板（≤860） 手机（≤768 / ≤520）
+================================================================ */
+@media (max-width: 1024px) {
+    .login-shell {
+        min-height: 600px;
+    }
+    .login-context {
+        border-top-right-radius: 170px 60%;
+        border-bottom-right-radius: 170px 60%;
+        padding: clamp(32px, 4.4vw, 60px) clamp(32px, 4.2vw, 68px);
+    }
+    .login-box {
+        border-top-left-radius: 170px 60%;
+        border-bottom-left-radius: 170px 60%;
+        padding-left: clamp(76px, 9.5vw, 130px);
+    }
+    /* 【v8 1024 同步】：ECUST 左上角水平（无旋转），left/top 与本断点 padding 对齐 */
+    .ecust-watermark {
+        font-size: clamp(44px, 6vw, 72px);
+        left: clamp(32px, 4.4vw, 60px);
+        top: clamp(22px, 4vh, 48px);
+        animation-delay: 100ms;
+    }
+    /* 【v8 1024 同步】：短直线略缩 */
+    .login-rule {
+        width: 48px;
+    }
+    /* 【v8 1024 同步】：大字同步缩小（30px × 10 字 = 300px < 平板内容宽） */
+    .login-context h1 {
+        font-size: clamp(26px, 3vw, 36px);
+    }
+    /* 【v8 1024 同步】：文案块回归居中（margin-bottom 配重上移） */
+    .login-context-copy {
+        margin-top: 0;
+        margin-bottom: clamp(16px, 5vh, 72px);
+    }
 }
 
 @media (max-width: 860px) {
     .login-shell {
-        max-width: 520px;
+        max-width: 540px;
         min-height: auto;
         grid-template-columns: 1fr;
+        border-radius: 18px;
     }
-
     .login-context {
-        min-height: 230px;
-        padding: 34px;
+        min-height: 240px;
+        padding: 30px 28px 40px;
+        border-radius: 18px 18px 130px 130px / 18px 18px 40% 40%;
+        box-shadow: inset 0 -30px 50px -30px rgba(8, 47, 73, 0.45);
     }
-
-    .login-context h1 {
-        margin-top: 14px;
-        font-size: 30px;
+    .login-context::before {
+        width: 100%;
+        height: 60px;
+        top: auto;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(to bottom, rgba(12, 74, 110, 0), rgba(8, 47, 73, 0.55));
+        transform: none;
     }
-
-    .login-context > div > p,
-    .login-stage-list,
-    .login-context-note {
-        display: none;
-    }
-
     .login-box {
-        padding: 38px 34px 34px;
+        padding: 40px 32px 34px;
+        border-radius: 18px;
+        margin-top: 0;
+        border-top-left-radius: 18px;
+        border-bottom-left-radius: 18px;
+    }
+    /* 【v8 860 单列同步】：ECUST 左上角水平，left 28px 与本断点 padding 对齐 */
+    .ecust-watermark {
+        font-size: clamp(40px, 10vw, 64px);
+        left: 28px;
+        top: 20px;
+    }
+    /* 【v8 860 单列同步】：短直线略缩 */
+    .login-rule {
+        width: 44px;
+        margin: 12px 0 16px;
+    }
+    .login-context-copy h1 {
+        font-size: 28px;
+        margin-top: 0;
+    }
+    .login-context-copy {
+        margin-top: 0;
+        margin-bottom: clamp(10px, 3vh, 40px);
+    }
+}
+
+@media (max-width: 768px) {
+    .login-box .form-group input {
+        min-height: 46px;
+        font-size: 16px; /* iOS HIG：≥16px 不自动放大聚焦 */
+    }
+    .password-field input {
+        padding-right: 64px !important;
+    }
+    .password-toggle {
+        right: 8px;
+        min-width: 46px;
     }
 }
 
@@ -390,33 +879,60 @@ body {
         padding: 0;
         background: #ffffff;
     }
-
     .login-shell {
         min-height: 100dvh;
         border: 0;
         border-radius: 0;
         box-shadow: none;
+        max-width: 100%;
     }
-
     .login-context {
-        min-height: 178px;
-        padding: 28px 22px;
+        min-height: 190px;
+        padding: 24px 20px 30px;
+        border-radius: 0 0 100px 100px / 0 0 30% 30%;
     }
-
-    .login-context h1 {
-        font-size: 25px;
+    .login-context-copy h1 {
+        font-size: 23px;
+        margin-top: 0;            /* v8：直线已提供 16px 上间距 */
     }
-
+    .login-context-copy .login-kicker {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+    }
+    /* 【v8 520 手机全屏同步】：ECUST 左上角水平，left 20px 与本断点 padding 对齐 */
+    .ecust-watermark {
+        font-size: clamp(34px, 10vw, 52px);
+        left: 20px;
+        top: 16px;
+    }
+    /* 【v8 520 手机全屏同步】：短直线最小 */
+    .login-rule {
+        width: 36px;
+        margin: 10px 0 14px;
+    }
+    .login-context-copy {
+        margin-top: 0;
+        margin-bottom: clamp(8px, 2vh, 28px);
+    }
     .login-box {
         justify-content: flex-start;
-        padding: 30px 22px 36px;
+        padding: 28px 20px 34px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
     }
-
     .login-heading {
-        margin-bottom: 26px;
+        margin-bottom: 28px;
     }
-
     .login-heading h2 {
-        font-size: 26px;
+        font-size: 24px;
+    }
+    .usage-modal-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .usage-confirm-btn {
+        width: 100%;
+        min-width: 0;
     }
 }
