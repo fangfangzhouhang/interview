@@ -22,15 +22,15 @@
         </div>
         
         <div class="sidebar-menu">
-            <a href="{% url 'profile' %}" class="menu-item" data-page="profile">
+            <a href="{% url 'profile' %}" class="menu-item" data-page="profile" data-label="个人页面">
                 <span class="menu-icon">👤</span>
                 <span class="menu-text">个人页面</span>
             </a>
-            <a href="{% url 'new_feature' %}" class="menu-item active" data-page="new-feature">
+            <a href="{% url 'new_feature' %}" class="menu-item active" data-page="new-feature" data-label="新定义功能">
                 <span class="menu-icon">✨</span>
                 <span class="menu-text">新定义功能</span>
             </a>
-            <a href="{% url 'logout' %}" class="menu-item logout-item">
+            <a href="{% url 'logout' %}" class="menu-item logout-item" data-label="退出登录">
                 <span class="menu-icon">🚪</span>
                 <span class="menu-text">退出登录</span>
             </a>

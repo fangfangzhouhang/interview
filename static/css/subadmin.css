@@ -2131,7 +2131,7 @@
         min-width: 52px;
         padding: 8px 12px;
         border: 0;
-        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        border-right: 1px solid var(--sidebar-border);  /* v9：白8% → 淡蓝描边，浅蓝白底上可见 */
     }
 
     .sidebar .logo-text,

@@ -61,6 +61,26 @@
 
     /* ===== 过渡 ===== */
     --transition: 0.16s cubic-bezier(0.2, 0, 0, 1);
+
+    /* ================================================================
+       侧边栏专属变量（v9 浅蓝白玻璃拟态重构）
+       背景不再是紫灰黑 #2d3748→#1a202c（和 Sky 蓝主题冲突），
+       改为 Sky 50→100 浅蓝白渐变，与右侧内容区 #F0F9FF 同色系不同明度，
+       视觉"融为一体但有层次"。active/hover/tooltip 全部走变量，便于维护。
+       ================================================================ */
+    --sidebar-bg: linear-gradient(180deg, #F7FBFE 0%, #E9F5FC 100%);  /* Sky50→Sky100 */
+    --sidebar-border: #D3E9F5;                  /* 分隔线/右侧描边：Sky150 淡蓝 */
+    --sidebar-text: #3D5A72;                    /* 菜单默认文字：蓝灰 */
+    --sidebar-text-strong: #0C4A6E;             /* 强调文字（logo/active/tooltip）：Sky900 */
+    --sidebar-icon: #5B7A90;                    /* 图标默认色：蓝灰 */
+    --sidebar-hover-bg: #E0F2FE;                /* hover 底：Sky100 */
+    --sidebar-active-bg: #BAE6FD;               /* active 底：Sky200 */
+    --sidebar-active-accent: #0369A1;           /* active 左侧竖条/文字：Sky700 */
+    --sidebar-toggle-bg: rgba(3, 105, 161, 0.08);   /* 折叠按钮底：Sky700 8% */
+    --sidebar-toggle-bg-hover: rgba(3, 105, 161, 0.16);
+    --sidebar-logout-hover-bg: rgba(220, 38, 38, 0.08);
+    --sidebar-logout-hover-text: #DC2626;
+    --sidebar-shadow: 2px 0 16px rgba(3, 105, 161, 0.06);  /* 右阴影：淡蓝非黑 */
 }
 
 /* ===== 重置 ===== */
@@ -120,19 +140,20 @@ a:hover {
     overflow: hidden;
 }
 
-/* ===== 侧边栏 ===== */
+/* ===== 侧边栏（v9 浅蓝白玻璃拟态重构） ===== */
 .sidebar {
     width: 220px;
     min-width: 220px;
-    background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
-    color: #fff;
+    background: var(--sidebar-bg);          /* 紫灰黑 → 浅蓝白渐变 */
+    color: var(--sidebar-text);
+    border-right: 1px solid var(--sidebar-border);  /* 右描边分隔内容区 */
     display: flex;
     flex-direction: column;
     transition: width var(--transition), min-width var(--transition);
     position: relative;
     z-index: 100;
     overflow: hidden;
-    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--sidebar-shadow);      /* 黑阴影 → 淡蓝阴影 */
 }
 
 .sidebar.collapsed {
@@ -145,7 +166,7 @@ a:hover {
     align-items: center;
     justify-content: space-between;
     padding: 12px 14px 12px 18px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--sidebar-border);  /* 白8% → 淡蓝描边 */
     flex-shrink: 0;
 }
 
@@ -166,7 +187,7 @@ a:hover {
     font-size: 18px;
     font-weight: 700;
     transition: opacity var(--transition);
-    color: #fff;
+    color: var(--sidebar-text-strong);      /* 白 → Sky900 深蓝 */
     letter-spacing: 0.5px;
 }
 
@@ -177,9 +198,9 @@ a:hover {
 }
 
 .toggle-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--sidebar-toggle-bg);   /* 白10% → Sky700 8% */
     border: none;
-    color: #fff;
+    color: var(--sidebar-active-accent);    /* 白 → Sky700 */
     width: 28px;
     height: 28px;
     border-radius: var(--radius-sm);
@@ -193,7 +214,7 @@ a:hover {
 }
 
 .toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--sidebar-toggle-bg-hover);
 }
 
 .sidebar.collapsed .toggle-btn {
@@ -216,7 +237,7 @@ a:hover {
     gap: 12px;
     padding: 9px 14px;
     border-radius: var(--radius-sm);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--sidebar-text);             /* 白70% → 蓝灰 */
     transition: all var(--transition);
     white-space: nowrap;
     overflow: hidden;
@@ -228,30 +249,32 @@ a:hover {
     font-size: 17px;
     font-family: inherit;
     font-weight: 500;
+    position: relative;                     /* tooltip 定位基准 */
 }
 
 .menu-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: var(--sidebar-hover-bg);    /* 白10% → Sky100 */
+    color: var(--sidebar-text-strong);
 }
 
 .menu-item.active {
-    background: rgba(102, 126, 234, 0.35);
-    color: #fff;
-    box-shadow: inset 3px 0 0 var(--color-primary);
+    background: var(--sidebar-active-bg);   /* 紫蓝 rgba(102,126,234,.35) → Sky200 */
+    color: var(--sidebar-active-accent);    /* 白 → Sky700 */
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 var(--sidebar-active-accent);
     border-radius: var(--radius-sm) 0 0 var(--radius-sm);
 }
 
 .menu-item.logout-item {
     margin-top: auto;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--sidebar-border);
     padding-top: 12px;
     margin-top: 6px;
 }
 
 .menu-item.logout-item:hover {
-    background: rgba(252, 129, 129, 0.2);
-    color: #fc8181;
+    background: var(--sidebar-logout-hover-bg);
+    color: var(--sidebar-logout-hover-text);
 }
 
 .menu-icon {
@@ -268,6 +291,72 @@ a:hover {
     opacity: 0;
     width: 0;
     overflow: hidden;
+}
+
+/* ================================================================
+   【v9 折叠态精致化】：60px 图标列 + hover tooltip
+   - 折叠后菜单项居中显示图标，图标放大到 20px
+   - hover 时右侧弹出 tooltip（data-label 驱动，CSS ::after，零 JS）
+   - tooltip：白底 Sky900 文字 + 淡蓝描边 + 阴影 + 左小三角，精致不黑
+   ================================================================ */
+.sidebar.collapsed .menu-item {
+    justify-content: center;                /* 图标居中 */
+    gap: 0;
+    padding: 12px 0;
+}
+
+.sidebar.collapsed .menu-icon {
+    font-size: 20px;                        /* 图标放大 */
+    margin: 0;
+}
+
+/* tooltip 气泡（仅在折叠态 hover 时出现） */
+.sidebar.collapsed .menu-item::after {
+    content: attr(data-label);
+    position: absolute;
+    left: calc(100% + 12px);                /* 侧边栏右缘外 12px */
+    top: 50%;
+    transform: translateY(-50%) translateX(-6px);
+    background: #fff;
+    color: var(--sidebar-text-strong);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 7px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--sidebar-border);
+    box-shadow: var(--shadow-md);
+    white-space: nowrap;
+    pointer-events: none;                   /* 不挡鼠标 */
+    opacity: 0;
+    transition: opacity var(--transition), transform var(--transition);
+    z-index: 1000;
+}
+
+/* tooltip 左侧小三角（指向图标） */
+.sidebar.collapsed .menu-item::before {
+    content: '';
+    position: absolute;
+    left: calc(100% + 6px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-6px);
+    border: 6px solid transparent;
+    border-right-color: #fff;
+    border-left: none;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--transition), transform var(--transition);
+    z-index: 1001;
+}
+
+.sidebar.collapsed .menu-item:hover::after,
+.sidebar.collapsed .menu-item:hover::before {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* 折叠态 logout tooltip 同样生效（红色文字提示） */
+.sidebar.collapsed .menu-item.logout-item::after {
+    color: var(--sidebar-logout-hover-text);
 }
 
 /* ===== 主内容 ===== */
@@ -1496,15 +1585,9 @@ textarea:focus-visible,
     border: 0 !important;
 }
 
-.sidebar {
-    background: linear-gradient(180deg, #182230 0%, #111827 100%);
-    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.06);
-}
-
-.menu-item.active {
-    background: rgba(95, 127, 224, 0.22);
-    box-shadow: inset 3px 0 0 #8da6f2;
-}
+/* v9：原 1588/1593 处的游离深色侧边栏 & 紫蓝 active 重复定义已删除，
+   统一由文件顶部「===== 侧边栏（v9 浅蓝白玻璃拟态重构）=====」区块接管，
+   避免后定义覆盖新样式导致的"样式被改回去"问题。 */
 
 .content-header {
     min-height: 58px;
@@ -1689,7 +1772,7 @@ textarea:focus-visible,
     .sidebar-header {
         min-width: 52px;
         padding: 8px 12px;
-        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        border-right: 1px solid var(--sidebar-border);  /* v9：白8% → 淡蓝描边 */
         border-bottom: 0;
     }
 

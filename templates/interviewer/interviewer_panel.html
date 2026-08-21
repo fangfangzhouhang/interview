@@ -5,7 +5,7 @@
 {% block title %}面试官管理面板{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/core.css' %}">
+<link rel="stylesheet" href="{% static 'css/core.css' %}?v=sidebar-glass-v9-20260821">
 <style>
     .clickable-row {
         cursor: pointer;
@@ -28,19 +28,19 @@
             <button class="toggle-btn" id="toggleSidebar">◀</button>
         </div>
         <div class="sidebar-menu">
-            <a href="{% url 'interviewer_panel' %}" class="menu-item active">
+            <a href="{% url 'interviewer_panel' %}" class="menu-item active" data-label="我的场次">
                 <span class="menu-icon">📊</span>
                 <span class="menu-text">我的场次</span>
             </a>
-            <a href="{% url 'interviewer_panel_groups' %}" class="menu-item">
+            <a href="{% url 'interviewer_panel_groups' %}" class="menu-item" data-label="面试官组管理">
                 <span class="menu-icon">👥</span>
                 <span class="menu-text">面试官组管理</span>
             </a>
-            <a href="{% url 'interviewer_profile' %}" class="menu-item">
+            <a href="{% url 'interviewer_profile' %}" class="menu-item" data-label="个人信息">
                 <span class="menu-icon">👤</span>
                 <span class="menu-text">个人信息</span>
             </a>
-            <a href="{% url 'logout' %}" class="menu-item logout-item">
+            <a href="{% url 'logout' %}" class="menu-item logout-item" data-label="退出登录">
                 <span class="menu-icon">🚪</span>
                 <span class="menu-text">退出登录</span>
             </a>
