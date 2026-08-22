@@ -44,8 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
     passwordToggle.addEventListener('click', function() {
         const shouldShow = passwordInput.type === 'password';
         passwordInput.type = shouldShow ? 'text' : 'password';
-        passwordToggle.textContent = shouldShow ? '隐藏' : '显示';
+        passwordToggle.classList.toggle('is-showing', shouldShow);
         passwordToggle.setAttribute('aria-pressed', String(shouldShow));
+        passwordToggle.setAttribute('title', shouldShow ? '隐藏密码' : '显示密码');
         passwordInput.focus({ preventScroll: true });
     });
 

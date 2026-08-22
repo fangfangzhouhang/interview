@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.apps import apps
 
+from ..models import SCORE_DIMENSIONS
 from ..permissions.roles import Role, RoleManager
 
 
@@ -213,8 +214,7 @@ class InterviewService:
                 try:
                     score_obj = InterviewerScore.objects.get(
                         candidate=cig.candidate,
-                        interviewer=interviewer,
-                        interview_group=group
+                        interviewer=interviewer
                     )
                     score = float(score_obj.score)
                     comment = score_obj.comment
@@ -284,8 +284,7 @@ class InterviewService:
             try:
                 score_obj = InterviewerScore.objects.get(
                     candidate=candidate_in_group.candidate,
-                    interviewer=interviewer,
-                    interview_group=group
+                    interviewer=interviewer
                 )
                 current_score = float(score_obj.score)
                 current_comment = score_obj.comment
@@ -354,7 +353,7 @@ class InterviewService:
 
     @staticmethod
     def get_existing_evaluation(candidate_in_group_id, user):
-        """获取已存在的评价"""
+        """获取已存在的评价 - 支持返回多维度百分制评分"""
         if not InterviewService._has_workflow_role(user):
             return None, '您没有面试工作流权限'
 
@@ -373,6 +372,7 @@ class InterviewService:
                 return None, '您不是该场次的面试官'
 
             scores = {}
+            dimension_scores = {}
             self_intros = {}
             comments = {}
 
@@ -381,14 +381,15 @@ class InterviewService:
                     target = CandidateInGroup.objects.get(group=group, order=order)
                     score_obj = InterviewerScore.objects.get(
                         candidate=target.candidate,
-                        interviewer=interviewer,
-                        interview_group=group
+                        interviewer=interviewer
                     )
                     scores[f'score_{order}'] = float(score_obj.score)
+                    dimension_scores[f'dimension_scores_{order}'] = score_obj.dimension_scores or {}
                     self_intros[f'self_intro_{order}'] = score_obj.self_intro or ''
                     comments[f'comment_{order}'] = score_obj.comment or ''
                 except (CandidateInGroup.DoesNotExist, InterviewerScore.DoesNotExist):
                     scores[f'score_{order}'] = None
+                    dimension_scores[f'dimension_scores_{order}'] = {}
                     self_intros[f'self_intro_{order}'] = ''
                     comments[f'comment_{order}'] = ''
 
@@ -405,10 +406,17 @@ class InterviewService:
                 'has_evaluation': has_evaluation,
                 **self_intros,
                 **scores,
+                **dimension_scores,
                 **comments,
                 'basic_question_1': group.basic_question1 or '',
                 'basic_question_2': group.basic_question2 or '',
                 'rush_question': group.rush_question or '',
+                # 返回评分维度配置供前端使用
+                'score_dimensions': [
+                    {'code': d['code'], 'name': d['name'], 'max_score': d['max_score']}
+                    for d in SCORE_DIMENSIONS
+                ],
+                'score_total_max': sum(d['max_score'] for d in SCORE_DIMENSIONS),
             }
 
             return data, None
@@ -420,12 +428,16 @@ class InterviewService:
 
     @staticmethod
     def save_evaluation(user, data, is_websocket_mode=False):
-        """保存面试评价
+        """保存面试评价 - 支持多维度百分制评分
 
         Args:
             user: 当前用户
             data: 评价数据
-            is_websocket_mode: 是否处于WebSocket模式（所有面试官都可以编辑题目）
+                - score_{i}: 总分（向后兼容，0-100）
+                - dimension_scores_{i}: 维度得分对象，如 {"expression": 20, "resume": 15, ...}
+                - self_intro_{i}: 自我介绍
+                - comment_{i}: 评语
+            is_websocket_mode: 是否处于WebSocket模式
         """
         if not InterviewService._has_workflow_role(user):
             return False, '您没有面试工作流权限'
@@ -460,32 +472,74 @@ class InterviewService:
 
             for i in range(1, 7):
                 score_key = f'score_{i}'
+                dimension_key = f'dimension_scores_{i}'
                 self_intro_key = f'self_intro_{i}'
                 comment_key = f'comment_{i}'
 
-                if score_key in data or self_intro_key in data or comment_key in data:
+                has_score = score_key in data
+                has_dimensions = dimension_key in data
+                has_self_intro = self_intro_key in data
+                has_comment = comment_key in data
+
+                if has_score or has_dimensions or has_self_intro or has_comment:
                     try:
                         target_candidate = CandidateInGroup.objects.get(group=group, order=i)
+
+                        # 准备默认值
+                        defaults = {
+                            'self_intro': data.get(self_intro_key, ''),
+                            'comment': data.get(comment_key, ''),
+                        }
+
+                        # 处理得分
+                        if has_dimensions:
+                            # 新格式：维度得分
+                            dim_scores = data.get(dimension_key, {})
+                            if isinstance(dim_scores, str):
+                                import json
+                                dim_scores = json.loads(dim_scores)
+                            defaults['dimension_scores'] = dim_scores
+                            # 总分会在 save() 时自动计算
+                            defaults['score'] = 0  # 占位，save时计算
+                        elif has_score:
+                            # 向后兼容：直接使用总分
+                            defaults['score'] = float(data[score_key])
+                            defaults['dimension_scores'] = {}
 
                         score_obj, created = InterviewerScore.objects.get_or_create(
                             candidate=target_candidate.candidate,
                             interviewer=interviewer,
-                            interview_group=group,
                             defaults={
-                                'score': float(data.get(score_key, 0)),
-                                'self_intro': data.get(self_intro_key, ''),
-                                'comment': data.get(comment_key, ''),
+                                'interview_group': group,
+                                **defaults
                             }
                         )
 
                         if not created:
-                            if score_key in data:
+                            updated = False
+                            if score_obj.interview_group_id != group.id:
+                                score_obj.interview_group = group
+                                updated = True
+                            if has_dimensions:
+                                dim_scores = data.get(dimension_key, {})
+                                if isinstance(dim_scores, str):
+                                    import json
+                                    dim_scores = json.loads(dim_scores)
+                                score_obj.dimension_scores = dim_scores
+                                # 总分通过维度得分计算
+                                score_obj.score = score_obj.calculate_total()
+                                updated = True
+                            elif has_score:
                                 score_obj.score = float(data[score_key])
-                            if self_intro_key in data:
+                                updated = True
+                            if has_self_intro:
                                 score_obj.self_intro = data[self_intro_key]
-                            if comment_key in data:
+                                updated = True
+                            if has_comment:
                                 score_obj.comment = data[comment_key]
-                            score_obj.save()
+                                updated = True
+                            if updated:
+                                score_obj.save()
 
                     except CandidateInGroup.DoesNotExist:
                         pass
@@ -678,8 +732,8 @@ class InterviewService:
                     score_obj, created = InterviewerScore.objects.get_or_create(
                         candidate=cig.candidate,
                         interviewer=interviewer,
-                        interview_group=group,
                         defaults={
+                            'interview_group': group,
                             'score': 0,
                             'self_intro': '',
                             'comment': '',

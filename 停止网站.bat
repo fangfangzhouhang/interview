@@ -1,21 +1,26 @@
 @echo off
-title ECUST Interview System - Stop
-echo ÕýÔÚÍ£Ö¹ Django ·þÎñÆ÷...
+chcp 65001 >nul
+title ECUST é¢è¯•ç³»ç»Ÿ - åœæ­¢æœåŠ¡
+echo ============================================
+echo   æ­£åœ¨åœæ­¢ ECUST é¢è¯•ç³»ç»Ÿ...
+echo ============================================
+echo.
 
 set found=0
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8000" ^| findstr "LISTENING"') do (
-    echo ÕÒµ½½ø³Ì PID: %%a£¬ÕýÔÚÖÕÖ¹...
+    echo [æç¤º] å‘çŽ°è¿›ç¨‹ PID: %%aï¼Œæ­£åœ¨ç»ˆæ­¢...
     taskkill /F /PID %%a >nul 2>&1
     set found=1
 )
 
-if "%found%" == "1" (
-    echo [Íê³É] Django ·þÎñÆ÷ÒÑÍ£Ö¹£¬¶Ë¿Ú 8000 ÒÑÊÍ·Å¡£
+if "%found%"=="1" (
+    echo.
+    echo [æˆåŠŸ] æœåŠ¡å·²åœæ­¢ï¼Œç«¯å£ 8000 å·²é‡Šæ”¾ã€‚
 ) else (
-    echo [ÌáÊ¾] Ã»ÓÐ·¢ÏÖÔËÐÐÖÐµÄ Django ·þÎñÆ÷£¨¶Ë¿Ú 8000 Î´±»Õ¼ÓÃ£©¡£
+    echo [æç¤º] æ²¡æœ‰å‘çŽ°è¿è¡Œä¸­çš„æœåŠ¡ï¼Œç«¯å£ 8000 æœªè¢«å ç”¨ã€‚
 )
 
 echo.
-echo ±¾´°¿Ú 2 Ãëºó×Ô¶¯¹Ø±Õ...
+echo çª—å£å°†åœ¨ 2 ç§’åŽè‡ªåŠ¨å…³é—­...
 timeout /t 2 /nobreak >nul
 exit

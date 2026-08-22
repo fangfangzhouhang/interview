@@ -63,6 +63,162 @@ html, body {
     gap: 12px;
 }
 
+/* ===== 部门导航栏 ===== */
+.carousel-dept-nav {
+    display: flex;
+    gap: 6px;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--bd-border);
+    border-radius: 12px;
+    box-shadow: var(--bd-shadow-sm);
+    flex-shrink: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.carousel-dept-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.dept-nav-item {
+    flex: 1;
+    min-width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: transparent;
+    border: 2px solid transparent;
+    position: relative;
+    text-align: center;
+    user-select: none;
+}
+
+.dept-nav-item:hover {
+    background: var(--bd-sky-50);
+    border-color: var(--bd-sky-200);
+    transform: translateY(-1px);
+}
+
+.dept-nav-item.is-active {
+    background: linear-gradient(135deg, var(--bd-sky-700) 0%, var(--bd-sky-500) 100%);
+    border-color: var(--bd-sky-700);
+    box-shadow: 0 4px 14px rgba(3, 105, 161, 0.35);
+}
+
+.dept-nav-item.is-active::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
+    background: var(--bd-sky-700);
+    border-radius: 2px;
+}
+
+.dept-nav-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--bd-sky-900);
+    letter-spacing: 1px;
+    line-height: 1.2;
+}
+
+.dept-nav-item.is-active .dept-nav-name {
+    color: #fff;
+}
+
+.dept-nav-code {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--bd-gray-400);
+    letter-spacing: 1.5px;
+    margin-top: 3px;
+}
+
+.dept-nav-item.is-active .dept-nav-code {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.dept-nav-count {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    background: #fef3c7;
+    color: #b45309;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 10px;
+    line-height: 1;
+}
+
+.dept-nav-item.is-active .dept-nav-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
+
+/* 部门差异化配色 - 蓝色系深浅变化 */
+.dept-nav-item[data-dept="BGS"].is-active {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    border-color: #1e40af;
+}
+.dept-nav-item[data-dept="BGS"].is-active::after {
+    background: #1e40af;
+}
+
+.dept-nav-item[data-dept="XCB"].is-active {
+    background: linear-gradient(135deg, #0369a1 0%, #38bdf8 100%);
+    border-color: #0369a1;
+}
+.dept-nav-item[data-dept="XCB"].is-active::after {
+    background: #0369a1;
+}
+
+.dept-nav-item[data-dept="QYB"].is-active {
+    background: linear-gradient(135deg, #075985 0%, #0ea5e9 100%);
+    border-color: #075985;
+}
+.dept-nav-item[data-dept="QYB"].is-active::after {
+    background: #075985;
+}
+
+.dept-nav-item[data-dept="XSB"].is-active {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+    border-color: #1e3a5f;
+}
+.dept-nav-item[data-dept="XSB"].is-active::after {
+    background: #1e3a5f;
+}
+
+.dept-nav-item[data-dept="WYB"].is-active {
+    background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 100%);
+    border-color: #0c4a6e;
+}
+.dept-nav-item[data-dept="WYB"].is-active::after {
+    background: #0c4a6e;
+}
+
+.dept-nav-item[data-dept="TYB"].is-active {
+    background: linear-gradient(135deg, #1e40af 0%, #60a5fa 100%);
+    border-color: #1e40af;
+}
+.dept-nav-item[data-dept="TYB"].is-active::after {
+    background: #1e40af;
+}
+
 /* ===== 顶栏 ===== */
 .carousel-header {
     display: flex;
@@ -670,6 +826,19 @@ html, body {
 
 /* ===== 响应式 ===== */
 @media (max-width: 1200px) {
+    .dept-nav-item {
+        min-width: 80px;
+        padding: 8px 10px;
+    }
+
+    .dept-nav-name {
+        font-size: 14px;
+    }
+
+    .dept-nav-code {
+        font-size: 10px;
+    }
+
     .queue-name {
         font-size: 24px;
     }
@@ -691,6 +860,33 @@ html, body {
     .carousel-root {
         padding: 10px 12px;
         gap: 8px;
+    }
+
+    .carousel-dept-nav {
+        gap: 4px;
+        padding: 4px;
+    }
+
+    .dept-nav-item {
+        min-width: 60px;
+        padding: 6px 4px;
+        border-radius: 8px;
+    }
+
+    .dept-nav-name {
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    .dept-nav-code {
+        font-size: 9px;
+    }
+
+    .dept-nav-count {
+        font-size: 10px;
+        min-width: 16px;
+        height: 16px;
+        padding: 0 4px;
     }
 
     .carousel-header {
@@ -766,6 +962,25 @@ html, body {
     .carousel-root {
         padding: 24px 36px 16px;
         gap: 20px;
+    }
+
+    .dept-nav-item {
+        min-width: 130px;
+        padding: 14px 18px;
+    }
+
+    .dept-nav-name {
+        font-size: 20px;
+    }
+
+    .dept-nav-code {
+        font-size: 13px;
+    }
+
+    .dept-nav-count {
+        font-size: 13px;
+        min-width: 24px;
+        height: 24px;
     }
 
     .dept-slide {

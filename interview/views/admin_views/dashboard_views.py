@@ -9,7 +9,7 @@ import json
 import hashlib
 
 from ..permission import admin_required
-from ...models import Candidate, Volunteer, InterviewerScore, Interviewer, InterviewGroup, CandidateInGroup
+from ...models import Candidate, Volunteer, InterviewerScore, Interviewer, InterviewGroup, CandidateInGroup, SCORE_DIMENSIONS
 
 
 @admin_required()
@@ -332,11 +332,25 @@ def build_candidate_export_data(candidate, include_fields):
     if 'evaluation' in include_fields:
         evaluation = []
         for score in candidate.scores.all():
+            dim_scores = score.dimension_scores or {}
+            dimension_details = []
+            for dim in SCORE_DIMENSIONS:
+                s = float(dim_scores.get(dim['code'], 0))
+                pct = (s / dim['max_score'] * 100) if dim['max_score'] > 0 else 0
+                dimension_details.append({
+                    'code': dim['code'],
+                    'name': dim['name'],
+                    'max_score': dim['max_score'],
+                    'score': s,
+                    'percentage': round(pct, 1)
+                })
             evaluation.append({
                 'interviewer_name': score.interviewer.name,
                 'score': float(score.score),
                 'comment': score.comment,
                 'self_intro': score.self_intro,
+                'dimension_scores': dim_scores,
+                'dimension_details': dimension_details,
             })
         item['evaluation'] = {
             'scores': evaluation,

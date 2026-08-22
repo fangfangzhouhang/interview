@@ -1,53 +1,69 @@
 @echo off
-title ECUST Interview System Launcher
+chcp 65001 >nul
+title ECUST å­¦ç”Ÿä¼šæ‹›æ–°é¢è¯•ç³»ç»Ÿ - å¯åŠ¨
 cd /d "%~dp0"
 
 echo ============================================
-echo   »ª¶«Àí¹¤´óÑ§Ñ§Éú»áÕÐÐÂÃæÊÔÏµÍ³
-echo   Ò»¼üÆô¶¯Æ÷
+echo   ECUST å­¦ç”Ÿä¼šæ‹›æ–°é¢è¯•ç³»ç»Ÿ
+echo   ä¸€é”®å¯åŠ¨
 echo ============================================
 echo.
 
-REM ---- ¼ì²é¶Ë¿Ú 8000 ÊÇ·ñÒÑÓÐ·þÎñÆ÷ÔÚÔËÐÐ ----
-netstat -ano | findstr ":8000" | findstr "LISTENING" >nul 2>&1
-if %errorlevel% == 0 (
-    echo [¼ì²â] ·þÎñÆ÷ÒÑÔÚÔËÐÐ£¬Ö±½Ó´ò¿ªä¯ÀÀÆ÷...
-    goto open_browser
-)
-
-REM ---- ¼ì²éÐéÄâ»·¾³ÊÇ·ñ´æÔÚ ----
+rem ===== æ£€æŸ¥è™šæ‹ŸçŽ¯å¢ƒ =====
 if not exist "venv\Scripts\python.exe" (
-    echo [´íÎó] Î´ÕÒµ½ venv\Scripts\python.exe
-    echo ÇëÈ·ÈÏÐéÄâ»·¾³´´½¨ÔÚÏîÄ¿¸ùÄ¿Â¼ÏÂ¡£
+    echo [é”™è¯¯] æœªæ‰¾åˆ° venv\Scripts\python.exe
+    echo        è¯·ç¡®ä¿è™šæ‹ŸçŽ¯å¢ƒå·²æ­£ç¡®åˆ›å»ºã€‚
     pause
     exit /b 1
 )
 
-echo [1/2] ÕýÔÚºóÌ¨Æô¶¯ Django ·þÎñÆ÷...
-start "Django·þÎñÆ÷£¨ÇëÎð¹Ø±Õ£©" /MIN venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
+rem ===== å…ˆåœæ­¢å·²å­˜åœ¨çš„æœåŠ¡ =====
+echo [1/3] æ£€æŸ¥å¹¶æ¸…ç†æ—§è¿›ç¨‹...
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8000" ^| findstr "LISTENING"') do (
+    echo        å‘çŽ°æ—§è¿›ç¨‹ PID: %%aï¼Œæ­£åœ¨ç»ˆæ­¢...
+    taskkill /F /PID %%a >nul 2>&1
+)
+timeout /t 1 /nobreak >nul
 
-echo       ÕýÔÚµÈ´ý·þÎñÆ÷¾ÍÐ÷£¨×î¶à 20 Ãë£©...
-set /a tries=0
+rem ===== å¯åŠ¨ Daphne æœåŠ¡å™¨ =====
+echo [2/3] æ­£åœ¨å¯åŠ¨æœåŠ¡å™¨...
+echo.
+start "ECUSTé¢è¯•ç³»ç»Ÿ-æœåŠ¡å™¨" /MIN cmd /k "cd /d %~dp0 && echo æœåŠ¡å™¨è¿è¡Œä¸­ï¼Œå…³é—­æ­¤çª—å£å°†åœæ­¢æœåŠ¡... && echo. && venv\Scripts\python.exe -m daphne -b 0.0.0.0 -p 8000 interview_system.asgi:application"
 
-:wait_loop
+echo        ç­‰å¾…æœåŠ¡å™¨å°±ç»ª...
+set tries=0
+
+:wait
 timeout /t 1 /nobreak >nul
 netstat -ano | findstr ":8000" | findstr "LISTENING" >nul 2>&1
-if %errorlevel% == 0 goto open_browser
+if %errorlevel% == 0 goto ready
 set /a tries+=1
-if %tries% lss 20 goto wait_loop
+if %tries% lss 20 goto wait
 
-echo [¾¯¸æ] ·þÎñÆ÷ 20 ÃëÄÚÎ´¾ÍÐ÷£¬ÈÔ³¢ÊÔ´ò¿ªä¯ÀÀÆ÷¡£
-echo        ÈôÒ³Ãæ´ò²»¿ª£¬Çë»¹Ô­ÈÎÎñÀ¸Àï"Django·þÎñÆ÷"´°¿Ú²é¿´±¨´í¡£
+echo.
+echo [è­¦å‘Š] ç­‰å¾…è¶…æ—¶ï¼ˆ20ç§’ï¼‰ï¼ŒæœåŠ¡å™¨å¯èƒ½å¯åŠ¨å¤±è´¥ã€‚
+echo        è¯·æŸ¥çœ‹"ECUSTé¢è¯•ç³»ç»Ÿ-æœåŠ¡å™¨"çª—å£ä¸­çš„é”™è¯¯ä¿¡æ¯ã€‚
+echo.
+pause
+exit /b 1
 
-:open_browser
+:ready
+echo.
+echo [3/3] æœåŠ¡å™¨å·²å°±ç»ªï¼
+echo.
+echo ============================================
+echo   å¯åŠ¨æˆåŠŸï¼
+echo   è®¿é—®åœ°å€: http://127.0.0.1:8000/login/
+echo ============================================
+echo.
+
+rem ===== æ‰“å¼€æµè§ˆå™¨ =====
 start "" "http://127.0.0.1:8000/login/"
-
+echo æµè§ˆå™¨å·²æ‰“å¼€ï¼Œè¯·åœ¨æµè§ˆå™¨ä¸­è®¿é—®ç³»ç»Ÿã€‚
 echo.
-echo [2/2] ÒÑ´ò¿ªä¯ÀÀÆ÷£¡
+echo æç¤ºï¼šå…³é—­"ECUSTé¢è¯•ç³»ç»Ÿ-æœåŠ¡å™¨"çª—å£å³å¯åœæ­¢æœåŠ¡ã€‚
+echo       æˆ–è¿è¡Œ"åœæ­¢ç½‘ç«™.bat"æ¥åœæ­¢æœåŠ¡ã€‚
 echo.
-echo ÌáÊ¾£ºÈÎÎñÀ¸×îÐ¡»¯µÄ"Django·þÎñÆ÷"´°¿ÚÊÇÍøÕ¾½ø³Ì£¬ÇëÎð¹Ø±Õ¡£
-echo       ÐèÒªÍ£Ö¹Ê±Ë«»÷ÏîÄ¿Ä¿Â¼ÏÂµÄ"Í£Ö¹ÍøÕ¾.bat"¡£
-echo.
-echo ±¾´°¿Ú 3 Ãëºó×Ô¶¯¹Ø±Õ...
-timeout /t 3 /nobreak >nul
+echo æ­¤çª—å£å°†åœ¨ 5 ç§’åŽè‡ªåŠ¨å…³é—­...
+timeout /t 5 /nobreak >nul
 exit

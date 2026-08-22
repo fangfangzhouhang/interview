@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from .models import Candidate, InterviewGroup, CandidateInGroup, InterviewerScore, Interviewer
+from .models import (
+    Candidate, InterviewGroup, CandidateInGroup,
+    InterviewerScore, Interviewer, SCORE_DIMENSIONS
+)
 
 
 class CandidateSerializer(serializers.ModelSerializer):
@@ -27,17 +30,35 @@ class InterviewerSerializer(serializers.ModelSerializer):
 
 
 class InterviewerScoreSerializer(serializers.ModelSerializer):
-    """面试官评分序列化器"""
+    """面试官评分序列化器 - 支持多维度百分制评分"""
     interviewer_name = serializers.CharField(source='interviewer.name', read_only=True)
     candidate_name = serializers.CharField(source='candidate.name', read_only=True)
+    dimension_details = serializers.SerializerMethodField()
 
     class Meta:
         model = InterviewerScore
         fields = [
             'id', 'interviewer', 'interviewer_name',
             'candidate', 'candidate_name',
-            'interview_group', 'self_intro', 'comment', 'score', 'updated_at'
+            'interview_group', 'self_intro', 'comment',
+            'score', 'dimension_scores', 'dimension_details', 'updated_at'
         ]
+
+    def get_dimension_details(self, obj):
+        """获取维度详情列表"""
+        details = []
+        dim_scores = obj.dimension_scores or {}
+        for dim in SCORE_DIMENSIONS:
+            score = float(dim_scores.get(dim['code'], 0))
+            percentage = (score / dim['max_score'] * 100) if dim['max_score'] > 0 else 0
+            details.append({
+                'code': dim['code'],
+                'name': dim['name'],
+                'max_score': dim['max_score'],
+                'score': score,
+                'percentage': round(percentage, 1),
+            })
+        return details
 
 
 class CandidateInGroupSerializer(serializers.ModelSerializer):
@@ -48,7 +69,6 @@ class CandidateInGroupSerializer(serializers.ModelSerializer):
         queryset=Candidate.objects.all(),
         write_only=True
     )
-    # 注意：self_intro 已移除，通过 scores 获取
     scores = InterviewerScoreSerializer(many=True, read_only=True)
     average_score = serializers.SerializerMethodField()
 

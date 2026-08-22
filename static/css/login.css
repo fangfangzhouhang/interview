@@ -381,37 +381,61 @@ body {
 }
 
 .password-field input {
-    padding-right: 68px !important;
+    padding-right: 48px !important;
+    position: static !important;
+    z-index: auto !important;
 }
 
 .password-toggle {
     position: absolute;
     top: 50%;
     right: 10px;
-    min-width: 52px;
-    min-height: 34px;
-    padding: 4px 10px;
+    width: 32px;
+    height: 32px;
     transform: translateY(-50%);
     transform-origin: center;
     border: 0;
     border-radius: 8px;
     background: transparent;
-    color: var(--color-primary);
+    color: #64748b;
     cursor: pointer;
-    font-size: 12px;
-    font-weight: 680;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
     -webkit-appearance: none;
     appearance: none;
-    transition: background-color var(--transition), transform 120ms ease-out;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--transition), color var(--transition), transform 120ms ease-out;
 }
 
 .password-toggle:hover {
-    background: rgba(14, 165, 233, 0.10); /* 极淡 10% 填充，不扎眼 */
+    background: rgba(14, 165, 233, 0.10);
+    color: var(--color-primary);
 }
 
-/* 微缩放：按下时 0.92 → 松开回弹 1.0，触感像手机按键 */
 .password-toggle:active {
     transform: translateY(-50%) scale(0.92);
+}
+
+.password-toggle .eye-icon {
+    display: none;
+    pointer-events: none;
+}
+
+/* 默认状态（密码隐藏）：显示带叉的眼睛图标，表示"加密中" */
+.password-toggle .eye-icon.eye-closed {
+    display: block;
+}
+
+/* 显示密码状态（is-showing）：隐藏带叉眼睛 */
+.password-toggle.is-showing .eye-icon.eye-closed {
+    display: none;
+}
+
+/* 显示密码状态（is-showing）：显示睁眼图标，表示"明文可见" */
+.password-toggle.is-showing .eye-icon.eye-open {
+    display: block;
 }
 
 /* ================================================================

@@ -540,6 +540,336 @@
 }
 
 /* ============================================================
+   16.1 多维度百分制评分样式
+   ============================================================ */
+
+.evaluation-card .eval-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.evaluation-card .eval-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.evaluation-card .eval-total-display {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+}
+
+.evaluation-card .total-label {
+    color: var(--color-text-secondary);
+}
+
+.evaluation-card .total-score {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-primary);
+    min-width: 40px;
+    text-align: center;
+}
+
+.evaluation-card .total-sep {
+    color: var(--color-text-muted);
+}
+
+.evaluation-card .total-max {
+    color: var(--color-text-secondary);
+}
+
+.evaluation-card .eval-dimensions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.score-dimension {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    background: var(--color-bg);
+    transition: all var(--transition);
+}
+
+.score-dimension:hover {
+    border-color: var(--color-primary-light);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+}
+
+.score-dimension .dim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.score-dimension .dim-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.score-dimension .dim-max {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+}
+
+.score-dimension .dim-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 预设按钮 */
+.dim-preset-buttons {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.preset-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-bg-white);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease-out;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.preset-btn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(14, 165, 233, 0.06);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(14, 165, 233, 0.12);
+}
+
+.preset-btn:active:not(:disabled) {
+    transform: translateY(0) scale(0.96);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.preset-btn.is-active {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 8px rgba(3, 105, 161, 0.28);
+    transform: translateY(-1px);
+}
+
+.preset-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 滑块容器 */
+.dim-slider-container {
+    position: relative;
+    height: 24px;
+    display: flex;
+    align-items: center;
+}
+
+/* 原生滑块 - 仅保留功能，隐藏视觉 */
+.dim-slider {
+    width: 100%;
+    height: 24px !important;
+    min-height: 24px !important;
+    max-height: 24px !important;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+    opacity: 0.01;
+    line-height: 1 !important;
+    font-size: 1px !important;
+}
+
+.dim-slider::-webkit-slider-runnable-track {
+    height: 24px !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+.dim-slider::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 16px !important;
+    height: 24px !important;
+    background: transparent !important;
+    border: none !important;
+    margin-top: 0 !important;
+}
+
+.dim-slider::-moz-range-track {
+    height: 24px !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+.dim-slider::-moz-range-thumb {
+    width: 16px !important;
+    height: 24px !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* 视觉轨道 */
+.dim-slider-fill {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-surface, #e5e7eb);
+    pointer-events: none;
+    z-index: 1;
+    width: 100%;
+    overflow: hidden;
+}
+
+.dim-slider-fill::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: var(--fill-width, 0%);
+    background: linear-gradient(90deg, var(--color-primary-light, #7dd3fc), var(--color-primary, #0369A1));
+    border-radius: 3px;
+    transition: width 0.15s ease-out;
+}
+
+/* 自定义thumb - 通过JS定位 */
+.dim-slider-thumb {
+    position: absolute;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--color-primary, #0369A1);
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 3;
+    left: 0;
+    transition: box-shadow 0.12s ease-out, transform 0.12s ease-out;
+}
+
+.dim-slider-container:hover .dim-slider-thumb {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dim-slider-container:active .dim-slider-thumb {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.dim-slider:disabled ~ .dim-slider-thumb,
+.dim-slider-container:has(.dim-slider:disabled) .dim-slider-thumb {
+    background: var(--color-text-muted, #94a3b8);
+    cursor: not-allowed;
+}
+
+/* 得分显示 */
+.dim-score-display {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+}
+
+.dim-current-score {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-primary);
+    min-width: 24px;
+    text-align: center;
+}
+
+.dim-sep {
+    color: var(--color-text-muted);
+}
+
+.dim-max-score {
+    color: var(--color-text-secondary);
+}
+
+.dim-unit {
+    color: var(--color-text-muted);
+}
+
+/* 进度条 */
+.eval-progress-bar {
+    height: 6px;
+    background: var(--color-surface);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.eval-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary-light), var(--color-primary));
+    border-radius: 3px;
+    transition: width 0.3s ease-out;
+}
+
+.eval-progress-fill.is-high {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.eval-progress-fill.is-medium {
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.eval-progress-fill.is-low {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.eval-progress-fill.is-very-low {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .evaluation-card .eval-dimensions {
+        grid-template-columns: 1fr;
+    }
+    
+    .evaluation-card .eval-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+/* ============================================================
    17. 题目输入框
    ============================================================ */
 

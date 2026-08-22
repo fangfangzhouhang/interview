@@ -160,6 +160,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.handleDownload();
                 });
             }
+
+            // 选项卡片复选框变化时同步视觉状态
+            if (this.downloadModal) {
+                this.downloadModal.addEventListener('change', (e) => {
+                    if (e.target.matches('.include-field, .export-format')) {
+                        this.updateOptionCards();
+                    }
+                });
+                // 点击卡片区域也触发状态更新（点击label时change可能先于视觉更新）
+                this.downloadModal.addEventListener('click', (e) => {
+                    const card = e.target.closest('.option-card');
+                    if (card) {
+                        // 延迟一帧等待checkbox状态更新
+                        requestAnimationFrame(() => {
+                            this.updateOptionCards();
+                        });
+                    }
+                });
+            }
         }
 
         // ========== 设置无限滚动 ==========

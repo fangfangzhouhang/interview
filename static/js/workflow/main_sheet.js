@@ -122,6 +122,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const groupId = groupIdInput ? groupIdInput.value : '';
+    
+    // 评分维度配置 - 百分制评分系统
+    const SCORE_DIMENSIONS = [
+        { code: 'expression', name: '表达能力', max_score: 20 },
+        { code: 'resume', name: '简历得分', max_score: 15 },
+        { code: 'innovation', name: '创新能力', max_score: 20 },
+        { code: 'responsibility', name: '责任心', max_score: 15 },
+        { code: 'logic', name: '逻辑思维', max_score: 15 },
+        { code: 'teamwork', name: '团队协作', max_score: 10 },
+        { code: 'match', name: '部门匹配度', max_score: 5 },
+    ];
+    const SCORE_TOTAL_MAX = 100;
+    
+    // 面试者评分数据缓存
+    let candidateScoresCache = {};
+    
     let candidatesData = [];
     let currentOrder = null;
     let currentCandidateInGroupId = null;
@@ -570,8 +586,13 @@ document.addEventListener('DOMContentLoaded', function() {
         selfIntroContainer.querySelectorAll('textarea').forEach(ta => {
             ta.disabled = !editable;
         });
-        evaluationContainer.querySelectorAll('.eval-score-input').forEach(inp => {
-            inp.disabled = !editable;
+        // 禁用/启用滑块
+        evaluationContainer.querySelectorAll('.dim-slider').forEach(slider => {
+            slider.disabled = !editable;
+        });
+        // 禁用/启用预设按钮
+        evaluationContainer.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.disabled = !editable;
         });
         evaluationContainer.querySelectorAll('.eval-comment-input').forEach(ta => {
             ta.disabled = !editable;
@@ -681,36 +702,207 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let evalHtml = '';
         sortedCandidates.forEach(c => {
-            evalHtml += `
-                <div class="evaluation-card" data-order="${c.order}" data-candidate-id="${c.candidate.id}">
-                    <div class="eval-header">面试者${c.order}（${c.candidate.name}）</div>
-                    <div class="eval-score-row">
-                        <span class="eval-score-label">评分</span>
-                        <input type="number" class="eval-score-input" data-order="${c.order}"
-                               min="0" max="10" step="0.01" value="0.00">
-                        <span class="eval-unit">分</span>
-                    </div>
-                    <div class="eval-comment-row">
-                        <span class="eval-comment-label">评语</span>
-                        <textarea class="eval-comment-input" data-order="${c.order}"
-                                  rows="2" placeholder="请输入面试者${c.order}的评语"></textarea>
-                    </div>
-                </div>
-            `;
+            evalHtml += renderScoreCard(c);
         });
         evaluationContainer.innerHTML = evalHtml || '<div class="placeholder">暂无面试者</div>';
 
         const isEditable = currentGroupStatus === 'ONGOING';
         setFormEditable(isEditable);
-
-        document.querySelectorAll('.eval-score-input').forEach(input => {
-            input.addEventListener('input', function() {
-                let val = parseFloat(this.value);
-                if (isNaN(val)) this.value = '0.00';
-                else if (val < 0.01) this.value = '0.01';
-                else if (val > 10) this.value = '10.00';
-                else this.value = val.toFixed(2);
+        bindScoreEvents();
+        initSliderThumbs();
+        updateAllTotals();
+    }
+    
+    // 初始化自定义滑块thumb位置
+    function initSliderThumbs() {
+        document.querySelectorAll('.dim-slider-container').forEach(container => {
+            const slider = container.querySelector('.dim-slider');
+            const fill = container.querySelector('.dim-slider-fill');
+            const thumb = container.querySelector('.dim-slider-thumb');
+            if (!slider || !fill || !thumb) return;
+            
+            const maxScore = parseInt(slider.max) || 1;
+            const score = parseInt(slider.value) || 0;
+            const percentage = (score / maxScore) * 100;
+            
+            fill.style.setProperty('--fill-width', percentage + '%');
+            thumb.style.left = percentage + '%';
+        });
+    }
+    
+    // 渲染单个面试者的评分卡片
+    function renderScoreCard(candidate) {
+        const order = candidate.order;
+        const name = candidate.candidate.name;
+        
+        let dimensionsHtml = '';
+        SCORE_DIMENSIONS.forEach(dim => {
+            dimensionsHtml += `
+                <div class="score-dimension" data-dimension="${dim.code}" data-max="${dim.max_score}">
+                    <div class="dim-header">
+                        <span class="dim-name">${dim.name}</span>
+                        <span class="dim-max">满分 ${dim.max_score}</span>
+                    </div>
+                    <div class="dim-controls">
+                        <!-- 选择式评分按钮 -->
+                        <div class="dim-preset-buttons">
+                            ${generatePresetButtons(dim.max_score)}
+                        </div>
+                        <!-- 滑动式评分 -->
+                        <div class="dim-slider-container">
+                            <input type="range" class="dim-slider" 
+                                   min="0" max="${dim.max_score}" step="1" value="0"
+                                   data-order="${order}" data-dimension="${dim.code}">
+                            <div class="dim-slider-fill"></div>
+                            <div class="dim-slider-thumb"></div>
+                        </div>
+                        <!-- 当前得分显示 -->
+                        <div class="dim-score-display">
+                            <span class="dim-current-score" data-order="${order}" data-dimension="${dim.code}">0</span>
+                            <span class="dim-sep">/</span>
+                            <span class="dim-max-score">${dim.max_score}</span>
+                            <span class="dim-unit">分</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        return `
+            <div class="evaluation-card" data-order="${order}" data-candidate-id="${candidate.candidate.id}">
+                <div class="eval-header">
+                    <span class="eval-title">面试者${order}（${name}）</span>
+                    <div class="eval-total-display">
+                        <span class="total-label">总分</span>
+                        <span class="total-score" data-order="${order}">0</span>
+                        <span class="total-sep">/</span>
+                        <span class="total-max">${SCORE_TOTAL_MAX}</span>
+                    </div>
+                </div>
+                <div class="eval-dimensions">
+                    ${dimensionsHtml}
+                </div>
+                <div class="eval-progress-bar">
+                    <div class="eval-progress-fill" data-order="${order}"></div>
+                </div>
+                <div class="eval-comment-row">
+                    <span class="eval-comment-label">评语</span>
+                    <textarea class="eval-comment-input" data-order="${order}"
+                              rows="2" placeholder="请输入面试者${order}的评语"></textarea>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 生成预设分值按钮
+    function generatePresetButtons(maxScore) {
+        const steps = Math.min(maxScore, 5);
+        const stepValue = maxScore / steps;
+        let buttons = `<button class="preset-btn" data-score="0">0</button>`;
+        
+        for (let i = 1; i <= steps; i++) {
+            const score = Math.round(i * stepValue);
+            buttons += `<button class="preset-btn" data-score="${score}">${score}</button>`;
+        }
+        
+        return buttons;
+    }
+    
+    // 绑定评分事件
+    function bindScoreEvents() {
+        // 预设按钮点击事件
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const dimension = this.closest('.score-dimension');
+                const score = parseInt(this.dataset.score);
+                const slider = dimension.querySelector('.dim-slider');
+                const order = slider.dataset.order;
+                const dimCode = slider.dataset.dimension;
+                
+                slider.value = score;
+                updateDimensionScore(order, dimCode, score);
             });
+        });
+        
+        // 滑块事件
+        document.querySelectorAll('.dim-slider').forEach(slider => {
+            slider.addEventListener('input', function() {
+                const order = this.dataset.order;
+                const dimCode = this.dataset.dimension;
+                const score = parseInt(this.value);
+                updateDimensionScore(order, dimCode, score);
+                isDirty = true;
+                updateSaveState('dirty', '有未保存修改');
+            });
+        });
+    }
+    
+    // 更新单个维度的得分显示
+    function updateDimensionScore(order, dimCode, score) {
+        const card = document.querySelector(`.evaluation-card[data-order="${order}"]`);
+        if (!card) return;
+        
+        const dim = card.querySelector(`.score-dimension[data-dimension="${dimCode}"]`);
+        if (!dim) return;
+        
+        // 更新滑块
+        const slider = dim.querySelector('.dim-slider');
+        slider.value = score;
+        
+        // 更新显示
+        const scoreDisplay = dim.querySelector('.dim-current-score');
+        scoreDisplay.textContent = score;
+        
+        // 更新滑块填充和自定义thumb
+        const maxScore = parseInt(slider.max);
+        const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
+        const fill = dim.querySelector('.dim-slider-fill');
+        fill.style.setProperty('--fill-width', percentage + '%');
+        const thumb = dim.querySelector('.dim-slider-thumb');
+        if (thumb) {
+            thumb.style.left = percentage + '%';
+        }
+        
+        // 更新预设按钮选中状态
+        dim.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.classList.toggle('is-active', parseInt(btn.dataset.score) === score);
+        });
+        
+        // 更新总分
+        updateCardTotal(order);
+    }
+    
+    // 更新单个卡片的总分
+    function updateCardTotal(order) {
+        const card = document.querySelector(`.evaluation-card[data-order="${order}"]`);
+        if (!card) return;
+        
+        let total = 0;
+        card.querySelectorAll('.dim-slider').forEach(slider => {
+            total += parseInt(slider.value);
+        });
+        
+        // 更新总分显示
+        card.querySelector('.total-score').textContent = total;
+        
+        // 更新进度条
+        const percentage = (total / SCORE_TOTAL_MAX) * 100;
+        card.querySelector('.eval-progress-fill').style.width = percentage + '%';
+        
+        // 根据分数改变颜色
+        const progressFill = card.querySelector('.eval-progress-fill');
+        progressFill.className = 'eval-progress-fill';
+        if (total >= 80) progressFill.classList.add('is-high');
+        else if (total >= 60) progressFill.classList.add('is-medium');
+        else if (total >= 40) progressFill.classList.add('is-low');
+        else progressFill.classList.add('is-very-low');
+    }
+    
+    // 更新所有卡片的总分
+    function updateAllTotals() {
+        document.querySelectorAll('.evaluation-card').forEach(card => {
+            const order = card.dataset.order;
+            updateCardTotal(order);
         });
     }
 
@@ -758,7 +950,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function clearForm() {
         selfIntroContainer.querySelectorAll('textarea').forEach(ta => ta.value = '');
-        evaluationContainer.querySelectorAll('.eval-score-input').forEach(inp => inp.value = '0.00');
+        // 清空所有维度得分
+        evaluationContainer.querySelectorAll('.evaluation-card').forEach(card => {
+            const order = card.dataset.order;
+            SCORE_DIMENSIONS.forEach(dim => {
+                updateDimensionScore(order, dim.code, 0);
+            });
+        });
         evaluationContainer.querySelectorAll('.eval-comment-input').forEach(ta => ta.value = '');
     }
 
@@ -811,18 +1009,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     const evalCards = evaluationContainer.querySelectorAll('.evaluation-card');
                     evalCards.forEach((card) => {
                         const orderNum = parseInt(card.dataset.order);
-                        const scoreInput = card.querySelector('.eval-score-input');
                         const commentInput = card.querySelector('.eval-comment-input');
 
-                        const scoreKey = `score_${orderNum}`;
+                        // 加载评语
                         const commentKey = `comment_${orderNum}`;
-
-                        if (data[scoreKey] !== undefined && data[scoreKey] !== null) {
-                            scoreInput.value = data[scoreKey].toFixed(2);
-                        } else {
-                            scoreInput.value = '0.00';
-                        }
                         commentInput.value = data[commentKey] || '';
+                        
+                        // 加载维度得分
+                        const dimensionKey = `dimension_scores_${orderNum}`;
+                        const dimScores = data[dimensionKey] || {};
+                        
+                        SCORE_DIMENSIONS.forEach(dim => {
+                            const score = dimScores[dim.code] || 0;
+                            updateDimensionScore(orderNum, dim.code, score);
+                        });
                     });
                     updateSaveState('saved', '已载入现有评价');
                 } else {
@@ -845,7 +1045,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function clearScores() {
-        evaluationContainer.querySelectorAll('.eval-score-input').forEach(inp => inp.value = '0.00');
+        evaluationContainer.querySelectorAll('.evaluation-card').forEach(card => {
+            const order = card.dataset.order;
+            SCORE_DIMENSIONS.forEach(dim => {
+                updateDimensionScore(order, dim.code, 0);
+            });
+        });
         isDirty = true;
         updateSaveState('dirty', '有未保存修改');
         showMessage('评分已清零', 'success');
@@ -860,12 +1065,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const scores = {};
+        const dimensionScores = {};
         const comments = {};
         evaluationContainer.querySelectorAll('.evaluation-card').forEach(card => {
             const order = card.dataset.order;
-            const scoreInput = card.querySelector('.eval-score-input');
             const commentInput = card.querySelector('.eval-comment-input');
-            scores[`score_${order}`] = parseFloat(scoreInput.value) || 0;
+            
+            // 收集维度得分
+            const dimData = {};
+            SCORE_DIMENSIONS.forEach(dim => {
+                const slider = card.querySelector(`.dim-slider[data-dimension="${dim.code}"]`);
+                if (slider) {
+                    dimData[dim.code] = parseInt(slider.value);
+                }
+            });
+            dimensionScores[`dimension_scores_${order}`] = dimData;
+            
+            // 计算总分
+            const total = Object.values(dimData).reduce((sum, v) => sum + v, 0);
+            scores[`score_${order}`] = total;
+            
             comments[`comment_${order}`] = commentInput.value || '';
         });
 
@@ -873,6 +1092,7 @@ document.addEventListener('DOMContentLoaded', function() {
             candidate_in_group_id: parseInt(candidateId),
             ...selfIntros,
             ...scores,
+            ...dimensionScores,
             ...comments,
         };
     }

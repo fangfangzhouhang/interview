@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0369a1">
     <title>面试叫号看板 - ECUST 学生会招新</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/board.css' %}?v=board-v3-carousel-20260823">
+    <link rel="stylesheet" href="{% static 'css/board.css' %}?v=board-v4-nav-20260822">
 </head>
 <body class="carousel-body">
     <div class="carousel-root" id="carouselRoot">
@@ -25,6 +25,11 @@
                 <span class="carousel-date" id="carouselDate">----</span>
             </div>
         </header>
+
+        <!-- ===== 部门导航栏 ===== -->
+        <nav class="carousel-dept-nav" id="carouselDeptNav">
+            <!-- 导航项由 JS 动态生成 -->
+        </nav>
 
         <!-- ===== 轮播主容器 ===== -->
         <main class="carousel-main" id="carouselMain">
@@ -63,6 +68,6 @@
             departments: {{ departments_json|safe }},
         };
     </script>
-    <script src="{% static 'js/board/board.js' %}?v=board-v3-carousel-20260823"></script>
+    <script src="{% static 'js/board/board.js' %}?v=board-v4-nav-20260822"></script>
 </body>
 </html>

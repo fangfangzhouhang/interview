@@ -1,10 +1,61 @@
 import re
+import json
 from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
 from .validators import WordCountValidator
+
+
+# 评分维度配置 - 百分制评分系统
+SCORE_DIMENSIONS = [
+    {
+        'code': 'expression',
+        'name': '表达能力',
+        'max_score': 20,
+        'description': '面试者的语言表达、沟通能力和逻辑性',
+    },
+    {
+        'code': 'resume',
+        'name': '简历得分',
+        'max_score': 15,
+        'description': '简历内容的真实性、完整性和相关经历',
+    },
+    {
+        'code': 'innovation',
+        'name': '创新能力',
+        'max_score': 20,
+        'description': '独立思考、创新思维和解决问题的能力',
+    },
+    {
+        'code': 'responsibility',
+        'name': '责任心',
+        'max_score': 15,
+        'description': '工作态度、责任感和执行力',
+    },
+    {
+        'code': 'logic',
+        'name': '逻辑思维',
+        'max_score': 15,
+        'description': '分析问题、逻辑推理和决策能力',
+    },
+    {
+        'code': 'teamwork',
+        'name': '团队协作',
+        'max_score': 10,
+        'description': '团队合作精神和人际交往能力',
+    },
+    {
+        'code': 'match',
+        'name': '部门匹配度',
+        'max_score': 5,
+        'description': '与部门需求的匹配程度和发展潜力',
+    },
+]
+
+# 计算总分
+SCORE_TOTAL_MAX = sum(d['max_score'] for d in SCORE_DIMENSIONS)
 
 
 class UserProfile(models.Model):
@@ -666,16 +717,25 @@ class InterviewerScore(models.Model):
         help_text='面试官对面试者的综合评价'
     )
 
+    # 百分制总分（0-100）
     score = models.DecimalField(
-        max_digits=4,
+        max_digits=5,
         decimal_places=2,
         default=0.00,
         validators=[
-            MinValueValidator(0.01),
-            MaxValueValidator(10.00)
+            MinValueValidator(0),
+            MaxValueValidator(100)
         ],
-        verbose_name='评分',
-        help_text='请输入0-10，保留两位小数'
+        verbose_name='总分',
+        help_text='百分制评分，由各维度得分自动计算'
+    )
+
+    # 各维度得分详情
+    dimension_scores = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name='各维度得分',
+        help_text='存储各评分维度的具体得分，格式：{dimension_code: score}'
     )
 
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
@@ -688,3 +748,34 @@ class InterviewerScore(models.Model):
 
     def __str__(self):
         return f"{self.interviewer.name} 对 {self.candidate.name} 的评分: {self.score}"
+
+    def calculate_total(self):
+        """根据维度得分计算总分"""
+        if not self.dimension_scores:
+            return float(self.score)
+        total = 0
+        for dim in SCORE_DIMENSIONS:
+            score = self.dimension_scores.get(dim['code'], 0)
+            total += min(float(score), dim['max_score'])
+        return round(total, 2)
+
+    def get_dimension_score(self, code):
+        """获取指定维度的得分"""
+        if not self.dimension_scores:
+            return 0
+        return float(self.dimension_scores.get(code, 0))
+
+    def set_dimension_score(self, code, value):
+        """设置指定维度的得分"""
+        if not self.dimension_scores:
+            self.dimension_scores = {}
+        dim_config = next((d for d in SCORE_DIMENSIONS if d['code'] == code), None)
+        if dim_config:
+            self.dimension_scores[code] = min(float(value), dim_config['max_score'])
+            self.score = self.calculate_total()
+
+    def save(self, *args, **kwargs):
+        """保存时自动计算总分"""
+        if self.dimension_scores:
+            self.score = self.calculate_total()
+        super().save(*args, **kwargs)

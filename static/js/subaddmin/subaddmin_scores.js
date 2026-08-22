@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <strong>${item.candidate_name}</strong>
                             <br><span style="font-size:12px;color:#999;">${item.candidate_student_number}</span>
                         </td>
-                        <td><span class="score-tag ${scoreClass}">${item.score}</span></td>
+                        <td><span class="score-tag ${scoreClass}">${item.score} 分</span></td>
                         <td>${item.group_name}</td>
                         <td><span class="status-tag ${statusClass}">${item.group_status}</span></td>
                         <td>
@@ -343,10 +343,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // ========== 获取评分样式 ==========
         getScoreClass(score) {
-            if (score >= 8) return 'score-high';
-            if (score >= 6) return 'score-medium';
-            if (score >= 4) return 'score-low';
-            return 'score-very-low';
+            var numScore = parseFloat(score) || 0;
+            if (numScore >= 80) return 'score-high';
+            if (numScore >= 60) return 'score-medium';
+            if (numScore >= 40) return 'score-low';
+            if (numScore > 0) return 'score-very-low';
+            return 'score-zero';
         }
 
         // ========== 更新分页 ==========
@@ -418,8 +420,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             var html = '<div class="detail-scores">';
             data.forEach(function(candidate) {
-                var avgScore = candidate.avg_score || 0;
-                var avgClass = avgScore >= 8 ? 'score-high' : (avgScore >= 6 ? 'score-medium' : 'score-low');
+                var avgScore = parseFloat(candidate.avg_score) || 0;
+                var avgClass = this.getScoreClass(avgScore);
 
                 html += `
                     <div class="detail-candidate">
@@ -436,13 +438,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (candidate.scores && candidate.scores.length > 0) {
                     candidate.scores.forEach(function(score) {
                         var scoreNum = parseFloat(score.score) || 0;
-                        var scoreDisplay = scoreNum > 0 ? scoreNum + ' 分' : '未评分';
-                        var scoreClass = scoreNum >= 8 ? 'score-high' : (scoreNum >= 6 ? 'score-medium' : (scoreNum > 0 ? 'score-low' : 'score-zero'));
+                        var scoreDisplay = scoreNum > 0 ? scoreNum + ' / 100 分' : '未评分';
+                        var scoreClass = this.getScoreClass(scoreNum);
 
                         var selfIntro = score.self_intro || '';
                         var comment = score.comment || '';
                         var hasSelfIntro = selfIntro.trim().length > 0;
                         var hasComment = comment.trim().length > 0;
+                        var dimDetails = score.dimension_details || [];
+                        var hasDimensions = dimDetails.length > 0;
 
                         html += `
                             <div class="detail-score-item">
@@ -450,6 +454,30 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <span class="detail-score-interviewer">${score.interviewer_name}</span>
                                     <span class="detail-score-total ${scoreClass}">${scoreDisplay}</span>
                                 </div>
+                        `;
+
+                        if (hasDimensions) {
+                            html += '<div class="detail-score-dimensions"><div class="dimensions-title">评分维度详情</div><div class="dimensions-grid">';
+                            dimDetails.forEach(function(dim) {
+                                var dimScore = parseFloat(dim.score) || 0;
+                                var dimPct = parseFloat(dim.percentage) || 0;
+                                var dimClass = dimScore >= dim.max_score * 0.8 ? 'dim-high' : (dimScore >= dim.max_score * 0.6 ? 'dim-medium' : 'dim-low');
+                                html += `
+                                    <div class="dim-item">
+                                        <div class="dim-item-header">
+                                            <span class="dim-name">${dim.name}</span>
+                                            <span class="dim-score ${dimClass}">${dimScore}/${dim.max_score}</span>
+                                        </div>
+                                        <div class="dim-bar">
+                                            <div class="dim-bar-fill" style="width:${dimPct}%"></div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            html += '</div></div>';
+                        }
+
+                        html += `
                                 <div class="detail-score-body">
                                     <div class="detail-score-field">
                                         <span class="detail-score-label">自我介绍记录：</span>
@@ -462,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                             </div>
                         `;
-                    });
+                    }.bind(this));
                 } else {
                     html += '<div class="empty-hint">暂无评分</div>';
                 }
@@ -471,7 +499,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 `;
-            });
+            }.bind(this));
             html += '</div>';
             container.innerHTML = html;
         }

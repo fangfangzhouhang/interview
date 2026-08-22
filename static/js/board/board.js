@@ -30,6 +30,7 @@
     var serverTimeEl = document.getElementById('carouselServerTime');
     var adminEntryEl = document.getElementById('adminEntry');
     var toastEl = document.getElementById('carouselToast');
+    var navEl = document.getElementById('carouselDeptNav');
 
     if (window.BOARD_CONFIG && window.BOARD_CONFIG.departments) {
         state.departments = window.BOARD_CONFIG.departments;
@@ -95,6 +96,70 @@
         }
     }
 
+    // ---------- 渲染导航栏 ----------
+    function renderNav() {
+        if (!navEl || !state.data || !state.data.length) return;
+
+        var html = '';
+        state.data.forEach(function (dept, idx) {
+            var waiting = dept.waiting_total || 0;
+            var classes = ['dept-nav-item'];
+            if (idx === state.currentIndex) classes.push('is-active');
+
+            html += '<div class="' + classes.join(' ') + '" data-dept="' + escapeHtml(dept.department) + '" data-index="' + idx + '" role="button" tabindex="0">';
+            if (waiting > 0) {
+                html += '<span class="dept-nav-count">' + waiting + '</span>';
+            }
+            html += '<span class="dept-nav-name">' + escapeHtml(dept.department_name) + '部</span>';
+            html += '<span class="dept-nav-code">' + escapeHtml(dept.department) + '</span>';
+            html += '</div>';
+        });
+        navEl.innerHTML = html;
+
+        // 绑定点击事件
+        navEl.querySelectorAll('.dept-nav-item').forEach(function (item) {
+            item.addEventListener('click', function () {
+                var idx = parseInt(item.dataset.index, 10);
+                goToSlide(idx);
+            });
+            // 键盘可达性：Enter/Space 触发
+            item.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    var idx = parseInt(item.dataset.index, 10);
+                    goToSlide(idx);
+                }
+            });
+        });
+
+        // 自动滚动到活跃导航项
+        scrollNavToActive();
+    }
+
+    function updateNavActive() {
+        if (!navEl) return;
+        var items = navEl.querySelectorAll('.dept-nav-item');
+        items.forEach(function (item, idx) {
+            if (idx === state.currentIndex) {
+                item.classList.add('is-active');
+            } else {
+                item.classList.remove('is-active');
+            }
+        });
+        scrollNavToActive();
+    }
+
+    function scrollNavToActive() {
+        if (!navEl) return;
+        var active = navEl.querySelector('.dept-nav-item.is-active');
+        if (!active) return;
+        var navRect = navEl.getBoundingClientRect();
+        var itemRect = active.getBoundingClientRect();
+        if (itemRect.left < navRect.left || itemRect.right > navRect.right) {
+            active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+    }
+
     // ---------- 渲染幻灯片 ----------
     function renderSlides() {
         if (!trackEl || !state.data || !state.data.length) {
@@ -109,6 +174,9 @@
             html += renderDeptSlide(dept, idx);
         });
         trackEl.innerHTML = html;
+
+        // 渲染导航栏
+        renderNav();
 
         // 渲染指示器
         renderIndicators();
@@ -264,6 +332,7 @@
         });
         renderIndicators();
         renderPagination();
+        updateNavActive();
     }
 
     // ---------- 轮播控制 ----------
@@ -272,6 +341,7 @@
         state.currentIndex = idx % state.data.length;
         applyActiveSlide();
         restartProgress();
+        scrollNavToActive();
     }
 
     function nextSlide() {

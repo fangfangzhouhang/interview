@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 
-from ...models import InterviewGroup, Interviewer, Candidate, InterviewerScore, CandidateInGroup
+from ...models import InterviewGroup, Interviewer, Candidate, InterviewerScore, CandidateInGroup, SCORE_DIMENSIONS
 
 from ..permission import (
     subadmin_required,
@@ -153,7 +153,7 @@ def api_subadmin_group_scores(request, group_id, department=None):
     except InterviewGroup.DoesNotExist:
         return JsonResponse({'success': False, 'message': '场次不存在'})
 
-    if department and (group.departments != department or department == 'ALL'):
+    if department and department != 'ALL' and group.departments != department:
         return JsonResponse({'success': False, 'message': '无权查看该场次的评价'})
 
     if request.method == 'GET':
@@ -171,6 +171,18 @@ def api_subadmin_group_scores(request, group_id, department=None):
 
             score_list = []
             for score in scores:
+                dim_scores = score.dimension_scores or {}
+                dim_details = []
+                for dim in SCORE_DIMENSIONS:
+                    s = float(dim_scores.get(dim['code'], 0))
+                    pct = (s / dim['max_score'] * 100) if dim['max_score'] > 0 else 0
+                    dim_details.append({
+                        'code': dim['code'],
+                        'name': dim['name'],
+                        'max_score': dim['max_score'],
+                        'score': s,
+                        'percentage': round(pct, 1)
+                    })
                 score_list.append({
                     'id': score.id,
                     'interviewer_id': score.interviewer.id,
@@ -178,6 +190,8 @@ def api_subadmin_group_scores(request, group_id, department=None):
                     'score': float(score.score),
                     'self_intro': score.self_intro or '',
                     'comment': score.comment or '',
+                    'dimension_scores': dim_scores,
+                    'dimension_details': dim_details,
                 })
 
             if score_list:
