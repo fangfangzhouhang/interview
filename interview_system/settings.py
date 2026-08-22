@@ -204,6 +204,12 @@ IMAGE_CACHE_HEADERS = {
     'Expires': 'Thu, 01 Dec 2026 16:00:00 GMT',
 }
 
+# 叫号看板管理员密码（生产环境应通过环境变量覆盖）
+BOARD_ADMIN_PASSWORD = os.environ.get(
+    'BOARD_ADMIN_PASSWORD',
+    'ecust2026',
+)
+
 '''
 # 使用CDN
 if not DEBUG:

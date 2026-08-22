@@ -14,6 +14,13 @@ class PermissionMiddleware:
         '/admin/',
     ]
 
+    # 精确匹配的公开URL（叫号看板投屏页/快照接口，供等候区大屏免登录展示）
+    # 注意：叫号控制接口 /api/board/call-next/ 等不在其中，仍需登录+部门权限
+    EXACT_PUBLIC_URLS = {
+        '/board/',
+        '/api/board/',
+    }
+
     # 路径上属于 API 的前缀（命中后统一以 JSON 403 响应认证失败，而不是 302 跳登录页）
     API_PATH_PREFIXES = [
         '/api/',
@@ -45,6 +52,8 @@ class PermissionMiddleware:
         path = request.path
 
         if path == '/':
+            return self.get_response(request)
+        if path in self.EXACT_PUBLIC_URLS:
             return self.get_response(request)
         for public_url in self.PUBLIC_URLS:
             if path.startswith(public_url):

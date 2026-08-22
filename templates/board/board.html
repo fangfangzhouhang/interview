@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0369a1">
+    <title>面试叫号看板 - ECUST 学生会招新</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/board.css' %}?v=board-v3-carousel-20260823">
+</head>
+<body class="carousel-body">
+    <div class="carousel-root" id="carouselRoot">
+
+        <!-- ===== 顶栏：品牌 + 时钟 ===== -->
+        <header class="carousel-header">
+            <div class="carousel-brand">
+                <span class="carousel-brand-mark">ECUST</span>
+                <div class="carousel-brand-text">
+                    <span class="carousel-title">学生会招新 · 面试叫号</span>
+                    <span class="carousel-subtitle">请留意大屏信息，听到叫号后前往对应教室</span>
+                </div>
+            </div>
+            <div class="carousel-clock">
+                <span class="carousel-time" id="carouselTime">--:--:--</span>
+                <span class="carousel-date" id="carouselDate">----</span>
+            </div>
+        </header>
+
+        <!-- ===== 轮播主容器 ===== -->
+        <main class="carousel-main" id="carouselMain">
+            <div class="carousel-track" id="carouselTrack">
+                <!-- 幻灯片由 JS 动态生成 -->
+                <div class="carousel-loading">正在加载看板数据...</div>
+            </div>
+
+            <!-- 轮播指示器 -->
+            <div class="carousel-indicators" id="carouselIndicators"></div>
+        </main>
+
+        <!-- ===== 底部：部门进度指示 ===== -->
+        <footer class="carousel-footer">
+            <div class="carousel-dept-pagination" id="carouselPagination"></div>
+            <div class="carousel-progress-bar">
+                <div class="carousel-progress-fill" id="carouselProgressFill"></div>
+            </div>
+            <div class="carousel-server-time" id="carouselServerTime">--:--:--</div>
+        </footer>
+
+    </div>
+
+    <!-- 管理员入口（隐藏，按 Ctrl+Shift+A 唤起） -->
+    <a href="/board/admin/" class="admin-hidden-entry" id="adminEntry" title="管理员入口">⚙</a>
+
+    <!-- ===== Toast 提示 ===== -->
+    <div class="carousel-toast" id="carouselToast" style="display:none;"></div>
+
+    {% if csrf_token %}<input type="hidden" id="csrfToken" value="{{ csrf_token }}">{% endif %}
+
+    <script>
+        window.BOARD_CONFIG = {
+            displayOnly: {{ display_only|yesno:'true,false' }},
+            canControl: {{ can_control|yesno:'true,false' }},
+            departments: {{ departments_json|safe }},
+        };
+    </script>
+    <script src="{% static 'js/board/board.js' %}?v=board-v3-carousel-20260823"></script>
+</body>
+</html>

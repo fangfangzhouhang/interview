@@ -49,6 +49,16 @@ def login_view(request):
             })
         else:
             return JsonResponse({'success': False, 'message': '用户名或密码错误'})
+
+    # GET：已登录用户直接回到自己的工作台（修复"/"与"返回后台"跳回登录页）
+    if request.user.is_authenticated:
+        role = RoleManager.get_user_role(request.user)
+        home_url_name = ROLE_HOME_URL_NAMES.get(role)
+        if home_url_name is not None:
+            return redirect(home_url_name)
+        # 无工作台角色的账号（如 guest），登出后回到登录页
+        logout(request)
+
     return render(request, 'auth/login.html')
 
 

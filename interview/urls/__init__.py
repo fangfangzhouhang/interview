@@ -9,6 +9,7 @@ from .interviewer_urls import urlpatterns as interviewer_urlpatterns
 from .workflow_urls import urlpatterns as workflow_urlpatterns
 from .candidate_urls import urlpatterns as candidate_urlpatterns
 from .overview_urls import urlpatterns as overview_urlpatterns
+from .board_urls import urlpatterns as board_urlpatterns
 
 # 合并所有 URL 配置
 urlpatterns = []
@@ -19,6 +20,7 @@ urlpatterns.extend(interviewer_urlpatterns)
 urlpatterns.extend(workflow_urlpatterns)
 urlpatterns.extend(candidate_urlpatterns)
 urlpatterns.extend(overview_urlpatterns)
+urlpatterns.extend(board_urlpatterns)
 
 # 开发环境：提供静态文件和媒体文件服务
 if settings.DEBUG:

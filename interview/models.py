@@ -479,6 +479,14 @@ class InterviewGroup(models.Model):
     start_time = models.DateTimeField(null=True, blank=True, verbose_name='面试开始时间')
     end_time = models.DateTimeField(null=True, blank=True, verbose_name='面试结束时间')
 
+    classroom = models.CharField(
+        max_length=20,
+        blank=True,
+        default='',
+        verbose_name='面试教室',
+        help_text='留空时叫号看板显示"待安排"'
+    )
+
     class Meta:
         verbose_name = '面试组'
         verbose_name_plural = '面试组管理'
@@ -551,6 +559,12 @@ class InterviewGroup(models.Model):
 
 class CandidateInGroup(models.Model):
     """组内面试者 - 每个组可以有1-6个面试者"""
+    class CallStatus(models.TextChoices):
+        WAITING = 'WAITING', '等待叫号'
+        CALLED = 'CALLED', '已叫号'
+        INTERVIEWING = 'INTERVIEWING', '正在面试'
+        FINISHED = 'FINISHED', '面试完成'
+
     group = models.ForeignKey(
         InterviewGroup,
         on_delete=models.PROTECT,
@@ -566,6 +580,14 @@ class CandidateInGroup(models.Model):
         verbose_name='序号',
         help_text='面试者在组内的顺序（1-6）'
     )
+    call_status = models.CharField(
+        max_length=15,
+        choices=CallStatus.choices,
+        default=CallStatus.WAITING,
+        verbose_name='叫号状态'
+    )
+    called_at = models.DateTimeField(null=True, blank=True, verbose_name='叫号时间')
+    finished_at = models.DateTimeField(null=True, blank=True, verbose_name='面试完成时间')
 
     class Meta:
         unique_together = ['group', 'order']

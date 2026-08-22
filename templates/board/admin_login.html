@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员登录 - ECUST 叫号系统</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/board.css' %}?v=board-v3-carousel-20260823">
+    <style>
+        .admin-login-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .admin-login-box {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(12, 74, 110, 0.15);
+            padding: 40px 32px;
+        }
+        .admin-login-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0c4a6e;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .admin-login-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .admin-login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .admin-login-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 15px;
+            border: 2px solid #bae6fd;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.2s ease;
+            font-family: inherit;
+        }
+        .admin-login-input:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+        }
+        .admin-login-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+        .admin-login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(3, 105, 161, 0.3);
+        }
+        .admin-login-error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .admin-login-hint {
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .admin-login-back {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            color: #0369a1;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .admin-login-back:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="carousel-body">
+    <div class="admin-login-wrap">
+        <div class="admin-login-box">
+            <div class="admin-login-title">ECUST 叫号管理系统</div>
+            <div class="admin-login-subtitle">管理员控制中心 · 请输入访问密码</div>
+
+            {% if error %}
+            <div class="admin-login-error">{{ error }}</div>
+            {% endif %}
+
+            <form class="admin-login-form" id="adminLoginForm">
+                <input type="password" name="password" id="adminPwdInput" class="admin-login-input"
+                       placeholder="请输入管理员密码" autofocus autocomplete="off" required>
+                <button type="submit" class="admin-login-btn">登 录</button>
+            </form>
+
+            <div class="admin-login-hint">
+                提示：初始密码为系统预设值，请及时修改
+            </div>
+            <a href="/board/" class="admin-login-back">← 返回叫号大屏</a>
+        </div>
+    </div>
+
+    <script>
+        var pwdInput = document.getElementById('adminPwdInput');
+        pwdInput.focus();
+
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var pwd = pwdInput.value;
+            if (!pwd) return;
+
+            fetch('/board/admin/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken') || '',
+                },
+                body: JSON.stringify({ password: pwd }),
+                credentials: 'same-origin',
+            }).then(function(r) {
+                if (r.redirected || r.ok) {
+                    // 成功后跳转
+                    window.location.href = '/board/admin/';
+                }
+            }).catch(function() {
+                alert('登录请求失败');
+            });
+        });
+
+        function getCookie(name) {
+            var value = '; ' + document.cookie;
+            var parts = value.split('; ' + name + '=');
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return '';
+        }
+    </script>
+</body>
+</html>

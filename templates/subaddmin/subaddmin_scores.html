@@ -20,6 +20,11 @@
             <button class="toggle-btn" id="toggleSidebar">◀</button>
         </div>
         <div class="sidebar-menu">
+            <a href="{% url 'board' %}" class="menu-item board-entry-item" data-label="面试叫号" target="_blank" rel="noopener">
+                <span class="menu-icon">📢</span>
+                <span class="menu-text">面试叫号</span>
+                <span class="board-entry-hint">投屏</span>
+            </a>
             <a href="{% url 'subadmin_users' %}" class="menu-item" data-label="用户管理">
                 <span class="menu-icon">👥</span>
                 <span class="menu-text">用户管理</span>

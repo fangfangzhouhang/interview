@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员控制台 - ECUST 叫号系统</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/board.css' %}?v=board-v3-carousel-20260823">
+    <style>
+        body {
+            overflow: auto;
+            height: auto;
+            min-height: 100vh;
+        }
+        .admin-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 28px 60px;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #bae6fd;
+        }
+        .admin-header-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0c4a6e;
+            letter-spacing: 1px;
+        }
+        .admin-header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .admin-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .admin-btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            color: #fff;
+        }
+        .admin-btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(3, 105, 161, 0.3);
+        }
+        .admin-btn-ghost {
+            background: #f1f5f9;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+        .admin-btn-ghost:hover {
+            background: #e2e8f0;
+        }
+        .admin-btn-danger {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+        .admin-btn-danger:hover {
+            background: #fee2e2;
+        }
+        .admin-section {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(12, 74, 110, 0.04);
+        }
+        .admin-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0c4a6e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .admin-section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #0ea5e9, #0369a1);
+            border-radius: 2px;
+        }
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        .admin-dept-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            background: #f8fafc;
+        }
+        .admin-dept-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0c4a6e;
+            margin-bottom: 4px;
+        }
+        .admin-dept-status {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+        .admin-dept-queue {
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 12px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .admin-dept-queue-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .admin-dept-queue-item:last-child {
+            border-bottom: none;
+        }
+        .admin-dept-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .admin-mini-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 6px 10px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .admin-mini-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .admin-mini-btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            color: #fff;
+        }
+        .admin-mini-btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+        .admin-mini-btn-success {
+            background: #10b981;
+            color: #fff;
+        }
+        .admin-mini-btn-warning {
+            background: #f59e0b;
+            color: #fff;
+        }
+        .admin-mini-btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+        .admin-status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .admin-status-dot.waiting { background: #1E90FF; }
+        .admin-status-dot.interviewing { background: #32CD32; }
+        .admin-status-dot.finished { background: #808080; }
+        .admin-status-dot.called { background: #FF8C00; }
+        .admin-group-select {
+            width: 100%;
+            padding: 6px 10px;
+            font-size: 13px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: #fff;
+            margin-bottom: 8px;
+        }
+        .admin-refresh-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #64748b;
+        }
+        .admin-refresh-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .admin-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+        }
+        .admin-toast.success {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+        .admin-toast.error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="carousel-body">
+    <div class="admin-wrap">
+        <!-- 页头 -->
+        <div class="admin-header">
+            <div>
+                <div class="admin-header-title">🔧 ECUST 叫号系统 · 管理员控制台</div>
+                <div style="font-size:13px; color:#64748b; margin-top:4px;">
+                    所有操作将实时同步到叫号大屏 · 当前服务器时间：<span id="adminTime">--:--:--</span>
+                </div>
+            </div>
+            <div class="admin-header-actions">
+                <a href="/board/" class="admin-btn admin-btn-ghost">📺 查看大屏</a>
+                <button class="admin-btn admin-btn-primary" id="adminRefresh">↻ 刷新数据</button>
+                <a href="/board/admin/?action=logout" class="admin-btn admin-btn-danger">退出登录</a>
+            </div>
+        </div>
+
+        <!-- 全局控制 -->
+        <div class="admin-section">
+            <div class="admin-section-title">全局控制</div>
+            <div class="admin-grid">
+                <div>
+                    <div style="font-size:14px; color:#64748b; margin-bottom:8px;">
+                        <span class="admin-refresh-status">
+                            <span class="admin-refresh-dot"></span>
+                            数据自动刷新中（每 30 秒）
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <label style="font-size:14px; color:#64748b; display:block; margin-bottom:8px;">
+                        快速操作：
+                    </label>
+                    <div style="display:flex; gap:8px;">
+                        <button class="admin-btn admin-btn-primary" id="btnGlobalRefresh">立即刷新</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 部门控制 -->
+        <div class="admin-section">
+            <div class="admin-section-title">部门叫号控制</div>
+            <div class="admin-grid" id="adminDeptGrid">
+                <!-- 部门卡片由 JS 动态生成 -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;">
+                    正在加载部门数据...
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="adminToastContainer"></div>
+
+    {% if csrf_token %}<input type="hidden" id="csrfToken" value="{{ csrf_token }}">{% endif %}
+
+    <script>
+        window.ADMIN_CONFIG = {
+            boardAdmin: {{ board_admin|yesno:'true,false' }},
+        };
+    </script>
+    <script src="{% static 'js/board/admin.js' %}?v=admin-v1-20260823"></script>
+</body>
+</html>
