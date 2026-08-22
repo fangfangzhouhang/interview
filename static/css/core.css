@@ -277,6 +277,84 @@ a:hover {
     color: var(--sidebar-logout-hover-text);
 }
 
+/* ===== 角色切换区（分栏线 + 面试官工作台入口） ===== */
+.sidebar-section-divider {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--sidebar-border) 25%,
+        var(--sidebar-border) 75%,
+        transparent 100%
+    );
+    margin: 10px 6px 6px;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed .sidebar-section-divider {
+    margin: 10px 10px 6px;
+    background: var(--sidebar-border);
+    opacity: 0.7;
+}
+
+/* 角色切换入口：用主色调渐变边框提示，保持低调与蓝白主题协调 */
+.menu-item.role-switch-item {
+    position: relative;
+    background: linear-gradient(
+        135deg,
+        rgba(125, 211, 252, 0.10) 0%,
+        rgba(186, 230, 253, 0.04) 100%
+    );
+    border: 1px solid rgba(56, 189, 248, 0.18);
+    padding: 9px 13px;
+    color: var(--sidebar-active-accent);
+}
+
+.menu-item.role-switch-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12%;
+    bottom: 12%;
+    width: 3px;
+    border-radius: 0 4px 4px 0;
+    background: linear-gradient(
+        180deg,
+        #38bdf8 0%,
+        #0284c7 100%
+    );
+    opacity: 0.85;
+}
+
+.menu-item.role-switch-item:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(125, 211, 252, 0.22) 0%,
+        rgba(186, 230, 253, 0.10) 100%
+    );
+    border-color: rgba(56, 189, 248, 0.38);
+    color: var(--sidebar-text-strong);
+}
+
+.menu-item.role-switch-item:active {
+    transform: scale(0.99);
+}
+
+.sidebar.collapsed .menu-item.role-switch-item {
+    justify-content: center;
+    gap: 0;
+    padding: 12px 0;
+    border-radius: var(--radius-sm);
+}
+
+.sidebar.collapsed .menu-item.role-switch-item::before {
+    left: 6px;
+    top: 14%;
+    bottom: 14%;
+    width: 3px;
+    opacity: 0.7;
+}
+
 .menu-icon {
     font-size: 18px;
     flex-shrink: 0;

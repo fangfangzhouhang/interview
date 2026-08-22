@@ -5,8 +5,8 @@
 {% block title %}志愿管理 - 面试系统{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/core.css' %}?v=sidebar-glass-v9-20260821">
-<link rel="stylesheet" href="{% static 'css/subadmin.css' %}?v=sidebar-glass-v9-20260821">
+<link rel="stylesheet" href="{% static 'css/core.css' %}?v=sidebar-glass-v10-roleswitch-20260822">
+<link rel="stylesheet" href="{% static 'css/subadmin.css' %}?v=sidebar-glass-v10-roleswitch-20260822">
 {% endblock %}
 
 {% block content %}
@@ -40,6 +40,13 @@
                 <span class="menu-icon">📊</span>
                 <span class="menu-text">决策中心</span>
             </a>
+            {% if request.user.interviewer %}
+            <div class="sidebar-section-divider" aria-hidden="true"></div>
+            <a href="{% url 'interviewer_panel' %}" class="menu-item role-switch-item" data-label="面试官工作台">
+                <span class="menu-icon">🎤</span>
+                <span class="menu-text">面试官工作台</span>
+            </a>
+            {% endif %}
             <a href="{% url 'logout' %}" class="menu-item logout-item" data-label="退出登录">
                 <span class="menu-icon">🚪</span>
                 <span class="menu-text">退出登录</span>
