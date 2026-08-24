@@ -41,5 +41,10 @@ htmlcov/
 .vscode/
 .idea/
 
+# PyInstaller build artifacts
+build/
+自动安装脚本/
+*.spec
+
 # Bundled third-party deployment software
 support/
