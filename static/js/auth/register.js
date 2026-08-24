@@ -25,12 +25,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const homeroomInput = document.getElementById('homeroom');
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirm_password');
+    const passwordToggle = document.getElementById('passwordToggle');
+    const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
     const studentNumberInput = document.getElementById('student_number');
     const telephoneInput = document.getElementById('telephone');
 
     const totalSteps = 4;
     let selectedRole = null;
     let currentStep = 1;
+
+    // ========== 两个密码框的显示/隐藏切换 ==========
+    function setupPasswordToggle(inputEl, toggleEl) {
+        if (!inputEl || !toggleEl) return;
+        toggleEl.addEventListener('click', function() {
+            const isShowing = inputEl.type === 'text';
+            inputEl.type = isShowing ? 'password' : 'text';
+            toggleEl.classList.toggle('is-showing', !isShowing);
+            toggleEl.setAttribute('aria-pressed', String(!isShowing));
+            // 图标语义：
+            //   密码隐藏 → 显示带斜线眼睛 → 点击后"显示密码"
+            //   密码显示 → 显示普通眼睛   → 点击后"隐藏密码"
+            toggleEl.setAttribute('title', !isShowing ? '隐藏密码' : '显示密码');
+            inputEl.focus({ preventScroll: true });
+        });
+    }
+    setupPasswordToggle(passwordInput, passwordToggle);
+    setupPasswordToggle(confirmPasswordInput, confirmPasswordToggle);
 
     function getCSRFToken() {
         return document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -215,8 +235,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    changeRoleBtn.addEventListener('click', function() {
-        const shouldSwitch = window.confirm('切换身份会调整学院、部门和班级/组别字段，其他已填内容会保留。是否继续？');
+    changeRoleBtn.addEventListener('click', async function() {
+        const shouldSwitch = await Modal.confirm('切换身份会调整学院、部门和班级/组别字段，其他已填内容会保留。是否继续？');
         if (!shouldSwitch) return;
         roleModal.style.display = 'flex';
         registerForm.style.display = 'none';

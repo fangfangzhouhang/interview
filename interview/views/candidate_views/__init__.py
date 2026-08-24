@@ -1,5 +1,6 @@
 from .profile_views import (
     profile_view,
+    volunteer_view,
     update_profile,
     get_profile,
     volunteer_action,

@@ -630,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // ========== 单个销毁 ==========
         async handleSingleDestroy(id) {
-            if (!confirm('确定要销毁这个分组吗？销毁后状态将变为"已销毁"。')) return;
+            if (!(await Modal.confirm('确定要销毁这个分组吗？销毁后状态将变为"已销毁"。'))) return;
 
             try {
                 const response = await fetch(`/api/addmin/interviewer-groups/${id}/delete/`, {
@@ -687,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            if (!confirm(`确定要销毁选中的 ${onuseIds.length} 个分组吗？`)) return;
+            if (!(await Modal.confirm(`确定要销毁选中的 ${onuseIds.length} 个分组吗？`))) return;
 
             try {
                 const response = await fetch(this.apiUrl, {

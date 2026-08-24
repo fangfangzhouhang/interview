@@ -53,7 +53,15 @@ class InterviewService:
 
     @staticmethod
     def is_chief(user, group_id):
-        """检查用户是否是主面试官"""
+        """检查用户是否是该场次的主考官
+
+        判定规则（稳健版）：
+        - 用户必须是该场次的面试官（成员校验）
+        - 用户是某个未销毁、同部门面试官组的主考官
+
+        说明：场次创建时已强制"面试官列表 ⊆ 某个面试官组，且 chief 必须在列表中"，
+        因此不再做严格子集匹配（成员后续变动会导致子集校验永久失败、主考官按钮失灵）。
+        """
         if not InterviewService._has_workflow_role(user):
             return False
 
@@ -66,24 +74,52 @@ class InterviewService:
             interviewer = Interviewer.objects.get(user=user)
             group = InterviewGroup.objects.get(id=group_id)
 
-            interviewer_ids = list(group.interviewers.values_list('id', flat=True))
-            if not interviewer_ids:
+            # 必须是该场次的面试官
+            if not group.interviewers.filter(id=interviewer.id).exists():
                 return False
 
-            interviewer_groups = InterviewerGroup.objects.filter(
-                members__in=interviewer_ids,
+            # 是某个未销毁、同部门面试官组的主考官
+            return InterviewerGroup.objects.filter(
+                chief=interviewer,
+                department=group.departments,
             ).exclude(
                 status=InterviewerGroup.Status.ENDED,
-            ).distinct()
-
-            for ig in interviewer_groups:
-                ig_member_ids = set(ig.members.values_list('id', flat=True))
-                if set(interviewer_ids).issubset(ig_member_ids):
-                    if ig.chief and ig.chief.id == interviewer.id:
-                        return True
-            return False
+            ).exists()
         except (Interviewer.DoesNotExist, InterviewGroup.DoesNotExist):
             return False
+
+    @staticmethod
+    def find_group_chief(group):
+        """查找场次的关联面试官组与其主考官（用于展示）
+
+        优先返回覆盖场次面试官最多的未销毁面试官组。
+        返回: (interviewer_group, chief)
+        """
+        models = InterviewService._get_models()
+        InterviewerGroup = models['InterviewerGroup']
+
+        interviewer_ids = list(group.interviewers.values_list('id', flat=True))
+        if not interviewer_ids:
+            return None, None
+
+        candidates_ig = InterviewerGroup.objects.filter(
+            members__in=interviewer_ids,
+        ).exclude(
+            status=InterviewerGroup.Status.ENDED,
+        ).distinct()
+
+        best_ig = None
+        best_overlap = 0
+        for ig in candidates_ig:
+            ig_member_ids = set(ig.members.values_list('id', flat=True))
+            overlap = len(ig_member_ids & set(interviewer_ids))
+            if overlap > best_overlap:
+                best_overlap = overlap
+                best_ig = ig
+
+        if best_ig is None:
+            return None, None
+        return best_ig, best_ig.chief
 
     @staticmethod
     def sync_questions_from_polling(user, group_id, question_data):
@@ -150,24 +186,13 @@ class InterviewService:
             else:
                 is_chief = False
                 chief_name = None
-                interviewer_ids = list(group.interviewers.values_list('id', flat=True))
-                if interviewer_ids:
-                    interviewer_groups = InterviewerGroup.objects.filter(
-                        members__in=interviewer_ids,
-                    ).exclude(
-                        status=InterviewerGroup.Status.ENDED,
-                    ).distinct()
-                    for ig in interviewer_groups:
-                        ig_member_ids = set(ig.members.values_list('id', flat=True))
-                        if set(interviewer_ids).issubset(ig_member_ids):
-                            if ig.chief:
-                                chief_name = ig.chief.name
-                                if ig.chief.id == interviewer.id:
-                                    is_chief = True
-                                break
-                            else:
-                                chief_name = '未设置'
-                                break
+                _, chief = InterviewService.find_group_chief(group)
+                if chief is not None:
+                    chief_name = chief.name
+                    if chief.id == interviewer.id:
+                        is_chief = True
+                elif group.interviewers.exists():
+                    chief_name = '未设置'
 
             data = {
                 'id': group.id,
@@ -381,7 +406,8 @@ class InterviewService:
                     target = CandidateInGroup.objects.get(group=group, order=order)
                     score_obj = InterviewerScore.objects.get(
                         candidate=target.candidate,
-                        interviewer=interviewer
+                        interviewer=interviewer,
+                        interview_group=group
                     )
                     scores[f'score_{order}'] = float(score_obj.score)
                     dimension_scores[f'dimension_scores_{order}'] = score_obj.dimension_scores or {}
@@ -509,6 +535,7 @@ class InterviewService:
                         score_obj, created = InterviewerScore.objects.get_or_create(
                             candidate=target_candidate.candidate,
                             interviewer=interviewer,
+                            interview_group=group,
                             defaults={
                                 'interview_group': group,
                                 **defaults
@@ -517,9 +544,6 @@ class InterviewService:
 
                         if not created:
                             updated = False
-                            if score_obj.interview_group_id != group.id:
-                                score_obj.interview_group = group
-                                updated = True
                             if has_dimensions:
                                 dim_scores = data.get(dimension_key, {})
                                 if isinstance(dim_scores, str):
@@ -592,6 +616,7 @@ class InterviewService:
             InterviewerGroup = models['InterviewerGroup']
             Candidate = models['Candidate']
             Volunteer = models['Volunteer']
+            CandidateInGroup = models['CandidateInGroup']
 
             group = InterviewGroup.objects.get(id=group_id)
             interviewer = Interviewer.objects.get(user=user)
@@ -608,14 +633,23 @@ class InterviewService:
 
                         candidates_in_group = group.candidates.all()
                         for cig in candidates_in_group:
-                            candidate = cig.candidate
-                            candidate.status = Candidate.Status.INTERVIEWING
-                            candidate.save()
+                            # 只更新已叫号（CALLED）的候选人，未叫号的保持 WAITING
+                            if cig.call_status == CandidateInGroup.CallStatus.CALLED:
+                                cig.call_status = CandidateInGroup.CallStatus.INTERVIEWING
+                                cig.save(update_fields=['call_status'])
 
-                            Volunteer.objects.filter(
-                                candidate=candidate,
-                                department=group.departments
-                            ).update(status=Volunteer.Status.INTERVIEWING)
+                                candidate = cig.candidate
+                                candidate.status = Candidate.Status.INTERVIEWING
+                                candidate.save()
+
+                                Volunteer.objects.filter(
+                                    candidate=candidate,
+                                    department=group.departments
+                                ).exclude(
+                                    status__in=[Volunteer.Status.COMPLETED,
+                                                Volunteer.Status.REJECTED,
+                                                Volunteer.Status.ACCEPTED]
+                                ).update(status=Volunteer.Status.INTERVIEWING)
 
                     interviewer_ids = list(group.interviewers.values_list('id', flat=True))
                     if interviewer_ids:
@@ -670,33 +704,51 @@ class InterviewService:
                                 ig.save()
                                 break
 
-                    candidates_in_group = group.candidates.all()
+                    candidates_in_group = group.candidates.select_related('candidate')
+                    now = timezone.now()
                     for cig in candidates_in_group:
                         candidate = cig.candidate
+                        original_status = cig.call_status
 
-                        Volunteer.objects.filter(
-                            candidate=candidate,
-                            department=group.departments
-                        ).update(status=Volunteer.Status.COMPLETED)
+                        # 终态化叫号状态：未完成的选手标记为已完成
+                        if cig.call_status != CandidateInGroup.CallStatus.FINISHED:
+                            cig.call_status = CandidateInGroup.CallStatus.FINISHED
+                            cig.finished_at = now
+                            cig.save(update_fields=['call_status', 'finished_at'])
 
-                        has_waiting_volunteer = Volunteer.objects.filter(
-                            candidate=candidate,
-                            status=Volunteer.Status.WAITING
-                        ).exists()
+                        # 只处理已叫号/面试中的候选人（未叫号的保持 WAITING 状态）
+                        if original_status in (
+                            CandidateInGroup.CallStatus.CALLED,
+                            CandidateInGroup.CallStatus.INTERVIEWING,
+                        ):
+                            # 志愿状态推进为已完成（保护已录取/已淘汰的终态不被覆盖）
+                            Volunteer.objects.filter(
+                                candidate=candidate,
+                                department=group.departments
+                            ).exclude(
+                                status__in=[Volunteer.Status.COMPLETED,
+                                            Volunteer.Status.REJECTED,
+                                            Volunteer.Status.ACCEPTED]
+                            ).update(status=Volunteer.Status.COMPLETED)
 
-                        has_pending_volunteer = Volunteer.objects.filter(
-                            candidate=candidate
-                        ).exclude(
-                            status__in=[Volunteer.Status.COMPLETED,
-                                        Volunteer.Status.REJECTED,
-                                        Volunteer.Status.ACCEPTED]
-                        ).exists()
+                            has_waiting_volunteer = Volunteer.objects.filter(
+                                candidate=candidate,
+                                status=Volunteer.Status.WAITING
+                            ).exists()
 
-                        if has_waiting_volunteer:
-                            candidate.status = Candidate.Status.WAITING
-                        elif not has_pending_volunteer:
-                            candidate.status = Candidate.Status.COMPLETED
-                        candidate.save()
+                            has_pending_volunteer = Volunteer.objects.filter(
+                                candidate=candidate
+                            ).exclude(
+                                status__in=[Volunteer.Status.COMPLETED,
+                                            Volunteer.Status.REJECTED,
+                                            Volunteer.Status.ACCEPTED]
+                            ).exists()
+
+                            if has_waiting_volunteer:
+                                candidate.status = Candidate.Status.WAITING
+                            elif not has_pending_volunteer:
+                                candidate.status = Candidate.Status.COMPLETED
+                            candidate.save()
 
                     return True, {
                         'status': group.status,

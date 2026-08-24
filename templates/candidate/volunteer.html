@@ -1,0 +1,154 @@
+<!-- volunteer.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}志愿管理 - 面试系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core.css' %}?v=sidebar-glass-v9-20260821">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}?v=step-form-v2">
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}?v=v2">
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">面试系统</span>
+            </div>
+            <button class="toggle-btn" id="toggleSidebar">◀</button>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{% url 'profile' %}" class="menu-item" data-label="个人简历">
+                <span class="menu-icon">👤</span>
+                <span class="menu-text">个人简历</span>
+            </a>
+            <a href="{% url 'volunteer' %}" class="menu-item active" data-label="志愿管理">
+                <span class="menu-icon">🎯</span>
+                <span class="menu-text">志愿管理</span>
+            </a>
+            <a href="{% url 'queue' %}" class="menu-item" data-label="排队进度">
+                <span class="menu-icon">⏳</span>
+                <span class="menu-text">排队进度</span>
+            </a>
+            <a href="{% url 'logout' %}" class="menu-item logout-item" data-label="退出登录">
+                <span class="menu-icon">🚪</span>
+                <span class="menu-text">退出登录</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1 id="pageTitle">志愿管理</h1>
+            <div class="user-info">
+                <span class="username">{{ request.user.username }}</span>
+            </div>
+        </div>
+
+        <div class="content-body">
+            <div class="volunteer-container" id="volunteerContainer">
+                <!-- 赛道与调剂设置 -->
+                <div class="volunteer-card">
+                    <div class="volunteer-card-header">
+                        <h2>赛道与调剂</h2>
+                        <p class="card-subtitle">选择赛道以确定可选部门范围</p>
+                    </div>
+                    <div class="volunteer-card-body">
+                        <div class="form-grid-2">
+                            <div class="form-field">
+                                <label>赛道 <span class="required">*</span></label>
+                                <div class="racetrack-options">
+                                    <label class="racetrack-card">
+                                        <input type="radio" name="racetrack" value="POL">
+                                        <div class="racetrack-content">
+                                            <div class="racetrack-icon racetrack-icon-pol">
+                                                <svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M24 8L28 24H40L30 32L34 44L24 36L14 44L18 32L8 24H20Z" fill="#1D4ED8"/>
+                                                </svg>
+                                            </div>
+                                            <div class="racetrack-name">破浪赛道</div>
+                                            <div class="racetrack-desc">办公 · 权益 · 学实</div>
+                                        </div>
+                                    </label>
+                                    <label class="racetrack-card">
+                                        <input type="radio" name="racetrack" value="ZHU">
+                                        <div class="racetrack-content">
+                                            <div class="racetrack-icon racetrack-icon-zhu">
+                                                <svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                                                    <circle cx="24" cy="24" r="16" fill="none" stroke="#3B82F6" stroke-width="2.5"/>
+                                                    <circle cx="24" cy="24" r="10" fill="none" stroke="#60A5FA" stroke-width="2"/>
+                                                    <circle cx="24" cy="24" r="4" fill="#1D4ED8"/>
+                                                </svg>
+                                            </div>
+                                            <div class="racetrack-name">逐浪赛道</div>
+                                            <div class="racetrack-desc">信传 · 文艺 · 体育</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <span class="field-hint" id="racetrackHint"></span>
+                            </div>
+                            <div class="form-field">
+                                <label>是否服从调剂 <span class="required">*</span></label>
+                                <select id="adjustable" name="adjustable" required>
+                                    <option value="Y">是</option>
+                                    <option value="N">否</option>
+                                </select>
+                                <span class="field-hint" id="adjustableHint"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 志愿部门选择 -->
+                <div class="volunteer-card">
+                    <div class="volunteer-card-header">
+                        <h2>志愿部门</h2>
+                        <p class="card-subtitle">📌 最多选择3个志愿部门，不可重复</p>
+                    </div>
+                    <div class="volunteer-card-body">
+                        <div id="volunteerEditor">
+                            <div class="volunteer-loading">⏳ 加载中...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 当前状态 -->
+                <div class="volunteer-card status-card">
+                    <div class="volunteer-card-header">
+                        <h2>当前状态</h2>
+                    </div>
+                    <div class="volunteer-card-body">
+                        <div class="status-display">
+                            <span class="status-label">面试状态：</span>
+                            <span id="candidateStatusDisplay" class="status-badge">加载中...</span>
+                        </div>
+                        <p class="status-hint">系统自动更新，状态变化时将自动刷新</p>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="volunteer-actions">
+                    <button type="button" class="btn btn-primary btn-lg" id="saveVolunteerBtn">
+                        💾 保存志愿设置
+                    </button>
+                    <button type="button" class="btn btn-outline btn-lg" id="resetVolunteerBtn">
+                        撤销编辑
+                    </button>
+                </div>
+
+                <div id="messageContainer">
+                    <div id="successMessage" class="success-message" style="display:none;"></div>
+                    <div id="errorMessage" class="error-message" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/candidate/volunteer.js' %}?v=v3"></script>
+{% endblock %}

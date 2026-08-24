@@ -661,7 +661,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // ========== 单个删除 ==========
         async handleSingleDelete(id) {
-            if (!confirm('确定要取消这个场次吗？')) return;
+            if (!(await Modal.confirm('确定要取消这个场次吗？'))) return;
 
             try {
                 const response = await fetch(`/api/addmin/groups/${id}/delete/`, {

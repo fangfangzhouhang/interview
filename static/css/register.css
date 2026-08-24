@@ -60,24 +60,46 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    background: rgba(17, 24, 39, 0.62);
-    backdrop-filter: blur(6px);
-    animation: role-fade-in 0.18s ease;
+    background:
+        radial-gradient(ellipse 70% 60% at 50% 10%, rgba(56, 189, 248, 0.22) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 90%, rgba(49, 87, 200, 0.2) 0%, transparent 60%),
+        linear-gradient(180deg, #0c4a6e 0%, #082f49 100%);
+    backdrop-filter: blur(8px);
+    animation: role-fade-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.role-modal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.6;
 }
 
 .role-modal-content {
-    width: min(620px, 100%);
-    padding: clamp(28px, 5vw, 44px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 24px 72px rgba(17, 24, 39, 0.28);
+    position: relative;
+    width: min(640px, 100%);
+    padding: clamp(32px, 5vw, 48px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+    box-shadow:
+        0 32px 80px -12px rgba(2, 6, 23, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+    animation: role-pop-in 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes role-pop-in {
+    0% { opacity: 0; transform: translateY(14px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .role-modal-content h2 {
-    color: var(--color-text);
-    font-size: 26px;
+    color: #0c4a6e;
+    font-size: 28px;
     letter-spacing: -0.025em;
+    font-weight: 800;
 }
 
 .role-modal-desc {
@@ -89,38 +111,89 @@ body {
 .role-options {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-    margin-top: 26px;
+    gap: 16px;
+    margin-top: 28px;
 }
 
 .role-btn {
-    min-height: 150px;
-    padding: 22px;
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    background: var(--color-surface);
+    min-height: 170px;
+    padding: 24px 22px;
+    border: 2px solid rgba(3, 105, 161, 0.15);
+    border-radius: 16px;
+    background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
     color: var(--color-text);
     cursor: pointer;
     text-align: left;
-    transition: border-color var(--transition), box-shadow var(--transition), background-color var(--transition), transform var(--transition);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.role-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 140px;
+    height: 140px;
+    transform: translate(40%, -40%);
+    border-radius: 50%;
+    opacity: 0.07;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.role-btn.candidate-role::before {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+}
+
+.role-btn.interviewer-role::before {
+    background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
 }
 
 .role-btn:hover {
-    border-color: var(--color-primary-light);
-    background: #ffffff;
-    box-shadow: 0 10px 24px rgba(49, 87, 200, 0.11);
-    transform: translateY(-2px);
+    border-color: var(--color-primary);
+    background: linear-gradient(180deg, #ffffff 0%, #e0f2fe 100%);
+    box-shadow: 0 16px 32px -8px rgba(3, 105, 161, 0.25);
+    transform: translateY(-4px);
+}
+
+.role-btn:hover::before {
+    transform: translate(30%, -30%) scale(1.1);
+    opacity: 0.12;
 }
 
 .role-btn:active {
-    transform: translateY(0);
+    transform: translateY(-1px) scale(0.985);
+}
+
+.role-btn .role-kicker {
+    display: inline-block;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: rgba(3, 105, 161, 0.1);
+    color: var(--color-primary-dark);
+}
+
+.role-btn.candidate-role .role-kicker {
+    background: rgba(14, 165, 233, 0.13);
+    color: #0369a1;
+}
+
+.role-btn.interviewer-role .role-kicker {
+    background: rgba(99, 102, 241, 0.13);
+    color: #4338ca;
 }
 
 .role-btn .role-name {
-    margin-top: 20px;
-    color: var(--color-text);
-    font-size: 19px;
-    font-weight: 750;
+    margin-top: 22px;
+    color: #0c4a6e;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
 }
 
 .role-btn .role-desc {
@@ -183,62 +256,112 @@ body {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0;
-    margin: 0 0 30px;
+    margin: 0 0 32px;
+    padding: 16px 8px 4px;
     list-style: none;
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.06) 0%, rgba(56, 189, 248, 0) 100%);
+    border-radius: 12px;
+    border: 1px solid rgba(56, 189, 248, 0.15);
 }
 
 .register-stepper li {
     position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    justify-content: flex-start;
+    gap: 10px;
     min-width: 0;
     color: var(--color-text-muted);
-    font-size: 12px;
+    font-size: 13px;
+    padding: 0 4px;
 }
 
-.register-stepper li:not(:last-child)::after {
-    content: '';
+.register-stepper li strong {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    order: 1;
+}
+
+.register-stepper li .stepper-line-wrap {
     position: absolute;
-    top: 14px;
-    left: 34px;
-    right: 8px;
-    height: 1px;
+    top: 64px;
+    left: calc(50% + 18px);
+    right: calc(-50% + 18px);
+    height: 2px;
+    order: 2;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.register-stepper li:last-child .stepper-line-wrap {
+    display: none;
+}
+
+.register-stepper li .stepper-line {
+    width: 100%;
+    height: 2px;
     background: var(--color-border);
+    border-radius: 2px;
+    transition: background 0.25s ease;
 }
 
 .register-stepper li span {
     position: relative;
-    z-index: 1;
-    width: 28px;
-    height: 28px;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
     display: grid;
     place-items: center;
-    flex: 0 0 28px;
-    border: 1px solid var(--color-border-dark);
+    flex: 0 0 32px;
+    border: 2px solid var(--color-border-dark);
     border-radius: 50%;
     background: #ffffff;
     color: var(--color-text-muted);
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-    font-size: 11px;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    order: 3;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .register-stepper li.active,
 .register-stepper li.completed {
-    color: var(--color-text);
+    color: var(--color-primary-dark);
 }
 
 .register-stepper li.active span {
     border-color: var(--color-primary);
-    background: var(--color-primary);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
     color: #ffffff;
-    box-shadow: 0 0 0 4px var(--color-primary-bg);
+    box-shadow: 0 4px 12px rgba(3, 105, 161, 0.35);
+    transform: scale(1.08);
+}
+
+.register-stepper li.active .stepper-line {
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-border) 100%);
+}
+
+.register-stepper li.completed .stepper-line {
+    background: var(--color-success);
 }
 
 .register-stepper li.completed span {
     border-color: var(--color-success);
-    background: #e9f7f1;
-    color: var(--color-success-dark);
+    background: linear-gradient(135deg, #16A34A 0%, #4ADE80 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
+}
+
+.register-stepper li.completed span::before {
+    content: '✓';
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.register-stepper li.completed span {
+    font-size: 0;
 }
 
 .form-step {
@@ -347,6 +470,83 @@ body {
 
 .form-group .hint.is-success {
     color: var(--color-success-dark);
+}
+
+/* ===== 密码输入框切换按钮 ===== */
+.password-field-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.password-field-wrap input[type="password"],
+.password-field-wrap input[type="text"] {
+    padding-right: 44px;
+    width: 100%;
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    border: 1px solid var(--color-border-dark);
+    border-radius: var(--radius-sm);
+    background: #ffffff;
+    color: var(--color-text);
+    font-size: 14px;
+    transition: border-color var(--transition), box-shadow var(--transition), background-color var(--transition);
+}
+
+.password-field-wrap input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(49, 87, 200, 0.13);
+    outline: none;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.password-toggle-btn:hover {
+    background: rgba(3, 105, 161, 0.08);
+    color: var(--color-primary);
+}
+
+.password-toggle-btn:active {
+    transform: translateY(-50%) scale(0.94);
+}
+
+.password-toggle-btn .eye-icon {
+    display: none !important;
+    pointer-events: none !important;
+}
+
+/*
+ * 正确的语义：
+ *   默认 (type=password, 密码隐藏)  → 显示 👁️ (eye-open): 表示"点击可以查看"
+ *   is-showing (type=text, 密码显示) → 显示 👁️‍🗨️ (eye-slash): 表示"点击可以隐藏"
+ */
+.password-toggle-btn .eye-icon.eye-open {
+    display: block !important;
+}
+
+.password-toggle-btn.is-showing .eye-icon.eye-open {
+    display: none !important;
+}
+
+.password-toggle-btn.is-showing .eye-icon.eye-slash {
+    display: block !important;
 }
 
 .register-summary {
@@ -536,10 +736,20 @@ body {
 
     .register-stepper li {
         gap: 0;
+        padding-top: 10px;
     }
 
-    .register-stepper li:not(:last-child)::after {
-        right: 4px;
+    .register-stepper li .stepper-line-wrap {
+        top: 28px;
+        left: calc(50% + 18px);
+        right: calc(-50% + 18px);
+    }
+
+    .register-stepper li span {
+        width: 28px;
+        height: 28px;
+        flex: 0 0 28px;
+        font-size: 13px;
     }
 
     .form-row,

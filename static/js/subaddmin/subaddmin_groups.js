@@ -609,9 +609,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // ========== 单个取消 ==========
-        handleSingleCancel(id) {
+        async handleSingleCancel(id) {
             const self = this;
-            if (!confirm('确定要取消这个场次吗？取消后状态将变为"已取消"。')) return;
+            if (!(await Modal.confirm('确定要取消这个场次吗？取消后状态将变为"已取消"。'))) return;
 
             fetch('/api/subaddmin/groups/' + id + '/cancel/', {
                 method: 'POST',

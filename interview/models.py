@@ -741,7 +741,9 @@ class InterviewerScore(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     class Meta:
-        unique_together = ['candidate', 'interviewer']
+        # 唯一键包含面试场次：同一面试官在不同场次对同一选手的评分独立保存，
+        # 避免新场次覆盖历史评分
+        unique_together = ['candidate', 'interviewer', 'interview_group']
         verbose_name = '面试官评分'
         verbose_name_plural = '面试官评分'
         ordering = ['-updated_at']

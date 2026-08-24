@@ -9,10 +9,13 @@
     <meta name="format-detection" content="telephone=no,email=no,address=no">
     <meta name="theme-color" content="#223f91">
     <title>{% block title %}面试系统{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}?v=modal-v4">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     {% block content %}{% endblock %}
+    <script src="{% static 'js/modal.js' %}?v=modal-v4"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

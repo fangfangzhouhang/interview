@@ -29,8 +29,14 @@ ADJUSTABLE_CHOICES = [
 
 @candidate_required()
 def profile_view(request):
-    """个人中心页面视图"""
+    """个人简历页面视图"""
     return render(request, 'candidate/profile.html')
+
+
+@candidate_required()
+def volunteer_view(request):
+    """志愿管理页面视图"""
+    return render(request, 'candidate/volunteer.html')
 
 
 # profile_views.py - 修复后的 update_profile

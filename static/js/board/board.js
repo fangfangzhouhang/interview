@@ -9,7 +9,7 @@
 
     var CAROUSEL_INTERVAL = 5000;   // 每页停留 5 秒
     var REFRESH_INTERVAL = 30000;  // 数据刷新 30 秒
-    var QUEUE_MAX_DISPLAY = 10;     // 每页最多显示 10 条
+    var QUEUE_MAX_DISPLAY = 20;     // 每页最多显示 30 条（增加容量）
 
     var state = {
         data: [],

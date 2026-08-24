@@ -739,7 +739,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            if (!confirm(`确定要${actionLabel}吗？`)) {
+            if (!(await Modal.confirm(`确定要${actionLabel}吗？`))) {
                 return;
             }
 
@@ -857,10 +857,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // ========== 重置密码 ==========
         async handleResetPassword(userId) {
-            const newPassword = prompt('请输入新密码（至少6位）：');
-            if (newPassword === null) return;
-            if (newPassword.length < 6) {
-                alert('密码长度至少6位');
+            const newPassword = await Modal.prompt('请输入新密码（至少6位）：', '', '重置密码');
+            if (newPassword === null || newPassword === false) return;
+            if (!newPassword || newPassword.length < 6) {
+                Modal.error('密码长度至少6位');
                 return;
             }
 

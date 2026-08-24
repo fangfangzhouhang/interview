@@ -792,7 +792,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            if (!confirm(`确定要${actionLabel}吗？`)) {
+            if (!(await Modal.confirm(`确定要${actionLabel}吗？`))) {
                 return;
             }
 

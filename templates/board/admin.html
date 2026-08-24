@@ -6,294 +6,603 @@
     <title>管理员控制台 - ECUST 叫号系统</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/board.css' %}?v=board-v3-carousel-20260823">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}?v=admin-v3-20260824">
     <style>
+        /* 覆盖 board.css 的 overflow:hidden，允许控制台滚动 */
+        html, body {
+            width: auto !important;
+            height: auto !important;
+            overflow: visible !important;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
-            overflow: auto;
-            height: auto;
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 100%);
             min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 40px;
         }
-        .admin-wrap {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px 28px 60px;
-        }
+        
+        /* 顶部导航栏 */
         .admin-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            padding: 16px 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #bae6fd;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         }
-        .admin-header-title {
-            font-size: 24px;
-            font-weight: 800;
-            color: #0c4a6e;
-            letter-spacing: 1px;
-        }
-        .admin-header-actions {
+        
+        .admin-header-left {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 12px;
         }
+        
+        .admin-header-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .admin-header-title {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .admin-header-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+        
+        .admin-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .admin-time {
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: 14px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+        }
+        
         .admin-btn {
             padding: 8px 16px;
             border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.15s ease;
+            border: none;
+            transition: all 0.2s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 6px;
         }
+        
         .admin-btn-primary {
-            background: linear-gradient(135deg, #0ea5e9, #0369a1);
-            color: #fff;
+            background: #3b82f6;
+            color: white;
         }
+        
         .admin-btn-primary:hover {
+            background: #2563eb;
             transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(3, 105, 161, 0.3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
         }
+        
         .admin-btn-ghost {
-            background: #f1f5f9;
-            color: #475569;
-            border-color: #e2e8f0;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
         }
+        
         .admin-btn-ghost:hover {
-            background: #e2e8f0;
+            background: rgba(255, 255, 255, 0.25);
         }
+        
         .admin-btn-danger {
-            background: #fef2f2;
-            color: #b91c1c;
-            border-color: #fecaca;
+            background: #ef4444;
+            color: white;
         }
+        
         .admin-btn-danger:hover {
-            background: #fee2e2;
+            background: #dc2626;
         }
-        .admin-section {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 20px 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(12, 74, 110, 0.04);
+        
+        /* 主内容区 */
+        .admin-main {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px 32px;
         }
-        .admin-section-title {
-            font-size: 18px;
+        
+        /* 统计卡片 */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        
+        .stat-icon.blue { background: #dbeafe; }
+        .stat-icon.green { background: #dcfce7; }
+        .stat-icon.yellow { background: #fef3c7; }
+        .stat-icon.purple { background: #f3e8ff; }
+        
+        .stat-value {
+            font-size: 24px;
             font-weight: 700;
-            color: #0c4a6e;
-            margin-bottom: 16px;
+            color: #1e293b;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+        
+        /* 部门卡片 */
+        .dept-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 24px 0 16px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .admin-section-title::before {
+        
+        .dept-section-title::before {
             content: '';
             width: 4px;
-            height: 20px;
-            background: linear-gradient(180deg, #0ea5e9, #0369a1);
+            height: 18px;
+            background: linear-gradient(180deg, #3b82f6, #1d4ed8);
             border-radius: 2px;
         }
+        
         .admin-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
         }
-        .admin-dept-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 16px;
-            background: #f8fafc;
+        
+        .dept-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
         }
-        .admin-dept-name {
-            font-size: 18px;
-            font-weight: 700;
-            color: #0c4a6e;
-            margin-bottom: 4px;
+        
+        .dept-card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
-        .admin-dept-status {
-            font-size: 13px;
-            color: #64748b;
-            margin-bottom: 12px;
-        }
-        .admin-dept-queue {
-            font-size: 14px;
-            color: #475569;
-            margin-bottom: 12px;
-            max-height: 120px;
-            overflow-y: auto;
-        }
-        .admin-dept-queue-item {
+        
+        .dept-card-header {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
-            padding: 4px 0;
-            border-bottom: 1px solid #f1f5f9;
+            align-items: center;
         }
-        .admin-dept-queue-item:last-child {
+        
+        .dept-card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .dept-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .dept-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .dept-status-tag {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .dept-status-tag.waiting { background: #fef3c7; color: #b45309; }
+        .dept-status-tag.active { background: #dcfce7; color: #16a34a; }
+        .dept-status-tag.finished { background: #e2e8f0; color: #64748b; }
+        
+        .dept-card-body {
+            padding: 16px 20px;
+        }
+        
+        .dept-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #64748b;
+        }
+        
+        .dept-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .queue-list {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .queue-list-header {
+            display: grid;
+            grid-template-columns: 60px 1fr 80px 180px;
+            padding: 10px 14px;
+            background: #f8fafc;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .queue-row {
+            display: grid;
+            grid-template-columns: 60px 1fr 80px 180px;
+            align-items: center;
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.15s;
+        }
+        
+        .queue-row:last-child {
             border-bottom: none;
         }
-        .admin-dept-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+        
+        .queue-row:hover {
+            background: #f8fafc;
         }
-        .admin-mini-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 6px 10px;
-            font-size: 13px;
+        
+        .queue-row.current {
+            background: #fef3c7;
+            border-left: 3px solid #f59e0b;
+        }
+        
+        .queue-row.called {
+            background: #fffbeb;
+            border-left: 3px solid #d97706;
+        }
+        
+        .queue-row.interviewing {
+            background: #dcfce7;
+            border-left: 3px solid #22c55e;
+        }
+        
+        .queue-row.finished {
+            opacity: 0.5;
+        }
+        
+        .queue-row-seq {
+            font-size: 14px;
             font-weight: 600;
-            border-radius: 6px;
-            border: 1px solid transparent;
-            cursor: pointer;
-            transition: all 0.15s ease;
+            color: #64748b;
         }
-        .admin-mini-btn:disabled {
+        
+        .queue-row-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e293b;
+        }
+        
+        .queue-row-name .lobby-tag {
+            display: inline-block;
+            margin-left: 6px;
+            font-size: 10px;
+            padding: 1px 6px;
+            background: #fef3c7;
+            color: #b45309;
+            border-radius: 3px;
+        }
+        
+        .queue-row-status {
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .status-waiting { background: #dbeafe; color: #1d4ed8; }
+        .status-called { background: #fef3c7; color: #b45309; }
+        .status-interviewing { background: #dcfce7; color: #16a34a; }
+        .status-finished { background: #e2e8f0; color: #64748b; }
+        
+        .queue-row-actions {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        
+        .action-btn:disabled {
             opacity: 0.4;
             cursor: not-allowed;
         }
-        .admin-mini-btn-primary {
-            background: linear-gradient(135deg, #0ea5e9, #0369a1);
-            color: #fff;
+        
+        .action-btn-call {
+            background: #3b82f6;
+            color: white;
         }
-        .admin-mini-btn-primary:hover:not(:disabled) {
-            transform: translateY(-1px);
+        
+        .action-btn-call:hover:not(:disabled) {
+            background: #2563eb;
         }
-        .admin-mini-btn-success {
-            background: #10b981;
-            color: #fff;
+        
+        .action-btn-start {
+            background: #22c55e;
+            color: white;
         }
-        .admin-mini-btn-warning {
-            background: #f59e0b;
-            color: #fff;
+        
+        .action-btn-start:hover:not(:disabled) {
+            background: #16a34a;
         }
-        .admin-mini-btn-secondary {
+        
+        .action-btn-finish {
+            background: #64748b;
+            color: white;
+        }
+        
+        .action-btn-finish:hover:not(:disabled) {
+            background: #475569;
+        }
+        
+        .action-btn-wait {
             background: #f1f5f9;
-            color: #475569;
-            border-color: #e2e8f0;
+            color: #94a3b8;
+            cursor: default;
         }
-        .admin-status-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 6px;
-        }
-        .admin-status-dot.waiting { background: #1E90FF; }
-        .admin-status-dot.interviewing { background: #32CD32; }
-        .admin-status-dot.finished { background: #808080; }
-        .admin-status-dot.called { background: #FF8C00; }
-        .admin-group-select {
-            width: 100%;
-            padding: 6px 10px;
+        
+        .empty-queue {
+            padding: 30px;
+            text-align: center;
+            color: #94a3b8;
             font-size: 13px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            background: #fff;
-            margin-bottom: 8px;
         }
-        .admin-refresh-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: #64748b;
-        }
-        .admin-refresh-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #10b981;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
+        
+        /* Toast */
         .admin-toast {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 24px;
+            top: 80px;
+            right: 24px;
+            padding: 12px 20px;
             border-radius: 10px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             z-index: 1000;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease;
         }
+        
         .admin-toast.success {
-            background: #ecfdf5;
-            color: #047857;
-            border: 1px solid #a7f3d0;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
         }
+        
         .admin-toast.error {
             background: #fef2f2;
-            color: #b91c1c;
-            border: 1px solid #fecaca;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
         }
+        
         @keyframes slideIn {
-            from { transform: translateX(120%); opacity: 0; }
+            from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 900px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            .queue-list-header,
+            .queue-row {
+                grid-template-columns: 40px 1fr 70px;
+            }
+            .queue-list-header .col-actions,
+            .queue-row-actions {
+                display: none;
+            }
+            .queue-row {
+                grid-template-rows: auto auto;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .admin-main {
+                padding: 16px;
+            }
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-<body class="carousel-body">
-    <div class="admin-wrap">
-        <!-- 页头 -->
-        <div class="admin-header">
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="admin-header">
+        <div class="admin-header-left">
+            <div class="admin-header-icon">🎯</div>
             <div>
-                <div class="admin-header-title">🔧 ECUST 叫号系统 · 管理员控制台</div>
-                <div style="font-size:13px; color:#64748b; margin-top:4px;">
-                    所有操作将实时同步到叫号大屏 · 当前服务器时间：<span id="adminTime">--:--:--</span>
-                </div>
-            </div>
-            <div class="admin-header-actions">
-                <a href="/board/" class="admin-btn admin-btn-ghost">📺 查看大屏</a>
-                <button class="admin-btn admin-btn-primary" id="adminRefresh">↻ 刷新数据</button>
-                <a href="/board/admin/?action=logout" class="admin-btn admin-btn-danger">退出登录</a>
+                <div class="admin-header-title">ECUST 叫号系统 · 管理员控制台</div>
+                <div class="admin-header-subtitle">面试现场叫号管理中心</div>
             </div>
         </div>
+        <div class="admin-header-right">
+            <div class="admin-time" id="adminTime">--:--:--</div>
+            <a href="/board/" class="admin-btn admin-btn-ghost">📺 叫号大屏</a>
+            <button class="admin-btn admin-btn-primary" id="adminRefresh">↻ 刷新</button>
+            <a href="/board/admin/?action=logout" class="admin-btn admin-btn-danger">退出</a>
+        </div>
+    </div>
 
-        <!-- 全局控制 -->
-        <div class="admin-section">
-            <div class="admin-section-title">全局控制</div>
-            <div class="admin-grid">
+    <!-- 主内容区 -->
+    <div class="admin-main">
+        <!-- 统计卡片 -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon blue">📋</div>
                 <div>
-                    <div style="font-size:14px; color:#64748b; margin-bottom:8px;">
-                        <span class="admin-refresh-status">
-                            <span class="admin-refresh-dot"></span>
-                            数据自动刷新中（每 30 秒）
-                        </span>
-                    </div>
+                    <div class="stat-value" id="statTotal">0</div>
+                    <div class="stat-label">总面试者</div>
                 </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">✅</div>
                 <div>
-                    <label style="font-size:14px; color:#64748b; display:block; margin-bottom:8px;">
-                        快速操作：
-                    </label>
-                    <div style="display:flex; gap:8px;">
-                        <button class="admin-btn admin-btn-primary" id="btnGlobalRefresh">立即刷新</button>
-                    </div>
+                    <div class="stat-value" id="statFinished">0</div>
+                    <div class="stat-label">已完成</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon yellow">⏳</div>
+                <div>
+                    <div class="stat-value" id="statWaiting">0</div>
+                    <div class="stat-label">等待中</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">🎤</div>
+                <div>
+                    <div class="stat-value" id="statCalling">0</div>
+                    <div class="stat-label">已叫号/面试中</div>
                 </div>
             </div>
         </div>
 
-        <!-- 部门控制 -->
-        <div class="admin-section">
-            <div class="admin-section-title">部门叫号控制</div>
-            <div class="admin-grid" id="adminDeptGrid">
-                <!-- 部门卡片由 JS 动态生成 -->
-                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;">
-                    正在加载部门数据...
-                </div>
+        <!-- 部门叫号控制 -->
+        <div class="dept-section-title">部门叫号控制</div>
+        <div class="admin-grid" id="adminDeptGrid">
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #94a3b8;">
+                <div style="font-size: 40px; margin-bottom: 12px;">⏳</div>
+                <div>正在加载部门数据...</div>
             </div>
         </div>
-
     </div>
 
     <div id="adminToastContainer"></div>
+
+    <!-- 创建场次弹窗 -->
+    <div id="createGroupModal" class="global-modal-overlay" style="display:none;">
+        <div class="global-modal-container" style="max-width:720px;">
+            <div class="global-modal-header">
+                <span>➕ 创建新面试场次</span>
+                <span class="global-modal-close" onclick="window.createGroupModalClose()">×</span>
+            </div>
+            <div class="global-modal-body">
+                <div class="admin-form-row">
+                    <label>部门</label>
+                    <input type="text" id="cg_dept" disabled>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div class="admin-form-row">
+                        <label>场次名称</label>
+                        <input type="text" id="cg_group_id" placeholder="留空自动生成">
+                    </div>
+                    <div class="admin-form-row">
+                        <label>教室</label>
+                        <input type="text" id="cg_classroom" placeholder="如：教A-101">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <!-- 面试官选择 -->
+                    <div class="admin-form-row">
+                        <label>面试官 <span style="color:#ef4444;">*</span></label>
+                        <div id="cg_interviewer_list" class="cg-interviewer-list">
+                            <div style="color:#94a3b8; font-size:13px; padding:10px;">正在加载面试官...</div>
+                        </div>
+                        <div class="admin-form-hint">至少选择 1 位</div>
+                    </div>
+
+                    <!-- 候选人选择 -->
+                    <div class="admin-form-row">
+                        <label>候场候选人</label>
+                        <div style="display:flex; gap:8px; margin-bottom:6px;">
+                            <button type="button" id="cg_select_all_candidates" style="font-size:12px; padding:4px 10px; border:1px solid #e2e8f0; border-radius:6px; background:#fff; cursor:pointer;">全选</button>
+                            <button type="button" id="cg_clear_candidates" style="font-size:12px; padding:4px 10px; border:1px solid #e2e8f0; border-radius:6px; background:#fff; cursor:pointer;">清空</button>
+                            <span id="cg_candidate_count" style="font-size:12px; color:#64748b; align-self:center;"></span>
+                        </div>
+                        <div id="cg_candidate_list" class="cg-interviewer-list">
+                            <div style="color:#94a3b8; font-size:13px; padding:10px;">正在加载候场人员...</div>
+                        </div>
+                        <div class="admin-form-hint">从排队中选择本场次面试者（可选，创建后也可添加）</div>
+                    </div>
+                </div>
+            </div>
+            <div class="global-modal-footer">
+                <button class="admin-btn-cancel" onclick="window.createGroupModalClose()">取消</button>
+                <button class="admin-btn-confirm" id="cg_submit">确认创建</button>
+            </div>
+        </div>
+    </div>
 
     {% if csrf_token %}<input type="hidden" id="csrfToken" value="{{ csrf_token }}">{% endif %}
 
@@ -302,6 +611,6 @@
             boardAdmin: {{ board_admin|yesno:'true,false' }},
         };
     </script>
-    <script src="{% static 'js/board/admin.js' %}?v=admin-v1-20260823"></script>
+    <script src="{% static 'js/board/admin.js' %}?v=admin-v7-20260824"></script>
 </body>
 </html>

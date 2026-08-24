@@ -1,0 +1,340 @@
+/* ============================================================
+   volunteer.css - 志愿管理页面样式
+   ============================================================ */
+
+.volunteer-container {
+    max-width: 880px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.volunteer-card {
+    background: var(--resume-card-bg, #FFFFFF);
+    border-radius: var(--resume-radius-lg, 16px);
+    box-shadow: var(--resume-shadow, 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06));
+    overflow: hidden;
+}
+
+.volunteer-card-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--resume-border, #E2E8F0);
+}
+
+.volunteer-card-header h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--resume-text, #1F2937);
+    margin: 0 0 4px;
+}
+
+.card-subtitle {
+    font-size: 13px;
+    color: var(--resume-text-muted, #94A3B8);
+    margin: 0;
+}
+
+.volunteer-card-body {
+    padding: 24px;
+}
+
+/* 赛道卡片选择 */
+.racetrack-options {
+    display: flex;
+    gap: 12px;
+}
+
+.racetrack-card {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+}
+
+.racetrack-card input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.racetrack-content {
+    padding: 16px;
+    border: 2px solid var(--resume-border, #E2E8F0);
+    border-radius: var(--resume-radius, 12px);
+    text-align: center;
+    transition: all 0.2s ease;
+    background: var(--resume-card-bg, #FFFFFF);
+}
+
+.racetrack-card:hover .racetrack-content {
+    border-color: var(--resume-primary, #2563EB);
+    background: var(--resume-primary-lighter, #DBEAFE);
+}
+
+.racetrack-card input:checked + .racetrack-content {
+    border-color: var(--resume-primary, #2563EB);
+    background: var(--resume-primary-lighter, #DBEAFE);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.racetrack-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.racetrack-icon svg {
+    transition: transform 0.3s ease;
+}
+
+.racetrack-card:hover .racetrack-icon svg {
+    transform: translateY(-2px);
+}
+
+.racetrack-icon-pol svg {
+    animation: polBreaker 3s ease-in-out infinite;
+}
+
+.racetrack-icon-zhu svg {
+    animation: zhuRipple 3.5s ease-in-out infinite;
+}
+
+@keyframes polBreaker {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(5deg) scale(1.05); }
+}
+
+@keyframes zhuRipple {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.08); opacity: 1; }
+}
+
+.racetrack-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--resume-text, #1F2937);
+    margin-bottom: 2px;
+}
+
+.racetrack-desc {
+    font-size: 12px;
+    color: var(--resume-text-muted, #94A3B8);
+}
+
+/* 志愿编辑 */
+#volunteerEditor {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.volunteer-loading,
+.volunteer-empty,
+.volunteer-error {
+    text-align: center;
+    padding: 32px;
+    color: var(--resume-text-muted, #94A3B8);
+}
+
+.volunteer-error {
+    color: var(--resume-danger, #EF4444);
+}
+
+.volunteer-editor-item {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+    border: 1.5px solid var(--resume-border, #E2E8F0);
+    border-radius: var(--resume-radius, 12px);
+    transition: all 0.2s ease;
+    background: var(--resume-surface, #F8FAFF);
+}
+
+.volunteer-editor-item:hover {
+    border-color: var(--resume-primary-light, #3B82F6);
+}
+
+.volunteer-editor-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.volunteer-editor-priority {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--resume-primary, #2563EB);
+}
+
+.volunteer-dept-select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--resume-border, #E2E8F0);
+    border-radius: var(--resume-radius-sm, 8px);
+    background: var(--resume-card-bg, #FFFFFF);
+    color: var(--resume-text, #1F2937);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.volunteer-dept-select:focus {
+    outline: none;
+    border-color: var(--resume-primary, #2563EB);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.volunteer-dept-select:disabled {
+    background: var(--resume-surface, #F8FAFF);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.volunteer-locked {
+    margin-left: 6px;
+    font-size: 14px;
+}
+
+.volunteer-editor-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.volunteer-status {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.volunteer-status.filled { background: var(--resume-primary-lighter, #DBEAFE); color: var(--resume-primary, #2563EB); }
+.volunteer-status.waiting { background: #FEF3C7; color: #D97706; }
+.volunteer-status.inqueue { background: #DBEAFE; color: #2563EB; }
+.volunteer-status.interviewing { background: #D1FAE5; color: #059669; }
+.volunteer-status.completed { background: #E2E8F0; color: #64748B; }
+.volunteer-status.empty { background: var(--resume-surface, #F8FAFF); color: var(--resume-text-muted, #94A3B8); }
+
+.volunteer-queue-time {
+    font-size: 11px;
+    color: var(--resume-text-muted, #94A3B8);
+}
+
+.volunteer-editor-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.volunteer-status-text {
+    font-size: 12px;
+    color: var(--resume-text-muted, #94A3B8);
+}
+
+.volunteer-delete-btn {
+    background: #FEF2F2;
+    color: var(--resume-danger, #EF4444);
+    border: 1px solid #FECACA;
+}
+
+.volunteer-delete-btn:hover {
+    background: var(--resume-danger, #EF4444);
+    color: white;
+}
+
+/* 状态卡片 */
+.status-card .status-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--resume-surface, #F8FAFF);
+    border-radius: var(--resume-radius-sm, 8px);
+}
+
+.status-label {
+    font-weight: 600;
+    color: var(--resume-text-secondary, #475569);
+    font-size: 14px;
+}
+
+.status-badge {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.status-badge.incomplete { background: #FEF3C7; color: #D97706; }
+.status-badge.registered { background: var(--resume-primary-lighter, #DBEAFE); color: var(--resume-primary, #2563EB); }
+.status-badge.waiting { background: #FEF3C7; color: #D97706; }
+.status-badge.inqueue { background: #DBEAFE; color: #2563EB; }
+.status-badge.interviewing { background: #D1FAE5; color: #059669; }
+.status-badge.completed { background: #E2E8F0; color: #64748B; }
+
+.status-hint {
+    font-size: 12px;
+    color: var(--resume-text-muted, #94A3B8);
+    margin: 10px 0 0;
+}
+
+/* 操作按钮区 */
+.volunteer-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    padding: 4px 0;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .volunteer-editor-item {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .volunteer-editor-status {
+        align-items: flex-start;
+    }
+
+    .volunteer-editor-actions {
+        justify-content: flex-start;
+    }
+
+    .racetrack-options {
+        flex-direction: column;
+    }
+
+    .volunteer-actions {
+        flex-direction: column;
+    }
+
+    .volunteer-actions .btn {
+        width: 100%;
+    }
+
+    .volunteer-dept-select {
+        min-height: 44px;
+        font-size: 16px;
+        padding: 12px 14px;
+        touch-action: manipulation;
+        -webkit-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235B7A90' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+        padding-right: 36px;
+    }
+
+    .volunteer-dept-select:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}

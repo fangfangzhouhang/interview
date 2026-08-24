@@ -1038,9 +1038,9 @@ a:hover {
 .loading-text {
     text-align: center;
     color: var(--color-text-muted);
-    padding: 40px !important;
+    padding: 24px !important;
     font-style: italic;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 /* ===== 分页 ===== */

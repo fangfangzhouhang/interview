@@ -20,9 +20,13 @@
             <button class="toggle-btn" id="toggleSidebar">◀</button>
         </div>
         <div class="sidebar-menu">
-            <a href="{% url 'profile' %}" class="menu-item" data-label="个人页面">
+            <a href="{% url 'profile' %}" class="menu-item" data-label="个人简历">
                 <span class="menu-icon">👤</span>
-                <span class="menu-text">个人页面</span>
+                <span class="menu-text">个人简历</span>
+            </a>
+            <a href="{% url 'volunteer' %}" class="menu-item" data-label="志愿管理">
+                <span class="menu-icon">🎯</span>
+                <span class="menu-text">志愿管理</span>
             </a>
             <a href="{% url 'queue' %}" class="menu-item active" data-label="排队进度">
                 <span class="menu-icon">⏳</span>
@@ -74,5 +78,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/candidate/queue.js' %}"></script>
+<script src="{% static 'js/candidate/queue.js' %}?v=queue-v3"></script>
 {% endblock %}

@@ -14,10 +14,11 @@ class PermissionMiddleware:
         '/admin/',
     ]
 
-    # 精确匹配的公开URL（叫号看板投屏页/快照接口，供等候区大屏免登录展示）
+    # 精确匹配的公开URL（叫号看板投屏页/管理员控制台/快照接口）
     # 注意：叫号控制接口 /api/board/call-next/ 等不在其中，仍需登录+部门权限
     EXACT_PUBLIC_URLS = {
         '/board/',
+        '/board/admin/',
         '/api/board/',
     }
 
@@ -54,6 +55,10 @@ class PermissionMiddleware:
         if path == '/':
             return self.get_response(request)
         if path in self.EXACT_PUBLIC_URLS:
+            return self.get_response(request)
+        # 叫号系统 API 使用独立的 board_admin session 鉴权（视图层自行校验部门权限），
+        # 中间件层放行，避免投屏/管理员控制台未登录系统账号时被误拦截
+        if path.startswith('/api/board/'):
             return self.get_response(request)
         for public_url in self.PUBLIC_URLS:
             if path.startswith(public_url):

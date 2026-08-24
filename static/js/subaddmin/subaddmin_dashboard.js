@@ -514,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // ========== 处理单个操作 ==========
         async handleSingleAction(candidateId, action) {
             const actionLabel = action === 'accept' ? '接受' : '拒绝';
-            if (!confirm(`确定要${actionLabel}该面试者的志愿吗？`)) {
+            if (!(await Modal.confirm(`确定要${actionLabel}该面试者的志愿吗？`))) {
                 return;
             }
 
@@ -548,7 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // ========== 处理批量操作 ==========
         async handleBatchAction(action) {
             const actionLabel = action === 'accept' ? '接受' : '拒绝';
-            if (!confirm(`确定要${actionLabel}选中的 ${this.selectedIds.size} 位面试者的志愿吗？\n\n注意：只有状态为"已完成"或"拒绝"的志愿可以被接受\n      只有状态为"已完成"或"接受"的志愿可以被拒绝`)) {
+            if (!(await Modal.confirm(`确定要${actionLabel}选中的 ${this.selectedIds.size} 位面试者的志愿吗？\n\n注意：只有状态为"已完成"或"拒绝"的志愿可以被接受\n      只有状态为"已完成"或"接受"的志愿可以被拒绝`))) {
                 return;
             }
 

@@ -927,7 +927,7 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', async function() {
                 const nextId = parseInt(this.dataset.id);
                 if (isDirty && currentCandidateInGroupId && nextId !== currentCandidateInGroupId) {
-                    const shouldSwitch = window.confirm('当前评价尚未保存，切换面试者会覆盖本页未保存内容。是否继续？');
+                    const shouldSwitch = await Modal.confirm('当前评价尚未保存，切换面试者会覆盖本页未保存内容。是否继续？');
                     if (!shouldSwitch) return;
                 }
 
@@ -1176,7 +1176,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===== WSS 同步状态 =====
-    function handleStatusActionViaWebSocket(action) {
+    async function handleStatusActionViaWebSocket(action) {
         const actionMap = {
             'start': {
                 confirmMsg: '确定要开始面试吗？',
@@ -1195,7 +1195,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const config = actionMap[action];
         if (!config) return;
 
-        if (!confirm(config.confirmMsg)) return;
+        if (!(await Modal.confirm(config.confirmMsg))) return;
 
         const payload = {
             action: 'status_action',
@@ -1236,7 +1236,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const config = actionMap[action];
         if (!config) return;
 
-        if (!confirm(config.confirmMsg)) return;
+        if (!(await Modal.confirm(config.confirmMsg))) return;
 
         try {
             const res = await fetch(`/api/groups/${groupId}/status/`, {
@@ -1561,8 +1561,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (clearScoreBtn) {
-        clearScoreBtn.addEventListener('click', function() {
-            if (confirm('确定将所有评分清零吗？（自我介绍、评语不受影响）')) {
+        clearScoreBtn.addEventListener('click', async function() {
+            if (await Modal.confirm('确定将所有评分清零吗？（自我介绍、评语不受影响）')) {
                 clearScores();
             }
         });
@@ -1571,7 +1571,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (refreshCandidateBtn) {
         refreshCandidateBtn.addEventListener('click', async function() {
             if (!currentCandidateInGroupId) return;
-            if (isDirty && !window.confirm('刷新会覆盖当前未保存的评价内容。是否继续？')) return;
+            if (isDirty && !(await Modal.confirm('刷新会覆盖当前未保存的评价内容。是否继续？'))) return;
 
             refreshCandidateBtn.disabled = true;
             refreshCandidateBtn.textContent = '正在刷新';
@@ -1605,34 +1605,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (statusControlBtn) {
         statusControlBtn.addEventListener('click', function() {
-            if (controlModal) {
-                const statusMap = {
-                    'PENDING': '待开始',
-                    'ONGOING': '进行中',
-                    'PAUSE': '暂停中',
-                    'ENDED': '已结束',
-                    'CANCELLED': '已取消'
-                };
-                if (controlCurrentStatus) {
-                    controlCurrentStatus.textContent = statusMap[currentGroupStatus] || currentGroupStatus;
-                    controlCurrentStatus.className = 'control-status-badge ' + currentGroupStatus;
-                }
-
-                const hasControl = isWebSocketMode || isChief;
-                const isActive = hasControl && currentGroupStatus !== 'ENDED' && currentGroupStatus !== 'CANCELLED';
-
-                if (controlStartBtn) {
-                    controlStartBtn.disabled = !isActive || (currentGroupStatus !== 'PENDING' && currentGroupStatus !== 'PAUSE');
-                }
-                if (controlPauseBtn) {
-                    controlPauseBtn.disabled = !isActive || (currentGroupStatus !== 'ONGOING');
-                }
-                if (controlEndBtn) {
-                    controlEndBtn.disabled = !isActive || (currentGroupStatus !== 'ONGOING' && currentGroupStatus !== 'PAUSE');
-                }
-
-                controlModal.style.display = 'flex';
+            if (!controlModal) {
+                console.error('[main_sheet] controlModal 不存在，尝试重新获取');
+                return;
             }
+            const statusMap = {
+                'PENDING': '待开始',
+                'ONGOING': '进行中',
+                'PAUSE': '暂停中',
+                'ENDED': '已结束',
+                'CANCELLED': '已取消'
+            };
+            if (controlCurrentStatus) {
+                controlCurrentStatus.textContent = statusMap[currentGroupStatus] || currentGroupStatus;
+                controlCurrentStatus.className = 'control-status-badge ' + currentGroupStatus;
+            }
+
+            const hasControl = isWebSocketMode || isChief;
+            const isActive = hasControl && currentGroupStatus !== 'ENDED' && currentGroupStatus !== 'CANCELLED';
+
+            if (controlStartBtn) {
+                controlStartBtn.disabled = !isActive || (currentGroupStatus !== 'PENDING' && currentGroupStatus !== 'PAUSE');
+            }
+            if (controlPauseBtn) {
+                controlPauseBtn.disabled = !isActive || (currentGroupStatus !== 'ONGOING');
+            }
+            if (controlEndBtn) {
+                controlEndBtn.disabled = !isActive || (currentGroupStatus !== 'ONGOING' && currentGroupStatus !== 'PAUSE');
+            }
+
+            controlModal.style.display = 'flex';
         });
     }
 

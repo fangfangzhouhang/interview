@@ -5,6 +5,7 @@ urlpatterns = [
     # 面试者页面路由
     # ============================================================
     path('profile/', views.profile_view, name='profile'),
+    path('volunteer/', views.volunteer_view, name='volunteer'),
     path('queue/', views.queue_view, name='queue'),
 
     # ============================================================

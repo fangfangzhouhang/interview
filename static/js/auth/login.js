@@ -42,11 +42,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ========== 密码显示/隐藏切换 ==========
     passwordToggle.addEventListener('click', function() {
-        const shouldShow = passwordInput.type === 'password';
-        passwordInput.type = shouldShow ? 'text' : 'password';
-        passwordToggle.classList.toggle('is-showing', shouldShow);
-        passwordToggle.setAttribute('aria-pressed', String(shouldShow));
-        passwordToggle.setAttribute('title', shouldShow ? '隐藏密码' : '显示密码');
+        const isShowing = passwordInput.type === 'text';
+        passwordInput.type = isShowing ? 'password' : 'text';
+        passwordToggle.classList.toggle('is-showing', !isShowing);
+        passwordToggle.setAttribute('aria-pressed', String(!isShowing));
+        // title：显示当前眼睛图标对应的动作（与图标语义匹配）
+        // 现在：密码隐藏→显示斜线眼睛→title提示"点击显示密码"
+        //      密码显示→显示普通眼睛→title提示"点击隐藏密码"
+        passwordToggle.setAttribute('title', !isShowing ? '隐藏密码' : '显示密码');
         passwordInput.focus({ preventScroll: true });
     });
 

@@ -12,6 +12,142 @@ document.addEventListener('DOMContentLoaded', function() {
     let refreshInterval = null;
     const AUTO_REFRESH_INTERVAL = 120000;
 
+    // 跟踪状态变化
+    const stateTracker = {
+        previousStatuses: {}, // {volunteer_id: status}
+        calledNotified: new Set() // 已通知过的called状态
+    };
+
+    // 被叫号弹窗通知
+    function showCallNotification(volunteerData) {
+        // 防止重复通知
+        const key = `${volunteerData.volunteer_id}_${volunteerData.status}_${Date.now()}`;
+
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            animation: fadeIn 0.3s ease;
+        `;
+
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            background: linear-gradient(135deg, #fff 0%, #fffbeb 100%);
+            border-radius: 20px;
+            padding: 40px 32px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 80px rgba(245, 158, 11, 0.35);
+            border: 3px solid #fde68a;
+            animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        `;
+
+        const icon = document.createElement('div');
+        icon.style.cssText = `
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: bounce 1s infinite;
+        `;
+        icon.textContent = '📢';
+
+        const title = document.createElement('div');
+        title.style.cssText = `
+            font-size: 22px;
+            font-weight: 800;
+            color: #92400e;
+            margin-bottom: 12px;
+        `;
+        title.textContent = '已叫号！';
+
+        const content = document.createElement('div');
+        content.style.cssText = `
+            font-size: 15px;
+            color: #78350f;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        `;
+        content.innerHTML = `
+            <div style="font-weight:600; margin-bottom:8px;">请前往候场</div>
+            <div>部门：<strong>${volunteerData.department_display}</strong></div>
+            <div>位置：<strong>第 ${volunteerData.position || '?'} 位</strong></div>
+        `;
+
+        const btn = document.createElement('button');
+        btn.style.cssText = `
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+        `;
+        btn.textContent = '知道了';
+        btn.addEventListener('click', function() {
+            overlay.style.animation = 'fadeOut 0.2s ease';
+            setTimeout(() => overlay.remove(), 200);
+        });
+
+        modal.appendChild(icon);
+        modal.appendChild(title);
+        modal.appendChild(content);
+        modal.appendChild(btn);
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        // 添加动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+            @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+            @keyframes popIn {
+                from { transform: scale(0.8); opacity: 0; }
+                to { transform: scale(1); opacity: 1; }
+            }
+            @keyframes bounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-8px); }
+            }
+        `;
+        if (!document.getElementById('call-notification-styles')) {
+            style.id = 'call-notification-styles';
+            document.head.appendChild(style);
+        }
+
+        // 震动反馈（移动端）
+        if (navigator.vibrate) {
+            navigator.vibrate([200, 100, 200]);
+        }
+    }
+
+    // 检查状态变化并触发通知
+    function checkStatusChanges(queueData) {
+        if (!queueData) return;
+
+        queueData.forEach(vol => {
+            const id = vol.volunteer_id;
+            const currentStatus = vol.status;
+            const previousStatus = stateTracker.previousStatuses[id];
+
+            // 检测到从 WAITING 变为 CALLED
+            if (previousStatus === 'WAITING' && currentStatus === 'CALLED') {
+                showCallNotification(vol);
+            }
+
+            // 更新记录
+            stateTracker.previousStatuses[id] = currentStatus;
+        });
+    }
+
     // 获取CSRF Token
     function getCSRFToken() {
         return document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
@@ -49,11 +185,35 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
 
             if (result.success) {
+                // 检查状态变化（在渲染之前）
+                checkStatusChanges(result.data);
+
                 renderQueueData(result.data);
                 updateMinWaitTime(result.min_wait_minutes);
                 return true;
             } else {
-                showMessage('error', result.message || '获取排队信息失败');
+                const msg = result.message || '获取排队信息失败';
+                // 用明确的状态替换加载占位，避免页面停留在"加载中"
+                if (queueList) {
+                    if (msg.indexOf('用户信息不存在') !== -1) {
+                        queueList.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-icon">👤</div>
+                                <div class="empty-title">当前账号不是面试者</div>
+                                <div class="empty-desc">管理员账号没有排队信息，如需体验请使用面试者账号登录</div>
+                            </div>
+                        `;
+                    } else {
+                        queueList.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-icon">⚠️</div>
+                                <div class="empty-title">${msg}</div>
+                                <div class="empty-desc">请稍后刷新重试</div>
+                            </div>
+                        `;
+                    }
+                }
+                showMessage('error', msg);
                 return false;
             }
         } catch (error) {
@@ -247,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        if (!confirm(`确定要${actionLabel}吗？`)) {
+        if (!(await Modal.confirm(`确定要${actionLabel}吗？`))) {
             return;
         }
 

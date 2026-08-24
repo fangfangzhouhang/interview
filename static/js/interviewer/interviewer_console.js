@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            if (!confirm(`确定要将主面试官权限移交给选中的面试官吗？\n\n移交后您将不再是该组的主面试官。`)) {
+            if (!(await Modal.confirm(`确定要将主面试官权限移交给选中的面试官吗？\n\n移交后您将不再是该组的主面试官。`))) {
                 return;
             }
 

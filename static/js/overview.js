@@ -198,7 +198,7 @@
 
     // ==================== 仅手动自动分组 ====================
     async function performAutoGroup() {
-        if (!window.confirm('自动分组会按当前规则更新待分配场次。是否继续？')) return;
+        if (!(await Modal.confirm('自动分组会按当前规则更新待分配场次。是否继续？'))) return;
 
         const btn = els.autoGroupBtn;
         setButtonLoading(btn, true, '正在分组');

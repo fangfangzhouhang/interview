@@ -423,17 +423,22 @@ body {
     pointer-events: none;
 }
 
-/* 默认状态（密码隐藏）：显示带叉的眼睛图标，表示"加密中" */
+/*
+ * 【正确语义修正】用户明确要求：
+ *   有眼睛 (eye-open) → 表示密码是显示的（明文可见）
+ *   眼睛+斜线 (eye-closed) → 表示密码被隐藏了（加密中）
+ *
+ * 默认状态：密码隐藏 → 显示斜线眼睛
+ * is-showing 状态：密码显示 → 显示普通眼睛
+ */
 .password-toggle .eye-icon.eye-closed {
     display: block;
 }
 
-/* 显示密码状态（is-showing）：隐藏带叉眼睛 */
 .password-toggle.is-showing .eye-icon.eye-closed {
     display: none;
 }
 
-/* 显示密码状态（is-showing）：显示睁眼图标，表示"明文可见" */
 .password-toggle.is-showing .eye-icon.eye-open {
     display: block;
 }
@@ -878,7 +883,7 @@ body {
         margin-top: 0;
     }
     .login-context-copy {
-        margin-top: 0;
+        margin-top: clamp(80px, 10vw, 100px);
         margin-bottom: clamp(10px, 3vh, 40px);
     }
 }
@@ -934,8 +939,9 @@ body {
         width: 36px;
         margin: 10px 0 14px;
     }
+    /* 【修复】文字区块下移，确保 ECUST 水印完全可见不被遮挡 */
     .login-context-copy {
-        margin-top: 0;
+        margin-top: clamp(72px, 18vw, 90px);
         margin-bottom: clamp(8px, 2vh, 28px);
     }
     .login-box {

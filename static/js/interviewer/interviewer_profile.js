@@ -164,11 +164,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 重置按钮
-    resetBtn.addEventListener('click', function() {
-        if (confirm('确定要重置所有修改吗？')) {
-            loadProfile();
-            hideMessages();
+    // 重置按钮（次要操作，无需确认弹窗）
+    resetBtn.addEventListener('click', async function() {
+        await loadProfile();
+        hideMessages();
+        if (window.Modal) {
+            Modal.success('已重置为保存的数据');
+        } else {
             showMessage('success', '已重置为保存的数据');
         }
     });

@@ -7,6 +7,7 @@ from .overview_views import (
 )
 from .candidate_views import (
     profile_view,
+    volunteer_view,
     update_profile,
     get_profile,
     volunteer_action,
@@ -120,5 +121,8 @@ from .board_views import (
     board_admin_view,
     api_board,
     api_board_call_next,
+    api_board_assign_volunteer,
+    api_board_create_group,
+    api_board_interviewers,
     api_board_set_classroom,
 )
